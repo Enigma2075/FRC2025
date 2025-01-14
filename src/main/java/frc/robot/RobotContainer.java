@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,13 +41,15 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        configureBindings();
-
-        autoChooser = new SendableChooser<>();
-
-        autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
+        autoChooser = AutoBuilder.buildAutoChooser("Test");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
+        
+        configureBindings();
+
+        //autoChooser = new SendableChooser<>();
+
+        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
     }
 
@@ -81,6 +84,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
