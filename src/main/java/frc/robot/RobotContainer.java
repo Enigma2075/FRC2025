@@ -43,7 +43,7 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
+        autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
 
     }
