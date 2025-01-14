@@ -7,43 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start-P2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "P2-Source2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source2-P5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "P5-Source2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source2-P6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "P6-Source2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source2-P7"
+            "pathName": "test"
           }
         }
       ]
