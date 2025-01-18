@@ -29,6 +29,12 @@ public class Elevator extends SubsystemIO{
         }
     }
 
+    public static class PeriodicIO {
+        
+    }
+
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
     @Override
     public void stop() {
         // TODO Auto-generated method stub
