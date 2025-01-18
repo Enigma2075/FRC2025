@@ -12,8 +12,21 @@ public class Elevator extends SubsystemIO{
         m_Elevator2 = new TalonFX(ElevatorConst.kElevator2Id);
     }
 
-    public enum State {
-        L4, L3, L2, L1,
+    public enum State { L4, L3, L2, L1, SHOULDER, WRIST }
+
+    public enum PivotTarget {
+        L4(-10),
+        L3(10),
+        L2(10),
+        L1(10),
+        SHOULDER(10),
+        WRIST(10);
+
+        public final double m_angle;
+
+        private PivotTarget(double angle){
+            this.m_angle= angle;
+        }
     }
 
     @Override

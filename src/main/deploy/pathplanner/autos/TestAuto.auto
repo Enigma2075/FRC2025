@@ -45,6 +45,30 @@
           "data": {
             "pathName": "Source2-P7"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P7-Source2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2-P8"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P8-Source2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2-P4"
+          }
         }
       ]
     }

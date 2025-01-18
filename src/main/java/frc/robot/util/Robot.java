@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.util;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,19 +11,22 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private final RobotContainer m_robotContainer;
+  private final RobotContainer RobotContainer =new RobotContainer();
 
-  public Robot() {
-    m_robotContainer = new RobotContainer();
-  }
+  
 
   @Override
   public void robotPeriodic() {
+    RobotContainer.ioManager.readPeriodicInputs();
+    RobotContainer.ioManager.outputTelemetry();
     CommandScheduler.getInstance().run(); 
+    RobotContainer.ioManager.writePeriodicOutputs();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    RobotContainer.ioManager.stop();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -33,7 +36,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = RobotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
