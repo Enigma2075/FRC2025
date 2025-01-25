@@ -20,6 +20,9 @@ public class ElevatorState {
         this(0,0,0);
     }
 
+    /**
+     * @return height of the end effector from the floor 
+     */
     public double getEndEffectorHeight(){
         double z = ElevatorConst.kDefaultElevatorHeight;
         z += this.elevator;
