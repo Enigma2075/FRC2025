@@ -12,6 +12,19 @@ public class Intake extends SubsystemIO{
         m_roller = new TalonFX(IntakeConstants.kroller);
     }
 
+    public enum State { 
+        GRABCAGE(9),
+        FLOORINTAKE(9),
+        CLIMBREADY(9);
+
+        public final double angle;
+
+        private State(double angle) {
+            this.angle = angle;
+        }
+    } 
+
+
 
     @Override
     public void stop() {
