@@ -12,6 +12,17 @@ public class Climb extends SubsystemIO{
         m_Front = new TalonFX(ClimbConstants.kFrontId);
     }
 
+    public enum State { 
+        START(42), 
+        ENDCLIMB(42);
+        
+        public final double distance;
+
+        private State(double distance) {
+            this.distance = distance;
+        }
+    }
+
 
     @Override
     public void stop() {
