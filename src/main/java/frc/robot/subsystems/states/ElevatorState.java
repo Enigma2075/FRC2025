@@ -30,7 +30,7 @@ public class ElevatorState {
      * @return height of the end effector from the floor 
      */
     public double getEndEffectorHeight(){
-        double z = ElevatorConst.kDefaultElevatorHeight;
+        double z = ElevatorConst.kHeightOffset;
         z += this.elevator;
         z += ArmConstants.kArmLength * Math.sin(this.arm);
         z += WristConstants.kWristToEndEffectorLength * Math.sin(this.wrist);
