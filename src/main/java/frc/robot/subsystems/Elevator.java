@@ -6,15 +6,15 @@ import frc.robot.subsystems.states.ElevatorState;
 
 public class Elevator extends SubsystemIO{
 
-    private TalonFX m_Elevator1;
-    private TalonFX m_Elevator2;
+    private TalonFX m_ElevatorFront;
+    private TalonFX m_ElevatorBack;
 
     public Elevator() {
-        m_Elevator1 = new TalonFX(ElevatorConst.kElevator1Id);
-        m_Elevator2 = new TalonFX(ElevatorConst.kElevator2Id);
+        m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId);
+        m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId);
     }
 
-   
+
     public static class PeriodicIO {
         
     }
