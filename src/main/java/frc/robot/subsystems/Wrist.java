@@ -1,15 +1,29 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Wrist extends SubsystemIO{
     
     private TalonFX m_Motor;
 
+    
+
     public Wrist(){
-        m_Motor = new TalonFX(ArmConstants.kMotorId);
+        m_Motor = new TalonFX(WristConstants.kMotorId);
     }
 
+    public static class PeriodicIO {
+        public double CurrentAngle = 0;
+        public double TargetAngle = 0;
+    
+        
+    }
+
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     @Override
     public void stop() {
@@ -25,7 +39,16 @@ public class Wrist extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'outputTelemetry'");
+        SmartDashboard.putNumber("Wrist/CurrentAngle", m_PeriodicIO.CurrentAngle);
+        SmartDashboard.putNumber("Wrist/TargetAngle", m_PeriodicIO.TargetAngle);
+
+        SignalLogger.writeDouble("Wrist/CurrentAngle", m_PeriodicIO.CurrentAngle);
+        SignalLogger.writeDouble("Wrist/TargetAngle", m_PeriodicIO.TargetAngle);
     }
+
+    @Override
+    public void readPeriodicInputs(){
+        
+    }
+
 }
