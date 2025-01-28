@@ -15,6 +15,12 @@ public class ElevatorState {
         this.wrist = wrist;
     }
 
+    public ElevatorState(ElevatorState other){
+        this.elevator = other.elevator;
+        this.arm = other.arm;
+        this.wrist = other.wrist;
+    }
+
     //default position
     public ElevatorState(){
         this(0,0,0);
