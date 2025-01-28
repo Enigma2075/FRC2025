@@ -13,15 +13,14 @@ public class Elevator extends SubsystemIO{
         m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId);
         m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId);
     }
-<<<<<<< HEAD
 
 
-=======
     
    
->>>>>>> 5a567188011b45760d8e35e2e5c7535a4f4ce0f4
     public static class PeriodicIO {
-        
+        public double targetHeight = ElevatorConst.kInitialHeight;
+
+        public double currentHeight = 0;
     }
 
 
