@@ -1,7 +1,16 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 public class Wrist extends SubsystemIO{
     
+    private TalonFX m_Motor;
+
+    public Wrist(){
+        m_Motor = new TalonFX(ArmConstants.kMotorId);
+    }
+
+
     @Override
     public void stop() {
         // TODO Auto-generated method stub
