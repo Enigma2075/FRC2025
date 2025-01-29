@@ -44,4 +44,9 @@ public class Arm extends SubsystemIO{
         SignalLogger.writeDouble("Arm/CurrentAngle", m_PeriodicIO.currentAngle);
         SignalLogger.writeDouble("Arm/TargetAngle", m_PeriodicIO.targetAngle);
     }
+    
+    @Override
+    public void readPeriodicInputs(){
+        
+    }
 }

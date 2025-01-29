@@ -5,5 +5,9 @@ public class ArmConstants {
 
     public static final double kArmLength = 0;
 
+    public static final double kGearRatio1 = 56/12;
+    public static final double kGearRatio2 = 56/18;
+    public static final double kGearRatio3 = 68/16;
+
     
 }
