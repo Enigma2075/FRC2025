@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.Robot;
+import frc.robot.Robot;
 
 public class IOManager extends SubsystemBase {
       // The robot's subsystems and commands are defined here...
@@ -18,16 +18,10 @@ public class IOManager extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //readPeriodicInputs();
-        //outputTelemetry();
-        //writePeriodicOutputs();
-        //System.out.println("IOManager:periodic");
     }
 
     public Command defaultCommand() {
         return run(() -> {
-            //System.out.println("IOManager:DefaultCommand");
-            
         });
     }
 
