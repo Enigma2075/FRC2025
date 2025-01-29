@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.subsystems.states.ElevatorState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends SubsystemIO{
 
@@ -13,9 +14,6 @@ public class Elevator extends SubsystemIO{
         m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId);
         m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId);
     }
-
-
-    
    
     public static class PeriodicIO {
         public double targetHeight = ElevatorConst.kInitialHeight;
@@ -23,13 +21,19 @@ public class Elevator extends SubsystemIO{
         public double currentHeight = 0;
     }
 
-
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
+    private double convertPositionToHeight(double position) {
+        return position * ElevatorConst.kRotationToInches;
+    }
+
+    private double convertHeightToPosition(double height) {
+        return height / ElevatorConst.kRotationToInches;
+    }
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+        
     }
 
     @Override
@@ -40,8 +44,21 @@ public class Elevator extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'outputTelemetry'");
+        SmartDashboard.putNumber("Elevator/TargetHeight", m_PeriodicIO.targetHeight);
+        SmartDashboard.putNumber("Elevator/CurrentHeight", m_PeriodicIO.currentHeight);
+
+        SignalLogger.writeDouble("Elevator/TargetHeight", m_PeriodicIO.targetHeight);
+        SignalLogger.writeDouble("Elevator/CurrentHeight", m_PeriodicIO.currentHeight);
     }
     
+    @Override
+    public void readPeriodicInputs() {
+        m_PeriodicIO.currentHeight = convertPositionToHeight(m_ElevatorFront.getPosition().getValueAsDouble());
+    }
+
+    @Override
+    public void writePeriodicOutputs() {
+        //m_ElevatorFront.set(ControlMode.Position, convertHeightToPosition(m_PeriodicIO.targetHeight));
+        //m_ElevatorBack.set(ControlMode.Follower, ElevatorConst.kMotorFrontId);
+    }
 }
