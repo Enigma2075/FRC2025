@@ -24,6 +24,14 @@ public class Arm extends SubsystemIO{
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
+    private double convertPositionToAngle(double position) {
+        return (position / ArmConstants.kGearRatio)* 2 * Math.PI ;
+    }
+
+    private double convertAngleToPosition(double angle) {
+        return (angle / 2 * Math.PI) * ArmConstants.kGearRatio;
+    }
+
     @Override
     public void stop() {
         // TODO Auto-generated method stub
