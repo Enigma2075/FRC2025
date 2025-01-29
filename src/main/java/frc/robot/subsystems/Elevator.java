@@ -19,6 +19,14 @@ public class Elevator extends SubsystemIO{
         public double targetHeight = ElevatorConst.kInitialHeight;
 
         public double currentHeight = 0;
+
+        public double lastTargetHeight;
+    
+    }
+
+    public void setHeight (double height){
+        m_PeriodicIO.targetHeight = height;
+        
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -58,7 +66,11 @@ public class Elevator extends SubsystemIO{
 
     @Override
     public void writePeriodicOutputs() {
+        if (m_PeriodicIO.lastTargetHeight != m_PeriodicIO.targetHeight) {
         //m_ElevatorFront.set(ControlMode.Position, convertHeightToPosition(m_PeriodicIO.targetHeight));
         //m_ElevatorBack.set(ControlMode.Follower, ElevatorConst.kMotorFrontId);
+ 
+        }
+
     }
 }

@@ -9,5 +9,9 @@ public class ArmConstants {
     public static final double kGearRatio2 = 56/18;
     public static final double kGearRatio3 = 68/16;
 
+    public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
+
+
+
     
 }
