@@ -6,4 +6,9 @@ public class ElevatorConst {
 
     public static final double kHeightOffset= 0;
     public static final double kInitialHeight = 0;
+
+    public static final double kGearRatio = 4.0;
+    public static final double kSpoolRadius = 1.5/2.0;
+    public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;
+    public static final double kRotationToInches = kSpoolCircumference / kGearRatio;
 }
