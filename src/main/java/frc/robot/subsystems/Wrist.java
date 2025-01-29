@@ -2,18 +2,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 public class Wrist extends SubsystemIO{
     
     private TalonFX m_Motor;
+    private CANcoder m_Encoder;
 
     
 
     public Wrist(){
         m_Motor = new TalonFX(WristConstants.kMotorId);
+
+        m_Encoder = new CANcoder(WristConstants.kEncoderId, RobotConstants.kCanivoreBusName);
     }
 
     public static class PeriodicIO {

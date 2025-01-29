@@ -26,7 +26,7 @@ public class Elevator extends SubsystemIO{
 
     public void setHeight (double height){
         m_PeriodicIO.targetHeight = height;
-        
+
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
