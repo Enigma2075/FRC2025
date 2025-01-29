@@ -4,7 +4,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Claw extends SubsystemIO{
 
-    private TalonFX m_claw;
+    private TalonFX m_coral;
+    private TalonFX m_algae;
+
+    public Claw(){
+        m_coral = new TalonFX(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
+        m_algae = new TalonFX(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
+    }
+
 
     @Override
     public void stop() {

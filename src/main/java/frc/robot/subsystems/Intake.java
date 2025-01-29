@@ -11,8 +11,8 @@ public class Intake extends SubsystemIO{
     private final PositionVoltage m_IntakeRequest= new PositionVoltage(0);
 
     public Intake() {
-        m_pivot = new TalonFX(IntakeConstants.kpivotId);
-        m_roller = new TalonFX(IntakeConstants.kroller);
+        m_pivot = new TalonFX(IntakeConstants.kpivotId,RobotConstants.kCanivoreBusName);
+        m_roller = new TalonFX(IntakeConstants.kroller,RobotConstants.kCanivoreBusName);
     }
 
     public enum State { 

@@ -11,8 +11,8 @@ public class Elevator extends SubsystemIO{
     private TalonFX m_ElevatorBack;
 
     public Elevator() {
-        m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId);
-        m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId);
+        m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
+        m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
     }
    
     public static class PeriodicIO {

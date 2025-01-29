@@ -16,7 +16,7 @@ public class Wrist extends SubsystemIO{
     
 
     public Wrist(){
-        m_Motor = new TalonFX(WristConstants.kMotorId);
+        m_Motor = new TalonFX(WristConstants.kMotorId,RobotConstants.kCanivoreBusName);
 
         m_Encoder = new CANcoder(WristConstants.kEncoderId, RobotConstants.kCanivoreBusName);
     }
