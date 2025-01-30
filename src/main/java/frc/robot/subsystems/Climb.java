@@ -55,6 +55,8 @@ public class Climb extends SubsystemIO{
         {
             case START:
                     writeClimb(0);
+            case ENDCLIMB:
+                    writeClimb(0);
                     
         }
     }
