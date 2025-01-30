@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -9,8 +10,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm extends SubsystemIO{
 
+    public enum ControlMode{
+        VOLTAGE,
+        POSITION,
+        SYSID
+    }
+
     private TalonFX m_Motor;
     private CANcoder m_Encoder;
+
+    private final VoltageOut m_VoltageRequest = new VoltageOut(0);
 
 
     public Arm(){
@@ -19,12 +28,23 @@ public class Arm extends SubsystemIO{
     }
 
     public static class PeriodicIO {
+        public ControlMode controlMode = ControlMode.VOLTAGE;
+
         public double currentAngle = 0;
         public double targetAngle = 0;
 
-        public double lastTargetAngle;
-    
+        public double targetVoltage = 0; 
         
+    }
+
+    public void setVoltage(double voltage){
+        m_PeriodicIO.controlMode = ControlMode.VOLTAGE;
+        m_PeriodicIO.targetVoltage = voltage;
+    }
+
+    public void setAngle(double angle){
+        m_PeriodicIO.controlMode = ControlMode.POSITION;
+        m_PeriodicIO.targetAngle = angle;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -35,10 +55,6 @@ public class Arm extends SubsystemIO{
 
     private double convertAngleToPosition(double angle) {
         return (angle / 2 * Math.PI) * ArmConstants.kGearRatio;
-    }
-
-    public void setAngle(double angle){
-        m_PeriodicIO.targetAngle = angle;
     }
 
     @Override
@@ -65,5 +81,25 @@ public class Arm extends SubsystemIO{
     @Override
     public void readPeriodicInputs(){
         
+    }
+
+    @Override
+    public void writePeriodicOutputs(){
+        switch(m_PeriodicIO.controlMode){
+            case VOLTAGE:
+                
+                m_Motor.setControl(m_VoltageRequest.withOutput(m_PeriodicIO.targetVoltage));
+                   
+                break;
+            case POSITION:
+                
+                break;
+            case SYSID:
+
+                break;
+            default:
+
+                break;
+        }
     }
 }
