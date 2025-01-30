@@ -69,6 +69,7 @@ public class Elevator extends SubsystemIO{
         if (m_PeriodicIO.lastTargetHeight != m_PeriodicIO.targetHeight) {
         //m_ElevatorFront.set(ControlMode.Position, convertHeightToPosition(m_PeriodicIO.targetHeight));
         //m_ElevatorBack.set(ControlMode.Follower, ElevatorConst.kMotorFrontId);
+        m_PeriodicIO.lastTargetHeight = m_PeriodicIO.targetHeight;
  
         }
 

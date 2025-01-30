@@ -12,6 +12,11 @@ public class Claw extends SubsystemIO{
         m_algae = new TalonFX(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
     }
 
+    public static class PeriodicIO{
+
+    }
+
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     @Override
     public void stop() {
