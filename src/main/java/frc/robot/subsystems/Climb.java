@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -29,7 +30,7 @@ public class Climb extends SubsystemIO{
     //private final VoltageOut m_VoltageRequest = new VoltageOut(0);
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
-
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0);
     private final StaticBrake m_StaticRequest = new StaticBrake();
 
     public Climb() {
@@ -59,7 +60,7 @@ public class Climb extends SubsystemIO{
     }
 
     public enum State { 
-        START(42), 
+        START(5), 
         ENDCLIMB(42);
         
         public final double distance;
@@ -103,6 +104,14 @@ public class Climb extends SubsystemIO{
         });
     }
 
+    public Command setTestPosition(){
+        return run(() -> {
+            m_PeriodicIO.requestedState = State.START;
+            m_PeriodicIO.controlMode = ControlMode.POSITION;
+
+        });
+    }
+
     @Override
     public void readPeriodicInputs() {
         m_PeriodicIO.enc = m_Back.getPosition().getValueAsDouble();
@@ -130,7 +139,7 @@ public class Climb extends SubsystemIO{
                 break;
 
             case POSITION:
-                
+                m_Back.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.distance));
                 break;
 
             case SYSID:
