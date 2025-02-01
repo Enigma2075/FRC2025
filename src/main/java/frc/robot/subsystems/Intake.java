@@ -55,6 +55,10 @@ public void writePeriodicOutputs() {
     {
         case CLIMBREADY: 
             writeIntake(0);
+        case FLOORINTAKE:
+            writeIntake(0);
+        case GRABCAGE:
+            writeIntake(0);
 
     }
 }

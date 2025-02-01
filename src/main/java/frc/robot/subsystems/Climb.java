@@ -1,12 +1,20 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Climb extends SubsystemIO{
+     public enum ControlMode{
+        VOLTAGE,
+        POSITION,
+        SYSID
+     }
 
     private TalonFX m_Back;
     private TalonFX m_Front;
+
+    private final VoltageOut m_VoltageRequest = new VoltageOut(0);
 
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
 
@@ -27,10 +35,19 @@ public class Climb extends SubsystemIO{
     }
 
     public static class PeriodicIO{
+        public ControlMode controlMode = ControlMode.VOLTAGE;
+
         State requestedState = State.START;
         double enc = 0;
 
         double lastPosition = Double.MIN_VALUE;
+
+        public double targetVoltage = 0;
+    }
+
+    public void setVoltage (double voltage) {
+        m_PeriodicIO.controlMode = ControlMode.VOLTAGE;
+        m_PeriodicIO.targetVoltage = voltage;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -51,13 +68,38 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void writePeriodicOutputs() {
-        switch (m_PeriodicIO.requestedState)
+        /*switch (m_PeriodicIO.controlMode) {
+            case VOLTAGE :
+                if(m_PeriodicIO.targetVoltage != m_PeriodicIO.lastTargetVoltage) {
+                    m_Back.setControl(m_VoltageRequest.withOutput(m_PeriodicIO.targetVoltage));
+                }
+                break;
+
+            case POSITION:
+                if(m_PeriodicIO.targetVoltage != m_PeriodicIO.lastTargetVoltage) {
+                    m_PeriodicIO.lastTargetVoltage = m_PeriodicIO.targetVoltage;
+                }
+                break;
+
+            case SYSID:
+
+                break;
+
+            default:
+
+                break;*/
+
+        }
+
+        /*switch (m_PeriodicIO.requestedState)
         {
             case START:
                     writeClimb(0);
+            case ENDCLIMB:
+                    writeClimb(0);
                     
-        }
-    }
+        }*/
+    sss
 
     @Override
     public void stop() {
