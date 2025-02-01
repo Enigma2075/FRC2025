@@ -11,4 +11,6 @@ public class ElevatorConst {
     public static final double kSpoolRadius = 1.5/2.0;
     public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;
     public static final double kRotationToInches = kSpoolCircumference / kGearRatio;
+
+    public static final Elevator Elevator = new Elevator();
 }
