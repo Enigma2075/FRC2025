@@ -12,4 +12,6 @@ public class WristConstants {
     public static final double kGearRatio3 = 64/24;
 
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
+
+    public static final Wrist Wrist = new Wrist();
 }
