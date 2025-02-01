@@ -100,9 +100,9 @@ public class Arm extends SubsystemIO{
     @Override
     public void writePeriodicOutputs(){
         switch(m_PeriodicIO.controlMode){
-            case VOLTAGE:
+            case OUTPUT:
                 
-                m_Motor.setControl(m_VoltageRequest.withOutput(m_PeriodicIO.targetVoltage));
+                m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                    
                 break;
             case POSITION:
