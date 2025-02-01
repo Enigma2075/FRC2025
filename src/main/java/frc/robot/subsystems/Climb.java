@@ -42,17 +42,18 @@ public class Climb extends SubsystemIO{
         backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         Slot0Configs slot0Configs = backConfig.Slot0;
-        slot0Configs.kS=0;
-        slot0Configs.kV=0;
-        slot0Configs.kA=0;
-        slot0Configs.kP=0;
-        slot0Configs.kI=0;
-        slot0Configs.kD=0;
+        slot0Configs.kG = ClimbConstants.kG;
+        slot0Configs.kS = ClimbConstants.kS;
+        slot0Configs.kV = ClimbConstants.kV;
+        slot0Configs.kA = ClimbConstants.kA;
+        slot0Configs.kP = ClimbConstants.kP;
+        slot0Configs.kI = ClimbConstants.kI;
+        slot0Configs.kD = ClimbConstants.kD;
 
         MotionMagicConfigs motionMagicConfigs = backConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
-        motionMagicConfigs.MotionMagicAcceleration = 0;
-        motionMagicConfigs.MotionMagicJerk = 0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ClimbConstants.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ClimbConstants.kMotionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ClimbConstants.kMotionMagicJerk;
         
         m_Back.getConfigurator().apply(backConfig);
     }
