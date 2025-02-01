@@ -14,4 +14,17 @@ public class WristConstants {
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
 
     public static final Wrist Wrist = new Wrist();
+
+    public static final double kG = 0;
+    public static final double kS = 0;
+    public static final double kV = 0;
+    public static final double kA = 0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final double kMotionMagicCruiseVelocity = 0;
+    public static final double kMotionMagicAcceleration = 0;
+    public static final double kMotionMagicJerk = 0;
+
 }

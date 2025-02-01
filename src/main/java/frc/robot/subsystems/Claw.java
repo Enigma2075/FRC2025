@@ -30,17 +30,20 @@ public class Claw extends SubsystemIO {
         TalonFXConfiguration coralConfigs = new TalonFXConfiguration();
 
         Slot0Configs slot0Configs = coralConfigs.Slot0;
-        slot0Configs.kS=0;
-        slot0Configs.kV=0;
-        slot0Configs.kA=0;
-        slot0Configs.kP=0;
-        slot0Configs.kI=0;
-        slot0Configs.kD=0;
+        slot0Configs.kG = ClawConstants.kG;
+        slot0Configs.kS = ClawConstants.kS;
+        slot0Configs.kV = ClawConstants.kV;
+        slot0Configs.kA = ClawConstants.kA;
+        slot0Configs.kP = ClawConstants.kP;
+        slot0Configs.kI = ClawConstants.kI;
+        slot0Configs.kD = ClawConstants.kD;
 
         MotionMagicConfigs motionMagicConfigs = coralConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
-        motionMagicConfigs.MotionMagicAcceleration = 0;
-        motionMagicConfigs.MotionMagicJerk = 0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ClawConstants.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ClawConstants.kMotionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ClawConstants.kMotionMagicJerk;
+
+        m_Coral.getConfigurator().apply(coralConfigs);
     }
 
 

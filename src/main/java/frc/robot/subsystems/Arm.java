@@ -37,20 +37,20 @@ public class Arm extends SubsystemIO{
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
         Slot0Configs slot0Configs = motorConfig.Slot0;
-        slot0Configs.kS = 0;
-        slot0Configs.kV = 0;
-        slot0Configs.kA = 0;
-        slot0Configs.kP = 0;
+        slot0Configs.kG = ArmConstants.kG;
+        slot0Configs.kS = ArmConstants.kS;
+        slot0Configs.kV = ArmConstants.kV;
+        slot0Configs.kA = ArmConstants.kA;
+        slot0Configs.kP = ArmConstants.kP;
+        slot0Configs.kI = ArmConstants.kI;
+        slot0Configs.kD = ArmConstants.kD;
 
         MotionMagicConfigs motionMagicConfigs = motorConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0; // max vel
-        motionMagicConfigs.MotionMagicAcceleration = 0; // max acc
-        motionMagicConfigs.MotionMagicJerk = 0; // acc/time
-
+        motionMagicConfigs.MotionMagicCruiseVelocity = ArmConstants.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ArmConstants.kMotionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ArmConstants.kMotionMagicJerk;
+       
         m_Motor.getConfigurator().apply(motorConfig);
-
-
-
     }
 
     public static class PeriodicIO {

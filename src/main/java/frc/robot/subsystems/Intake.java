@@ -22,12 +22,14 @@ public class Intake extends SubsystemIO{
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
-        slot0Configs.kS=0;
-        slot0Configs.kV=0;
-        slot0Configs.kA=0;
-        slot0Configs.kP=0;
-        slot0Configs.kI=0;
-        slot0Configs.kD=0;
+        slot0Configs.kG = IntakeConstants.kG;
+        slot0Configs.kS = IntakeConstants.kS;
+        slot0Configs.kV = IntakeConstants.kV;
+        slot0Configs.kA = IntakeConstants.kA;
+        slot0Configs.kP = IntakeConstants.kP;
+        slot0Configs.kI = IntakeConstants.kI;
+        slot0Configs.kD = IntakeConstants.kD;
+
 
         MotionMagicConfigs motionMagicConfigs = pivotConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 0;

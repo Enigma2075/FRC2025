@@ -42,15 +42,18 @@ public class Elevator extends SubsystemIO{
         TalonFXConfiguration frontConfig = new TalonFXConfiguration();
 
         Slot0Configs slot0Configs = frontConfig.Slot0;
-        slot0Configs.kS = 0;
-        slot0Configs.kV = 0;
-        slot0Configs.kA = 0;
-        slot0Configs.kP = 0;
+        slot0Configs.kG = ElevatorConst.kG;
+        slot0Configs.kS = ElevatorConst.kS;
+        slot0Configs.kV = ElevatorConst.kV;
+        slot0Configs.kA = ElevatorConst.kA;
+        slot0Configs.kP = ElevatorConst.kP;
+        slot0Configs.kI = ElevatorConst.kI;
+        slot0Configs.kD = ElevatorConst.kD;
 
         MotionMagicConfigs motionMagicConfigs = frontConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0; // max vel
-        motionMagicConfigs.MotionMagicAcceleration = 0; // max acc
-        motionMagicConfigs.MotionMagicJerk = 0; // acc/time
+        motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConst.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ElevatorConst.kMotionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ElevatorConst.kMotionMagicJerk;
 
         m_ElevatorFront.getConfigurator().apply(frontConfig);
     }

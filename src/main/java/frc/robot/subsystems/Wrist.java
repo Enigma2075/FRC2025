@@ -36,15 +36,18 @@ public class Wrist extends SubsystemIO{
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
         Slot0Configs slot0Configs = motorConfig.Slot0;
-        slot0Configs.kS = 0;
-        slot0Configs.kV = 0;
-        slot0Configs.kA = 0;
-        slot0Configs.kP = 0;
+        slot0Configs.kG = IntakeConstants.kG;
+        slot0Configs.kS = IntakeConstants.kS;
+        slot0Configs.kV = IntakeConstants.kV;
+        slot0Configs.kA = IntakeConstants.kA;
+        slot0Configs.kP = IntakeConstants.kP;
+        slot0Configs.kI = IntakeConstants.kI;
+        slot0Configs.kD = IntakeConstants.kD;
 
         MotionMagicConfigs motionMagicConfigs = motorConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0; // max vel
-        motionMagicConfigs.MotionMagicAcceleration = 0; // max acc
-        motionMagicConfigs.MotionMagicJerk = 0; // acc/time
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
+        motionMagicConfigs.MotionMagicAcceleration = 0;
+        motionMagicConfigs.MotionMagicJerk = 0;
 
         m_Motor.getConfigurator().apply(motorConfig);
     }
