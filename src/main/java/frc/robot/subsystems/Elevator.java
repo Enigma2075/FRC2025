@@ -46,6 +46,8 @@ public class Elevator extends SubsystemIO{
         public double targetOutput = 0;
     }
 
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
     public void setOutput (double output) {
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
         m_PeriodicIO.targetOutput = output;
@@ -56,8 +58,6 @@ public class Elevator extends SubsystemIO{
         m_PeriodicIO.targetHeight = height;
     }
 
-    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
-
     private double convertPositionToHeight(double position) {
         return position * ElevatorConst.kRotationToInches;
     }
@@ -67,12 +67,9 @@ public class Elevator extends SubsystemIO{
     }
 
     public Command testCommand(Supplier<Double> outputPercent) {
-        return new Command() {
-            @Override
-            public void execute() {
-                setOutput(outputPercent.get() * 12.0);
-            }
-        };
+        return run(() -> {
+                setOutput(outputPercent.get());
+            });
     }
 
     @Override
