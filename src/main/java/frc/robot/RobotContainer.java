@@ -25,6 +25,8 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmConstants;
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.ClimbConstants;
 import frc.robot.subsystems.DriveTrainConstants;
 
 public class RobotContainer {
@@ -41,10 +43,13 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
 
     public final Elevator elevator = ElevatorConst.Elevator;
+
+    public final Climb climb = ClimbConstants.Climb;
 
     private SendableChooser<Command> autoChooser;
 
@@ -77,6 +82,8 @@ public class RobotContainer {
 
         // Test Code for each subsystem
         elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
+
+        climb.setDefaultCommand(climb.testCommand(operator::getLeftY));
 
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->
