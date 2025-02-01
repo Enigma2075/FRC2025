@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -8,7 +10,7 @@ public class Intake extends SubsystemIO{
     private TalonFX m_pivot;
     private TalonFX m_roller;
 
-    private final PositionVoltage m_IntakeRequest= new PositionVoltage(0);
+    private final DutyCycleOut m_IntakeRequest= new DutyCycleOut(0);
 
     public Intake() {
         m_pivot = new TalonFX(IntakeConstants.kpivotId,RobotConstants.kCanivoreBusName);
@@ -43,8 +45,8 @@ public void readPeriodicInputs() {
 
 private void writeIntake(double position) {
     if(m_PeriodicIO.lastPosition!= position) {
-        m_pivot.setControl(m_IntakeRequest.withPosition(position));
-        m_roller.setControl(m_IntakeRequest.withPosition(position));
+        m_pivot.setControl(m_IntakeRequest.withOutput(position));
+        m_roller.setControl(m_IntakeRequest.withOutput(position));
         m_PeriodicIO.lastPosition = position;
     }
 }

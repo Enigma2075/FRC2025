@@ -4,10 +4,12 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+
 public class Claw extends SubsystemIO {
 
     public enum ControlMode {
-        VOLTAGE,
+        OUTPUT,
         POSITION,
         SYSID
     }
@@ -15,9 +17,9 @@ public class Claw extends SubsystemIO {
     private TalonFX m_Coral;
     private TalonFX m_Algae;
 
-    private final VoltageOut m_VoltageOut = new VoltageOut(0);
+    //private final Output m_Output = new Output(0);
 
-    private final PositionVoltage m_ClawRequest = new PositionVoltage(0);
+    private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
 
     public Claw() {
         m_Coral = new TalonFX(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
@@ -39,20 +41,19 @@ public class Claw extends SubsystemIO {
     }
 
     public static class PeriodicIO{
-        public ControlMode controlMode = ControlMode.VOLTAGE;
+        public ControlMode controlMode = ControlMode.OUTPUT;
 
         double enc = 0;
 
-        public double targetVoltage = 0;
-        public double lastTargetVoltage;
+        public double targetOutput = 0;
+        public double lastTargetOutput;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+    
     }
 
     @Override
@@ -75,10 +76,10 @@ public class Claw extends SubsystemIO {
     @Override
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
-            case VOLTAGE:
-                if(m_PeriodicIO.targetVoltage != m_PeriodicIO.lastTargetVoltage) {
-                    m_Algae.setControl(m_VoltageOut.withOutput(m_PeriodicIO.targetVoltage));
-                    m_PeriodicIO.lastTargetVoltage = m_PeriodicIO.targetVoltage;
+            case OUTPUT:
+                if(m_PeriodicIO.targetOutput != m_PeriodicIO.lastTargetOutput) {
+                    m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                    m_PeriodicIO.lastTargetOutput = m_PeriodicIO.targetOutput;
                 }
                 break;
 
