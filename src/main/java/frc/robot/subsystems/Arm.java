@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -30,6 +33,24 @@ public class Arm extends SubsystemIO{
     public Arm(){
         m_Motor = new TalonFX(ArmConstants.kMotorId, RobotConstants.kCanivoreBusName);
         m_Encoder = new CANcoder(ArmConstants.kEncoderId, RobotConstants.kCanivoreBusName);
+
+        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+        Slot0Configs slot0Configs = motorConfig.Slot0;
+        slot0Configs.kS = 0;
+        slot0Configs.kV = 0;
+        slot0Configs.kA = 0;
+        slot0Configs.kP = 0;
+
+        MotionMagicConfigs motionMagicConfigs = motorConfig.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0; // max vel
+        motionMagicConfigs.MotionMagicAcceleration = 0; // max acc
+        motionMagicConfigs.MotionMagicJerk = 0; // acc/time
+
+        m_Motor.getConfigurator().apply(motorConfig);
+
+
+
     }
 
     public static class PeriodicIO {

@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -35,6 +38,21 @@ public class Elevator extends SubsystemIO{
 
         m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
         m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
+
+        TalonFXConfiguration frontConfig = new TalonFXConfiguration();
+
+        Slot0Configs slot0Configs = frontConfig.Slot0;
+        slot0Configs.kS = 0;
+        slot0Configs.kV = 0;
+        slot0Configs.kA = 0;
+        slot0Configs.kP = 0;
+
+        MotionMagicConfigs motionMagicConfigs = frontConfig.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0; // max vel
+        motionMagicConfigs.MotionMagicAcceleration = 0; // max acc
+        motionMagicConfigs.MotionMagicJerk = 0; // acc/time
+
+        m_ElevatorFront.getConfigurator().apply(frontConfig);
     }
    
     private static class PeriodicIO {
