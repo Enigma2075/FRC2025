@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -39,6 +41,19 @@ public class Climb extends SubsystemIO{
 
         backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        Slot0Configs slot0Configs = backConfig.Slot0;
+        slot0Configs.kS=0;
+        slot0Configs.kV=0;
+        slot0Configs.kA=0;
+        slot0Configs.kP=0;
+        slot0Configs.kI=0;
+        slot0Configs.kD=0;
+
+        MotionMagicConfigs motionMagicConfigs = backConfig.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
+        motionMagicConfigs.MotionMagicAcceleration = 0;
+        motionMagicConfigs.MotionMagicJerk = 0;
+        
         m_Back.getConfigurator().apply(backConfig);
     }
 

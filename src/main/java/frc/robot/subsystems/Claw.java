@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 
 public class Claw extends SubsystemIO {
@@ -24,7 +26,23 @@ public class Claw extends SubsystemIO {
     public Claw() {
         m_Coral = new TalonFX(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
         m_Algae = new TalonFX(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
+
+        TalonFXConfiguration coralConfigs = new TalonFXConfiguration();
+
+        Slot0Configs slot0Configs = coralConfigs.Slot0;
+        slot0Configs.kS=0;
+        slot0Configs.kV=0;
+        slot0Configs.kA=0;
+        slot0Configs.kP=0;
+        slot0Configs.kI=0;
+        slot0Configs.kD=0;
+
+        MotionMagicConfigs motionMagicConfigs = coralConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
+        motionMagicConfigs.MotionMagicAcceleration = 0;
+        motionMagicConfigs.MotionMagicJerk = 0;
     }
+
 
     public enum State {
         L1(0),
