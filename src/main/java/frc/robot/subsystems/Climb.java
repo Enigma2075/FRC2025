@@ -2,10 +2,14 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -24,13 +28,16 @@ public class Climb extends SubsystemIO{
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
 
+    private final StaticBrake m_StaticRequest = new StaticBrake();
+
     public Climb() {
         m_Back = new TalonFX(ClimbConstants.kBackId, RobotConstants.kCanivoreBusName);
         //m_Front = new TalonFX(ClimbConstants.kFrontId);
 
-        TalonFXConfiguration backConfig = new TalonFXConfiguration(){
+        TalonFXConfiguration backConfig = new TalonFXConfiguration();
+        backConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        };
+        backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_Back.getConfigurator().apply(backConfig);
     }
@@ -75,12 +82,9 @@ public class Climb extends SubsystemIO{
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     public Command testCommand(Supplier<Double> outputPercent){
-        return new Command(){
-            @Override
-            public void execute(){
-                setOutput(outputPercent.get() * 12.0);
-            }
-        };
+        return run(() -> {
+            setOutput(outputPercent.get());
+        });
     }
 
     @Override
@@ -101,8 +105,12 @@ public class Climb extends SubsystemIO{
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT :
-                
-                m_Back.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                if(m_PeriodicIO.targetOutput < .05 && m_PeriodicIO.targetOutput > -.05){
+                    m_Back.setControl(m_StaticRequest);
+                }
+                else{
+                    m_Back.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                } 
                 break;
 
             case POSITION:
@@ -132,8 +140,7 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+        
     }
 
     @Override
@@ -144,8 +151,7 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'outputTelemetry'");
+        
     }
 
 }

@@ -51,7 +51,7 @@ public class RobotContainer {
 
     public final Climb climb = ClimbConstants.Climb;
 
-    private SendableChooser<Command> autoChooser;
+    private SendableChooser<Command> autoChooser; 
 
     public IOManager ioManager; 
 
@@ -65,6 +65,8 @@ public class RobotContainer {
         //autoChooser = new SendableChooser<>();
 
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
+
+        ioManager = new IOManager( climb, elevator);
 
     }
 
@@ -83,7 +85,7 @@ public class RobotContainer {
         // Test Code for each subsystem
         elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
 
-        climb.setDefaultCommand(climb.testCommand(operator::getLeftY));
+        climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->
