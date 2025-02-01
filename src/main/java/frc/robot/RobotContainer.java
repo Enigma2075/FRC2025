@@ -21,6 +21,10 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorConst;
 import frc.robot.subsystems.IOManager;
+import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.WristConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.DriveTrainConstants;
 
 public class RobotContainer {
@@ -39,6 +43,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
+
     public final Elevator elevator = ElevatorConst.Elevator;
 
     private SendableChooser<Command> autoChooser;
