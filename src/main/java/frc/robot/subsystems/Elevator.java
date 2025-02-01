@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class Elevator extends SubsystemIO{
     public enum ControlMode {
-        VOLTAGE,
+        OUTPUT,
         POSITION,
         SYSID
     }
@@ -26,7 +26,7 @@ public class Elevator extends SubsystemIO{
     //private final MotionMagicVelocityTorqueCurrentFOC m_FlywheelRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
     //private final MotionMagicVoltage m_PivotRequest = new MotionMagicVoltage(0);
 
-    private final VoltageOut m_VoltageRequest = new VoltageOut(0);
+    private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
 
     public Elevator(Arm arm, Wrist wrist, Claw claw) {
         m_Arm = arm;
@@ -38,17 +38,17 @@ public class Elevator extends SubsystemIO{
     }
    
     private static class PeriodicIO {
-        public ControlMode controlMode = ControlMode.VOLTAGE;
+        public ControlMode controlMode = ControlMode.OUTPUT;
 
         public double targetHeight = ElevatorConst.kInitialHeight;
         public double currentHeight = 0;
     
-        public double targetVoltage = 0;
+        public double targetOutput = 0;
     }
 
-    public void setVoltage (double voltage) {
-        m_PeriodicIO.controlMode = ControlMode.VOLTAGE;
-        m_PeriodicIO.targetVoltage = voltage;
+    public void setOutput (double output) {
+        m_PeriodicIO.controlMode = ControlMode.OUTPUT;
+        m_PeriodicIO.targetOutput = output;
     }
 
     public void setHeight (double height) {
@@ -66,11 +66,11 @@ public class Elevator extends SubsystemIO{
         return height / ElevatorConst.kRotationToInches;
     }
 
-    public Command testCommand(Supplier<Double> voltage) {
+    public Command testCommand(Supplier<Double> outputPercent) {
         return new Command() {
             @Override
             public void execute() {
-                setVoltage(voltage.get());
+                setOutput(outputPercent.get() * 12.0);
             }
         };
     }
@@ -103,8 +103,8 @@ public class Elevator extends SubsystemIO{
     @Override
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
-            case VOLTAGE:
-                m_ElevatorFront.setControl(m_VoltageRequest.withOutput(m_PeriodicIO.targetVoltage));
+            case OUTPUT:
+                m_ElevatorFront.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
                 //m_ElevatorFront.setControl(m_FlywheelRequest.withOutput(m_PeriodicIO.targetHeight));
