@@ -30,7 +30,7 @@ public class Climb extends SubsystemIO{
     //private final VoltageOut m_VoltageRequest = new VoltageOut(0);
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0);
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     private final StaticBrake m_StaticRequest = new StaticBrake();
 
     public Climb() {
@@ -60,7 +60,7 @@ public class Climb extends SubsystemIO{
     }
 
     public enum State { 
-        START(5), 
+        START(10), 
         ENDCLIMB(42);
         
         public final double distance;
