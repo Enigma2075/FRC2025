@@ -6,20 +6,30 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Intake extends SubsystemIO{
+    public enum ControlMode {
+        OUTPUT,
+        POSITION,
+        SYSID
+    }
 
     private TalonFX m_pivot;
     private TalonFX m_roller;
 
     private final DutyCycleOut m_IntakeRequest= new DutyCycleOut(0);
+    
 
     public Intake() {
         m_pivot = new TalonFX(IntakeConstants.kpivotId,RobotConstants.kCanivoreBusName);
         m_roller = new TalonFX(IntakeConstants.kroller,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
+
+        pivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
         slot0Configs.kG = IntakeConstants.kG;
@@ -32,9 +42,11 @@ public class Intake extends SubsystemIO{
 
 
         MotionMagicConfigs motionMagicConfigs = pivotConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
-        motionMagicConfigs.MotionMagicAcceleration = 0;
-        motionMagicConfigs.MotionMagicJerk = 0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = IntakeConstants.kMotionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = IntakeConstants.kMotionMagicJerk;
+
+        m_pivot.getConfigurator().apply(pivotConfigs);
     }
 
     public enum State { 
@@ -48,42 +60,70 @@ public class Intake extends SubsystemIO{
             this.angle = angle;
         }
     } 
-public static class PeriodicIO {
-    State requestedState = State.CLIMBREADY;
-    double enc = 0;
 
-    double lastPosition = Double.MIN_VALUE;
-}
+    public static class PeriodicIO {
 
-private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+        public ControlMode controlMode = ControlMode.OUTPUT;    
 
-@Override
-public void readPeriodicInputs() {
-    m_PeriodicIO.enc = m_pivot.getPosition().getValueAsDouble();
-    m_PeriodicIO.enc = m_roller.getPosition().getValueAsDouble();
-}
+        State requestedState = State.CLIMBREADY;
+        double enc = 0;
 
-private void writeIntake(double position) {
-    if(m_PeriodicIO.lastPosition!= position) {
-        m_pivot.setControl(m_IntakeRequest.withOutput(position));
-        m_roller.setControl(m_IntakeRequest.withOutput(position));
-        m_PeriodicIO.lastPosition = position;
+        double lastPosition = Double.MIN_VALUE;
+
+        public double targetOutput = 0;
     }
-}
 
-@Override
-public void writePeriodicOutputs() {
-    switch(m_PeriodicIO.requestedState)
-    {
-        case CLIMBREADY: 
-            writeIntake(0);
-        case FLOORINTAKE:
-            writeIntake(0);
-        case GRABCAGE:
-            writeIntake(0);
-
+    public void setOutput (double output){
+        m_PeriodicIO.controlMode = ControlMode.OUTPUT;
+        m_PeriodicIO.targetOutput = output;
     }
-}
+
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
+    @Override
+    public void readPeriodicInputs() {
+        m_PeriodicIO.enc = m_pivot.getPosition().getValueAsDouble();
+        m_PeriodicIO.enc = m_roller.getPosition().getValueAsDouble();
+    }
+
+    private void writeIntake(double position) {
+        if(m_PeriodicIO.lastPosition!= position) {
+            m_pivot.setControl(m_IntakeRequest.withOutput(position));
+            m_roller.setControl(m_IntakeRequest.withOutput(position));
+            m_PeriodicIO.lastPosition = position;
+        }
+    }
+
+    @Override
+    public void writePeriodicOutputs() {
+        switch(m_PeriodicIO.requestedState){
+            case CLIMBREADY: 
+                writeIntake(0);
+                break;
+
+            case FLOORINTAKE:
+                writeIntake(0);
+                break;
+
+            case GRABCAGE:
+                writeIntake(0);
+                break;
+
+            default:
+
+                break;
+
+        }
+
+        switch (m_PeriodicIO.controlMode) {
+            case OUTPUT:
+                
+                break;
+        
+            default:
+                break;
+        }
+    }
 
      @Override
     public void stop() {
