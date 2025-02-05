@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,7 +20,9 @@ public class Intake extends SubsystemIO{
     private TalonFX m_pivot;
     private TalonFX m_roller;
 
-    private final DutyCycleOut m_IntakeRequest= new DutyCycleOut(0);
+    private final DutyCycleOut m_OutputRequest= new DutyCycleOut(0);
+    private final PositionVoltage m_IntakeRequest = new PositionVoltage(0);
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0);
     
 
     public Intake() {
@@ -88,8 +90,8 @@ public class Intake extends SubsystemIO{
 
     private void writeIntake(double position) {
         if(m_PeriodicIO.lastPosition!= position) {
-            m_pivot.setControl(m_IntakeRequest.withOutput(position));
-            m_roller.setControl(m_IntakeRequest.withOutput(position));
+            m_pivot.setControl(m_OutputRequest.withOutput(position));
+            m_roller.setControl(m_OutputRequest.withOutput(position));
             m_PeriodicIO.lastPosition = position;
         }
     }
@@ -119,16 +121,24 @@ public class Intake extends SubsystemIO{
             case OUTPUT:
                 
                 break;
-        
+
+            case POSITION:
+            
+                break;
+
+            case SYSID:
+
+                break;
+
             default:
+
                 break;
         }
     }
 
      @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+        
     }
 
     @Override
@@ -139,8 +149,7 @@ public class Intake extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'outputTelemetry'");
+       
     }
 
 }

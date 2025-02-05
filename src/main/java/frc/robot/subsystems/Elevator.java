@@ -102,6 +102,12 @@ public class Elevator extends SubsystemIO{
             });
     }
 
+    public Command setTestPosition(){
+        return run(()-> {
+            m_PeriodicIO.controlMode = ControlMode.POSITION;
+        });
+    }
+
     @Override
     public void stop() {
         
