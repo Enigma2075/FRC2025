@@ -5,8 +5,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class ElevatorConst {
-    public static final int kMotorFrontId = 1;
-    public static final int kMotorBackId = 2;
+    public static final int kMotorFrontId = 9;
+    public static final int kMotorBackId = 10;
 
     public static final double kHeightOffset= 0;
     public static final double kInitialHeight = 0;

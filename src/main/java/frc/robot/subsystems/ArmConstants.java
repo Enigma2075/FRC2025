@@ -5,9 +5,9 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class ArmConstants {
-    public static final int kMotorId = 1;
+    public static final int kMotorId = 11;
 
-    public static final int kEncoderId = 2;
+    public static final int kEncoderId = 5;
 
     public static final double kArmLength = 0;
 

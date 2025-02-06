@@ -5,8 +5,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class ClawConstants {
-    public static final int kCoral = 1;
-    public static final int kAlgae = 2;
+    public static final int kCoral = 13;
+    public static final int kAlgae = 14;
 
     public static final Claw Claw = new Claw();
 

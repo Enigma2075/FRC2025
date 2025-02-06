@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
 public class IntakeConstants {
-    public static final int kPivotId = 1;
-    public static final int kRollerId = 2;
+    public static final int kPivotId = 15;
+    public static final int kRollerId = 16;
     
     public static final double kG = 0;
     public static final double kS = 0;

@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 public class WristConstants {
-    public static final int kMotorId = 1;
+    public static final int kMotorId = 12;
 
-    public static final int kEncoderId = 0;
+    public static final int kEncoderId = 6;
 
     public static final double kWristToEndEffectorLength = 0;
 
