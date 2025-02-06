@@ -26,8 +26,8 @@ public class Intake extends SubsystemIO{
     
 
     public Intake() {
-        m_pivot = new TalonFX(IntakeConstants.kpivotId,RobotConstants.kCanivoreBusName);
-        m_roller = new TalonFX(IntakeConstants.kroller,RobotConstants.kCanivoreBusName);
+        m_pivot = new TalonFX(IntakeConstants.kPivotId,RobotConstants.kCanivoreBusName);
+        m_roller = new TalonFX(IntakeConstants.kRollerId,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
 
