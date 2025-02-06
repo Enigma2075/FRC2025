@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -31,7 +32,7 @@ public class Elevator extends SubsystemIO{
     //private final MotionMagicVoltage m_PivotRequest = new MotionMagicVoltage(0);
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final PositionVoltage m_ElevatorRequest = new PositionVoltage(0);
+    
 
     public Elevator(Arm arm, Wrist wrist, Claw claw) {
         m_Arm = arm;
@@ -141,6 +142,7 @@ public class Elevator extends SubsystemIO{
                 break;
             case POSITION:
                 //m_ElevatorFront.setControl(m_FlywheelRequest.withOutput(m_PeriodicIO.targetHeight));
+                m_ElevatorFront.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetHeight));
                 break;
             case SYSID:
 

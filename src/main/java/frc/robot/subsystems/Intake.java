@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.Command;
+
 public class Intake extends SubsystemIO{
     public enum ControlMode {
         OUTPUT,
@@ -22,7 +24,7 @@ public class Intake extends SubsystemIO{
 
     private final DutyCycleOut m_OutputRequest= new DutyCycleOut(0);
     private final PositionVoltage m_IntakeRequest = new PositionVoltage(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0);
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
 
     public Intake() {
@@ -82,12 +84,6 @@ public class Intake extends SubsystemIO{
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
-    @Override
-    public void readPeriodicInputs() {
-        m_PeriodicIO.enc = m_pivot.getPosition().getValueAsDouble();
-        m_PeriodicIO.enc = m_roller.getPosition().getValueAsDouble();
-    }
-
     private void writeIntake(double position) {
         if(m_PeriodicIO.lastPosition!= position) {
             m_pivot.setControl(m_OutputRequest.withOutput(position));
@@ -96,34 +92,29 @@ public class Intake extends SubsystemIO{
         }
     }
 
+    public Command setTestPosition(){
+        return run(() -> {
+            m_PeriodicIO.requestedState = State.GRABCAGE;
+            m_PeriodicIO.controlMode = ControlMode.POSITION;
+
+        });
+    }
+
+    @Override
+    public void readPeriodicInputs() {
+        m_PeriodicIO.enc = m_pivot.getPosition().getValueAsDouble();
+        m_PeriodicIO.enc = m_roller.getPosition().getValueAsDouble();
+    }
+
     @Override
     public void writePeriodicOutputs() {
-        switch(m_PeriodicIO.requestedState){
-            case CLIMBREADY: 
-                writeIntake(0);
-                break;
-
-            case FLOORINTAKE:
-                writeIntake(0);
-                break;
-
-            case GRABCAGE:
-                writeIntake(0);
-                break;
-
-            default:
-
-                break;
-
-        }
-
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT:
                 
                 break;
 
             case POSITION:
-            
+                m_pivot.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.angle));
                 break;
 
             case SYSID:
