@@ -21,12 +21,17 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorConst;
 import frc.robot.subsystems.IOManager;
+import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmConstants;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.ClawConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ClimbConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.DriveTrainConstants;
 
 public class RobotContainer {
@@ -50,6 +55,14 @@ public class RobotContainer {
     public final Elevator elevator = ElevatorConst.Elevator;
 
     public final Climb climb = ClimbConstants.Climb;
+
+    public final Arm arm = ArmConstants.Arm;
+
+    public final Claw claw = ClawConstants.Claw;
+
+    public final Wrist wrist = WristConstants.Wrist;
+
+    public final Intake intake = IntakeConstants.Intake;
 
     private SendableChooser<Command> autoChooser; 
 
@@ -87,7 +100,11 @@ public class RobotContainer {
 
         climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.y().whileTrue(climb.setTestPosition());
+        //operator.y().whileTrue(climb.setTestPosition());
+        operator.b().whileTrue(arm.setTestPosition());
+        operator.a().whileTrue(claw.setTestPosition());
+        operator.x().whileTrue(wrist.setTestPosition());
+        operator.y().whileTrue(intake.setTestPosition());
 
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->
