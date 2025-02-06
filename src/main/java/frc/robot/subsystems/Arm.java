@@ -59,10 +59,10 @@ public class Arm extends SubsystemIO{
         START(10), 
         ENDCLIMB(42);
         
-        public final double distance;
+        public final double angle;
 
-        private State(double distance) {
-            this.distance = distance;
+        private State(double angle) {
+            this.angle = angle;
         }
     }
 
@@ -151,7 +151,7 @@ public class Arm extends SubsystemIO{
                    
                 break;
             case POSITION:
-                m_Motor.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.distance));
+                m_Motor.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.angle));
                 break;
             case SYSID:
 
