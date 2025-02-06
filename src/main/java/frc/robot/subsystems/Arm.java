@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -28,6 +29,7 @@ public class Arm extends SubsystemIO{
     private CANcoder m_Encoder;
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
 
 
     public Arm(){
@@ -53,8 +55,22 @@ public class Arm extends SubsystemIO{
         m_Motor.getConfigurator().apply(motorConfig);
     }
 
+    public enum State { 
+        START(10), 
+        ENDCLIMB(42);
+        
+        public final double distance;
+
+        private State(double distance) {
+            this.distance = distance;
+        }
+    }
+
     public static class PeriodicIO {
         public ControlMode controlMode = ControlMode.OUTPUT;
+
+        State requestedState = State.START;
+        double enc = 0;
 
         public double currentAngle = 0;
         public double targetAngle = 0;
@@ -92,6 +108,14 @@ public class Arm extends SubsystemIO{
         };
     }
 
+    public Command setTestPosition(){
+        return run(() -> {
+            m_PeriodicIO.requestedState = State.START;
+            m_PeriodicIO.controlMode = ControlMode.POSITION;
+
+        });
+    }
+
     @Override
     public void stop() {
         // TODO Auto-generated method stub
@@ -127,7 +151,7 @@ public class Arm extends SubsystemIO{
                    
                 break;
             case POSITION:
-                
+                m_Motor.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.distance));
                 break;
             case SYSID:
 
