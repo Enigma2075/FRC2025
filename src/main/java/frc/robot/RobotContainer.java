@@ -101,10 +101,14 @@ public class RobotContainer {
         climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
         //operator.y().whileTrue(climb.setTestPosition());
+        /*
         operator.b().whileTrue(arm.setTestPosition());
         operator.a().whileTrue(claw.setTestPosition());
         operator.x().whileTrue(wrist.setTestPosition());
         operator.y().whileTrue(intake.setTestPosition());
+        */
+
+        operator.a().whileTrue(elevator.setTestPosition(1));
 
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->

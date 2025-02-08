@@ -4,12 +4,15 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,13 +28,14 @@ public class Elevator extends SubsystemIO{
     private final Wrist m_Wrist;
     private final Claw m_Claw;
 
-    private TalonFX m_ElevatorFront;
-    private TalonFX m_ElevatorBack;
+    private TalonFX m_Front;
+    private TalonFX m_Back;
 
     //private final MotionMagicVelocityTorqueCurrentFOC m_FlywheelRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
     //private final MotionMagicVoltage m_PivotRequest = new MotionMagicVoltage(0);
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
+    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
 
     public Elevator(Arm arm, Wrist wrist, Claw claw) {
@@ -39,10 +43,12 @@ public class Elevator extends SubsystemIO{
         m_Wrist = wrist;
         m_Claw = claw;
 
-        m_ElevatorFront = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
-        m_ElevatorBack = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
+        m_Front = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
+        m_Back = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration frontConfig = new TalonFXConfiguration();
+
+        frontConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         Slot0Configs slot0Configs = frontConfig.Slot0;
         slot0Configs.kG = ElevatorConst.kG;
@@ -58,7 +64,15 @@ public class Elevator extends SubsystemIO{
         motionMagicConfigs.MotionMagicAcceleration = ElevatorConst.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ElevatorConst.kMotionMagicJerk;
 
-        m_ElevatorFront.getConfigurator().apply(frontConfig);
+        m_Front.getConfigurator().apply(frontConfig);
+
+        TalonFXConfiguration backConfig = new TalonFXConfiguration();
+
+        m_Back.getConfigurator().apply(backConfig);
+        
+        m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
+
+
     }
 
     
@@ -103,9 +117,9 @@ public class Elevator extends SubsystemIO{
             });
     }
 
-    public Command setTestPosition(){
+    public Command setTestPosition(double height){
         return run(()-> {
-            setHeight(1);
+                setHeight(height);
         });
     }
 
@@ -131,18 +145,18 @@ public class Elevator extends SubsystemIO{
     
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.currentHeight = convertPositionToHeight(m_ElevatorFront.getPosition().getValueAsDouble());
+        m_PeriodicIO.currentHeight = convertPositionToHeight(m_Front.getPosition().getValueAsDouble());
     }
 
     @Override
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT:
-                m_ElevatorFront.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                m_Front.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
                 //m_ElevatorFront.setControl(m_FlywheelRequest.withOutput(m_PeriodicIO.targetHeight));
-                m_ElevatorFront.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetHeight));
+                m_Front.setControl(m_PositionRequest.withPosition(m_PeriodicIO.targetHeight));
                 break;
             case SYSID:
 

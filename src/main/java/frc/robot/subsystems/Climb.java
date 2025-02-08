@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
@@ -25,7 +26,7 @@ public class Climb extends SubsystemIO{
      }
 
     private TalonFX m_Back;
-    //private TalonFX m_Front;
+    private TalonFX m_Front;
 
     //private final VoltageOut m_VoltageRequest = new VoltageOut(0);
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
@@ -35,14 +36,16 @@ public class Climb extends SubsystemIO{
 
     public Climb() {
         m_Back = new TalonFX(ClimbConstants.kBackId, RobotConstants.kCanivoreBusName);
-        //m_Front = new TalonFX(ClimbConstants.kFrontId);
+        m_Front = new TalonFX(ClimbConstants.kFrontId, RobotConstants.kCanivoreBusName);
 
-        TalonFXConfiguration backConfig = new TalonFXConfiguration();
-        backConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        TalonFXConfiguration frontConfig = new TalonFXConfiguration();
+        frontConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        frontConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        Slot0Configs slot0Configs = backConfig.Slot0;
+        frontConfig.MotorOutput.DutyCycleNeutralDeadband = .05;
+
+        Slot0Configs slot0Configs = frontConfig.Slot0;
         slot0Configs.kG = ClimbConstants.kG;
         slot0Configs.kS = ClimbConstants.kS;
         slot0Configs.kV = ClimbConstants.kV;
@@ -51,12 +54,18 @@ public class Climb extends SubsystemIO{
         slot0Configs.kI = ClimbConstants.kI;
         slot0Configs.kD = ClimbConstants.kD;
 
-        MotionMagicConfigs motionMagicConfigs = backConfig.MotionMagic;
+        MotionMagicConfigs motionMagicConfigs = frontConfig.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = ClimbConstants.kMotionMagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = ClimbConstants.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ClimbConstants.kMotionMagicJerk;
         
+        m_Front.getConfigurator().apply(frontConfig);
+
+        TalonFXConfiguration backConfig = new TalonFXConfiguration();
+
         m_Back.getConfigurator().apply(backConfig);
+
+        m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
     }
 
     public enum State { 
@@ -130,12 +139,9 @@ public class Climb extends SubsystemIO{
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT :
-                if(m_PeriodicIO.targetOutput < .05 && m_PeriodicIO.targetOutput > -.05){
-                    m_Back.setControl(m_StaticRequest);
-                }
-                else{
-                    m_Back.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
-                } 
+                
+                m_Back.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                 
                 break;
 
             case POSITION:
