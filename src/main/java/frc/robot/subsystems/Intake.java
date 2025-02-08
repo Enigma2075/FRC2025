@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -8,6 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,17 +25,17 @@ public class Intake extends SubsystemIO{
     private TalonFX m_pivot;
     private TalonFX m_roller;
 
-    private final DutyCycleOut m_OutputRequest= new DutyCycleOut(0);
-    private final PositionVoltage m_IntakeRequest = new PositionVoltage(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
-    
+    private final DutyCycleOut m_PivotOutputRequest= new DutyCycleOut(0);
+    private final MotionMagicDutyCycle m_PivotPositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
+    private final DutyCycleOut m_RollerOutputRequest= new DutyCycleOut(0);
+
 
     public Intake() {
         m_pivot = new TalonFX(IntakeConstants.kPivotId,RobotConstants.kCanivoreBusName);
         m_roller = new TalonFX(IntakeConstants.kRollerId,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-
+        pivotConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         pivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
@@ -51,16 +54,24 @@ public class Intake extends SubsystemIO{
         motionMagicConfigs.MotionMagicJerk = IntakeConstants.kMotionMagicJerk;
 
         m_pivot.getConfigurator().apply(pivotConfigs);
+
+        TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
+        rollerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        rollerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        m_roller.getConfigurator().apply(rollerConfigs);
+
     }
 
-    public enum State { 
+    public enum PivotPosition { 
         GRABCAGE(9),
         FLOORINTAKE(9),
         CLIMBREADY(9);
 
         public final double angle;
 
-        private State(double angle) {
+        private PivotPosition(double angle) {
             this.angle = angle;
         }
     } 
@@ -69,52 +80,56 @@ public class Intake extends SubsystemIO{
 
         public ControlMode controlMode = ControlMode.OUTPUT;    
 
-        State requestedState = State.CLIMBREADY;
-        double enc = 0;
+        PivotPosition requestedPivotPosition = PivotPosition.CLIMBREADY;
+        double pivotEncoder = 0;
 
-        double lastPosition = Double.MIN_VALUE;
 
-        public double targetOutput = 0;
+        public double targetPivotOutput = 0;
+
+        public double targetRollerOutput = 0;
     }
 
-    public void setOutput (double output){
+    public void setPivotOutput (double output){
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
-        m_PeriodicIO.targetOutput = output;
+        m_PeriodicIO.targetPivotOutput = output;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
-    private void writeIntake(double position) {
-        if(m_PeriodicIO.lastPosition!= position) {
-            m_pivot.setControl(m_OutputRequest.withOutput(position));
-            m_roller.setControl(m_OutputRequest.withOutput(position));
-            m_PeriodicIO.lastPosition = position;
-        }
-    }
 
+    public Command testCommand(Supplier<Double> outputPercent){
+        return run(() -> {
+            setPivotOutput(outputPercent.get());
+        });
+    }
+    
     public Command setTestPosition(){
         return run(() -> {
-            m_PeriodicIO.requestedState = State.GRABCAGE;
+            m_PeriodicIO.requestedPivotPosition = PivotPosition.GRABCAGE;
             m_PeriodicIO.controlMode = ControlMode.POSITION;
 
         });
     }
 
+    public void setPivotPosition(PivotPosition position){
+        m_PeriodicIO.requestedPivotPosition = position;
+        m_PeriodicIO.controlMode = ControlMode.POSITION;
+    }
+
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.enc = m_pivot.getPosition().getValueAsDouble();
-        m_PeriodicIO.enc = m_roller.getPosition().getValueAsDouble();
+        m_PeriodicIO.pivotEncoder = m_pivot.getPosition().getValueAsDouble();
     }
 
     @Override
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
-            case OUTPUT:
-                
+            case OUTPUT:   
+                m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));
                 break;
 
             case POSITION:
-                m_pivot.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.angle));
+                m_pivot.setControl(m_PivotPositionRequest.withPosition(m_PeriodicIO.requestedPivotPosition.angle));
                 break;
 
             case SYSID:
@@ -125,6 +140,7 @@ public class Intake extends SubsystemIO{
 
                 break;
         }
+        m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
     }
 
      @Override
