@@ -56,13 +56,13 @@ public class RobotContainer {
 
     public final Climb climb = ClimbConstants.Climb;
 
-    public final Arm arm = ArmConstants.Arm;
+    /*public final Arm arm = ArmConstants.Arm;
 
     public final Claw claw = ClawConstants.Claw;
 
     public final Wrist wrist = WristConstants.Wrist;
 
-    public final Intake intake = IntakeConstants.Intake;
+    public final Intake intake = IntakeConstants.Intake;*/
 
     private SendableChooser<Command> autoChooser; 
 

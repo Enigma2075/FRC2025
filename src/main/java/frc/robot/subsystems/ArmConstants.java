@@ -17,7 +17,7 @@ public class ArmConstants {
 
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
 
-    public static final Arm Arm = new Arm();    
+    //public static final Arm Arm = new Arm();    
 
     public static final double kG = 0;
     public static final double kS = 0.0146484375;

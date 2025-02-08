@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 public class ClimbConstants {
-    public static final int kBackId = 14; //18
+    public static final int kBackId = 18; //14
     public static final int kFrontId = 17;
 
     public static final double kGearRatio = 3.75;

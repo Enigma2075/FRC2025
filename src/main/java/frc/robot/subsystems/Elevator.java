@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,9 +47,19 @@ public class Elevator extends SubsystemIO{
         m_Front = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
         m_Back = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
 
+        TalonFXConfiguration backConfig = new TalonFXConfiguration();
+
+        backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        m_Back.getConfigurator().apply(backConfig);
+        
+        m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
+
         TalonFXConfiguration frontConfig = new TalonFXConfiguration();
 
         frontConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        frontConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         Slot0Configs slot0Configs = frontConfig.Slot0;
         slot0Configs.kG = ElevatorConst.kG;
@@ -65,13 +76,6 @@ public class Elevator extends SubsystemIO{
         motionMagicConfigs.MotionMagicJerk = ElevatorConst.kMotionMagicJerk;
 
         m_Front.getConfigurator().apply(frontConfig);
-
-        TalonFXConfiguration backConfig = new TalonFXConfiguration();
-
-        m_Back.getConfigurator().apply(backConfig);
-        
-        m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
-
 
     }
 
