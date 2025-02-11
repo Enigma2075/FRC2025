@@ -39,7 +39,7 @@ public class Climb extends SubsystemIO{
         m_Front = new TalonFX(ClimbConstants.kFrontId, RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration frontConfig = new TalonFXConfiguration();
-        frontConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        frontConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         frontConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

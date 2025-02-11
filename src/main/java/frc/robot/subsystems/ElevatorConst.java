@@ -8,16 +8,18 @@ public class ElevatorConst {
     public static final int kMotorFrontId = 9;
     public static final int kMotorBackId = 10;
 
-    public static final double kHeightOffset= 0;
+    public static final double kHeightOffset= 7;
     public static final double kInitialHeight = 0;
 
-    public static final double kGearRatio = 4.0;
-    public static final double kSpoolRadius = 1.5/2.0;
+    public static final double kGearRatio = 3.5;
+    public static final double kSpoolRadius = 1.484/2.0;
     public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;
     public static final double kRotationToInches = kSpoolCircumference / kGearRatio;
 
     //public static final Elevator Elevator = new Elevator(ArmConstants.Arm, WristConstants.Wrist, ClawConstants.Claw);
     public static final Elevator Elevator = new Elevator(null, null, null);
+
+    public static final double kErrorCorrectionRatio = (64.5 - 59.1) / 64.5;
 
     public static final double kG = 0;
     public static final double kS = 0.0146484375;

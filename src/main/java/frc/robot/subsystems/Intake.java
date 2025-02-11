@@ -35,7 +35,7 @@ public class Intake extends SubsystemIO{
         m_roller = new TalonFX(IntakeConstants.kRollerId,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-        pivotConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        pivotConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         pivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
@@ -56,8 +56,8 @@ public class Intake extends SubsystemIO{
         m_pivot.getConfigurator().apply(pivotConfigs);
 
         TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
+        
         rollerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
         rollerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_roller.getConfigurator().apply(rollerConfigs);

@@ -18,6 +18,6 @@ public class IntakeConstants {
     public static final double kMotionMagicJerk = 0;
 
     
-    //public static final Intake Intake = new Intake();
+    public static final Intake Intake = new Intake();
 
 }

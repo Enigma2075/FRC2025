@@ -35,8 +35,8 @@ public class ElevatorStructurePosition {
     public double getEndEffectorHeight(){
         double z = ElevatorConst.kHeightOffset;
         z += this.ElevatorHeight;
-        z += ArmConstants.kArmLength * Math.sin(this.ArmAngle);
-        z += WristConstants.kWristToEndEffectorLength * Math.sin(this.WristAngle);
+        //z += ArmConstants.kArmLength * Math.sin(this.ArmAngle);
+        //z += WristConstants.kWristToEndEffectorLength * Math.sin(this.WristAngle);
         return z;
     }
 

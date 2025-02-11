@@ -78,8 +78,6 @@ public class Elevator extends SubsystemIO{
         m_Front.getConfigurator().apply(frontConfig);
 
     }
-
-    
    
     private static class PeriodicIO {
         public ControlMode controlMode = ControlMode.OUTPUT;
@@ -108,11 +106,13 @@ public class Elevator extends SubsystemIO{
     }
 
     private double convertPositionToHeight(double position) {
-        return position * ElevatorConst.kRotationToInches;
+        double rawHeight = ElevatorConst.kHeightOffset + (position * ElevatorConst.kRotationToInches);
+        return rawHeight + (rawHeight * ElevatorConst.kErrorCorrectionRatio);
     }
 
     private double convertHeightToPosition(double height) {
-        return height / ElevatorConst.kRotationToInches;
+        double errorCorrection = height / ElevatorConst.kErrorCorrectionRatio;
+        return (height - 7 - errorCorrection) / ElevatorConst.kRotationToInches;
     }
 
     public Command testCommand(Supplier<Double> outputPercent) {
