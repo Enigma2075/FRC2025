@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -11,12 +14,18 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Elevator extends SubsystemIO{
     public enum ControlMode {
@@ -24,10 +33,6 @@ public class Elevator extends SubsystemIO{
         POSITION,
         SYSID
     }
-
-    private final Arm m_Arm;
-    private final Wrist m_Wrist;
-    private final Claw m_Claw;
 
     private TalonFX m_Front;
     private TalonFX m_Back;
@@ -38,12 +43,23 @@ public class Elevator extends SubsystemIO{
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
+    private final VoltageOut m_SysIdRequest = new VoltageOut(0);
+    private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null, // Volts.of(3).per(Seconds.of(1)),
+                    null, // Volts.of(4.5),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> {
+                        m_Front.setControl(m_SysIdRequest.withOutput(m_SysIdRequest.withOutput(volts.in(Volts)).Output));
+                        //System.out.println(volts.in(Volts));
+                    },
+                    (SysIdRoutineLog log) -> log.motor("Elevator").voltage(m_Front.getMotorVoltage().getValue()).angularPosition(m_Front.getPosition().getValue()).angularVelocity(m_Front.getVelocity().getValue()),
+                    (Subsystem)this));
+                
 
-    public Elevator(Arm arm, Wrist wrist, Claw claw) {
-        m_Arm = arm;
-        m_Wrist = wrist;
-        m_Claw = claw;
-
+    public Elevator() {
         m_Front = new TalonFX(ElevatorConst.kMotorFrontId,RobotConstants.kCanivoreBusName);
         m_Back = new TalonFX(ElevatorConst.kMotorBackId,RobotConstants.kCanivoreBusName);
 
@@ -113,6 +129,14 @@ public class Elevator extends SubsystemIO{
     private double convertHeightToPosition(double height) {
         double errorCorrection = height / ElevatorConst.kErrorCorrectionRatio;
         return (height - 7 - errorCorrection) / ElevatorConst.kRotationToInches;
+    }
+
+    public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction));
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.dynamic(direction));
     }
 
     public Command testCommand(Supplier<Double> outputPercent) {

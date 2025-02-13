@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
+import com.ctre.phoenix6.signals.BrushedMotorWiringValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -11,6 +15,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 
@@ -22,8 +27,8 @@ public class Claw extends SubsystemIO {
         SYSID
     }
 
-    private TalonFX m_Coral;
-    private TalonFX m_Algae;
+    private TalonFXS m_Coral;
+    private TalonFXS m_Algae;
 
     //private final Output m_Output = new Output(0);
 
@@ -31,10 +36,14 @@ public class Claw extends SubsystemIO {
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
     public Claw() {
-        m_Coral = new TalonFX(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
-        m_Algae = new TalonFX(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
+        m_Coral = new TalonFXS(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
+        m_Algae = new TalonFXS(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
 
-        TalonFXConfiguration coralConfigs = new TalonFXConfiguration();
+        TalonFXSConfiguration coralConfigs = new TalonFXSConfiguration();
+
+        coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
+
 
         Slot0Configs slot0Configs = coralConfigs.Slot0;
         slot0Configs.kG = ClawConstants.kG;

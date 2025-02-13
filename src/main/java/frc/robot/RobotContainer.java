@@ -98,7 +98,12 @@ public class RobotContainer {
         // Test Code for each subsystem
         elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
 
-        climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
+        //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
+
+        operator.a().whileTrue(elevator.sysIdQuasiStatic(Direction.kReverse));
+        operator.b().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
+        operator.x().whileTrue(elevator.sysIdDynamic(Direction.kForward));
+        operator.y().whileTrue(elevator.sysIdQuasiStatic(Direction.kForward));
 
         //operator.y().whileTrue(climb.setTestPosition());
         /*
@@ -108,7 +113,7 @@ public class RobotContainer {
         operator.y().whileTrue(intake.setTestPosition());
         */
 
-        operator.a().whileTrue(elevator.setTestPosition(1));
+        //operator.a().whileTrue(elevator.setTestPosition(1));
 
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->

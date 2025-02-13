@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 
 public class ElevatorStructure extends SubsystemIO {
@@ -27,6 +28,33 @@ public class ElevatorStructure extends SubsystemIO {
         m_Claw = claw;
         
         applyPosition();
+    }
+
+    public Command moveToPosition(ElevatorStructurePosition position) {
+        return run(() -> {
+            m_PeriodicIO.targetPosition = position;
+            applyPosition();
+        }).until(() -> isAtPosition());
+    }
+    
+    public Command moveToPosition(ElevatorStructurePosition... positions) {
+        Command command = null;
+        for (ElevatorStructurePosition p : positions) { 
+            if (command == null) { 
+                command = moveToPosition(p);
+            } else { 
+                command = command.andThen(moveToPosition(p)); 
+            } 
+        }
+        return command;
+    }
+
+    public boolean isAtPosition() {
+        return isAtPosition(m_PeriodicIO.targetPosition);
+    }
+
+    public boolean isAtPosition(ElevatorStructurePosition position) {
+        return false;//m_Arm.isAtPosition(position.ArmAngle) && m_Wrist.isAtPosition(position.WristAngle) && m_Elevator.isAtPosition(position.ElevatorHeight);
     }
    
     private static class PeriodicIO {
