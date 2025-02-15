@@ -125,6 +125,8 @@ public class DriveTrainConstants {
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
 
+    //gears have to face insides of robot (black ones outside)
+
     // Front Left
     private static final int kFrontLeftDriveMotorId = 2;
     private static final int kFrontLeftSteerMotorId = 1;
