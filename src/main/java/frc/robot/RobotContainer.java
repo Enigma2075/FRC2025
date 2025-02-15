@@ -20,11 +20,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorConst;
+import frc.robot.subsystems.ElevatorStructure;
 import frc.robot.subsystems.IOManager;
 import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
+import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.Claw;
@@ -53,17 +55,19 @@ public class RobotContainer {
 
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
 
-    public final Elevator elevator = ElevatorConst.Elevator;
+    public final Elevator elevator = new Elevator();
 
-    public final Climb climb = ClimbConstants.Climb;
+    public final Climb climb = new Climb();
 
-    public final Arm arm = ArmConstants.Arm;
+    public final Arm arm = new Arm();
 
-    //public final Claw claw = ClawConstants.Claw;
+    //public final Claw claw = new Claw();
 
-    //public final Wrist wrist = WristConstants.Wrist;
+    //public final Wrist wrist = new Wrist();
+    
+    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm);
 
-    public final Intake intake = IntakeConstants.Intake;
+    public final Intake intake = new Intake();
 
     private SendableChooser<Command> autoChooser; 
 
@@ -82,7 +86,7 @@ public class RobotContainer {
 
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
-        ioManager = new IOManager( climb, elevator);
+        ioManager = new IOManager(climb, elevator, arm, elevatorStructure);
 
     }
 
@@ -103,14 +107,18 @@ public class RobotContainer {
 
         //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
+        //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.rightBumper().whileTrue(elevator.setTestPosition(30));
+        operator.leftBumper().whileTrue(elevatorStructure.moveToClimb());
+
+        //operator.leftBumper().whileTrue(arm.setTestPosition(90));
+        //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
         //operator.a().whileTrue(elevator.setTestPosition(10));
         
-        operator.a().whileTrue(arm.sysIdQuasiStatic(Direction.kReverse));
-        operator.b().whileTrue(arm.sysIdDynamic(Direction.kReverse));
-        operator.x().whileTrue(arm.sysIdDynamic(Direction.kForward));
-        operator.y().whileTrue(arm.sysIdQuasiStatic(Direction.kForward));
+        // operator.a().whileTrue(arm.sysIdQuasiStatic(Direction.kReverse));
+        // operator.b().whileTrue(arm.sysIdDynamic(Direction.kReverse));
+        // operator.x().whileTrue(arm.sysIdDynamic(Direction.kForward));
+        // operator.y().whileTrue(arm.sysIdQuasiStatic(Direction.kForward));
 
         //operator.y().whileTrue(climb.setTestPosition());
         /*

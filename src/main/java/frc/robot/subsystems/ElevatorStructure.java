@@ -9,9 +9,10 @@ import frc.robot.subsystems.states.ElevatorStructurePosition;
 public class ElevatorStructure extends SubsystemIO {
     private final Elevator m_Elevator;
     private final Arm m_Arm;
-    private final Wrist m_Wrist;
-    private final Claw m_Claw;
+    //private final Wrist m_Wrist;
+    //private final Claw m_Claw;
 
+    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7, 90, 0, "Starting");
     public static final ElevatorStructurePosition IntakeCoral = new ElevatorStructurePosition(0, 0, 0, "IntakeCoral");
     public static final ElevatorStructurePosition IntakeAlgae = new ElevatorStructurePosition(0, 0, 0, "IntakeAlgae");
     public static final ElevatorStructurePosition ScoreNet = new ElevatorStructurePosition(0, 0, 0, "ScoreNet");
@@ -20,12 +21,13 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L3 = new ElevatorStructurePosition(0, 0, 0, "L3");
     public static final ElevatorStructurePosition L2 = new ElevatorStructurePosition(0, 0, 0, "L2");
     public static final ElevatorStructurePosition L1 = new ElevatorStructurePosition(0, 0, 0, "L1");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(14, 135, 0, "Climb");
 
-    public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
+    public ElevatorStructure(Elevator elevator, Arm arm) {//, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
         m_Arm = arm;
-        m_Wrist = wrist;
-        m_Claw = claw;
+        //m_Wrist = wrist;
+        //m_Claw = claw;
         
         applyPosition();
     }
@@ -49,16 +51,20 @@ public class ElevatorStructure extends SubsystemIO {
         return command;
     }
 
+    public Command moveToClimb() {
+        return moveToPosition(Climb);
+    }
+
     public boolean isAtPosition() {
         return isAtPosition(m_PeriodicIO.targetPosition);
     }
 
     public boolean isAtPosition(ElevatorStructurePosition position) {
-        return false;//m_Arm.isAtPosition(position.ArmAngle) && m_Wrist.isAtPosition(position.WristAngle) && m_Elevator.isAtPosition(position.ElevatorHeight);
+        return true;//m_Arm.isAtPosition(position.ArmAngle) && m_Wrist.isAtPosition(position.WristAngle) && m_Elevator.isAtPosition(position.ElevatorHeight);
     }
    
     private static class PeriodicIO {
-        public ElevatorStructurePosition targetPosition = L4;
+        public ElevatorStructurePosition targetPosition = Starting;
 
         public ElevatorStructurePosition lastPosition;
     }
@@ -74,8 +80,8 @@ public class ElevatorStructure extends SubsystemIO {
 
     private void applyPosition(ElevatorStructurePosition state) {
         m_Elevator.setHeight(state.ElevatorHeight);
-        m_Arm.setAngle(state.ArmAngle);
-        m_Wrist.setAngle(state.WristAngle);
+        m_Arm.setDegrees(state.ArmAngle);
+        //m_Wrist.setAngle(state.WristAngle);
     }
 
     @Override

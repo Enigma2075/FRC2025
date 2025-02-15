@@ -13,8 +13,6 @@ public class WristConstants {
 
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
 
-    //public static final Wrist Wrist = new Wrist();
-
     public static final double kG = 0;
     public static final double kS = 0.0146484375;
     public static final double kV = 0.01;
@@ -23,9 +21,11 @@ public class WristConstants {
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double kFalconRPS = 6380.0 / 60.0;
-    public static final double kMotionMagicCruiseVelocity = kFalconRPS * .5;
-    public static final double kMotionMagicAcceleration = (kFalconRPS * .5)/1.772;
+    public static final double kKraken44RPS = 7530.0 / 60.0;
+    public static final double kMaxRPS = kKraken44RPS / kGearRatio;
+    public static final double kMotionMagicCruiseVelocity = kMaxRPS * .1;
+    public static final double kTest = kMotionMagicCruiseVelocity * kGearRatio;
+    public static final double kMotionMagicAcceleration = (kMaxRPS * .5)/1.772;
     public static final double kMotionMagicJerk = 0;
 
 }

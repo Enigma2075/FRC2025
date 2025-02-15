@@ -16,9 +16,6 @@ public class ElevatorConst {
     public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;
     public static final double kRotationToInches = kSpoolCircumference / kGearRatio;
 
-    //public static final Elevator Elevator = new Elevator(ArmConstants.Arm, WristConstants.Wrist, ClawConstants.Claw);
-    public static final Elevator Elevator = new Elevator();
-
     public static final double kErrorCorrectionRatio = (64.5 - 59.1) / 64.5;
 
     public static final double kG = 0.30;

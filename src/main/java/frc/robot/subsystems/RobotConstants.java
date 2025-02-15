@@ -18,55 +18,8 @@ public class RobotConstants {
     public static final String kCanivoreBusName = "canivore";
     
     public static String getMACAddress() {
-            // StringBuilder ret = new StringBuilder();
-            // try {
-            //     Stream<NetworkInterface> test = NetworkInterface.networkInterfaces().filter(it -> {
-            //         try {
-            //           byte[] MA = it.getHardwareAddress();
-            //           return null != MA;
-            //         } catch (Exception e) {
-            //           e.printStackTrace();
-            //         }
-            //         return false;
-            //      });
-
-            //      test.forEach(it -> {
-            //        try {
-            //          byte[] MA = it.getHardwareAddress();
-            //          ret.append(it.getDisplayName() + "::");
-            //        } catch (Exception e) {
-            //          e.printStackTrace();
-            //        }
-            //      });
-            
-            //      NetworkInterface myNI = NetworkInterface.networkInterfaces().filter(it -> {
-            //      try {
-            //        byte[] MA = it.getHardwareAddress();
-            //        return null != MA;
-            //      } catch (Exception e) {
-            //        e.printStackTrace();
-            //      }
-            //      return false;
-            //   }).findFirst().orElse(NetworkInterface.networkInterfaces().findFirst().get());
-            //   byte[] MAC_ADDRESS = myNI.getHardwareAddress();
-            //   final List<Byte> macList = new ArrayList<>();
-            //   if (null != MAC_ADDRESS) {
-            //     for (byte b : MAC_ADDRESS) {
-            //       macList.add(b);
-            //     }
-            //   }
-            //   String macString = macList.stream().map(it -> String.format("%02X", it))
-            //       .collect(Collectors.joining(":"));
-            //   SmartDashboard.putString("MAC", macString);
-            //     SmartDashboard.putString("Adapters", ret.toString());
-            //   return macString;
-            // } catch (SocketException e) {
-            //   e.printStackTrace();
-            // }
-            // SmartDashboard.putString("MAC", "");
-            // SmartDashboard.putString("Adapters", ret.toString());
-            // return "";
-          
+        boolean MACAddressFound = false;
+        while(!MACAddressFound) {   
         try {
             Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
             StringBuilder ret = new StringBuilder();
@@ -94,8 +47,8 @@ public class RobotConstants {
         } catch (SocketException | NullPointerException e) {
             e.printStackTrace();
         }
+        }
 
-        SmartDashboard.putString("MAC", "");                
         return "";
     }
 }

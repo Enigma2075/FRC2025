@@ -18,7 +18,4 @@ public class ClimbConstants {
     public static final double kMotionMagicCruiseVelocity = kFalconRPS * .5;
     public static final double kMotionMagicAcceleration = (kFalconRPS * .5)/1.772;
     public static final double kMotionMagicJerk = 0;
-    
-
-    public static final Climb Climb = new Climb();
 }

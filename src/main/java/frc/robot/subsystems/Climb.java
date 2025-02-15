@@ -43,8 +43,6 @@ public class Climb extends SubsystemIO{
 
         frontConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        frontConfig.MotorOutput.DutyCycleNeutralDeadband = .05;
-
         Slot0Configs slot0Configs = frontConfig.Slot0;
         slot0Configs.kG = ClimbConstants.kG;
         slot0Configs.kS = ClimbConstants.kS;
@@ -125,29 +123,19 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.enc = m_Back.getPosition().getValueAsDouble();
+        m_PeriodicIO.enc = m_Front.getPosition().getValueAsDouble();
         //m_PeriodicIO.enc = m_Front.getPosition().getValueAsDouble();
-    }
-
-    private void writeClimb(double position) {
-        if(m_PeriodicIO.lastPosition!= position) {
-            m_Back.setControl(m_ClimbRequest.withPosition(position));
-            //m_Front.setControl(m_ClimbRequest.withPosition(position));
-            m_PeriodicIO.lastPosition = position;
-        }
     }
 
     @Override
     public void writePeriodicOutputs() {
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT :
-                
-                m_Back.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
-                 
+                m_Front.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
 
             case POSITION:
-                m_Back.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.distance));
+                m_Front.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.distance));
                 break;
 
             case SYSID:

@@ -117,8 +117,6 @@ public class Wrist extends SubsystemIO{
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
     }
 
     @Override

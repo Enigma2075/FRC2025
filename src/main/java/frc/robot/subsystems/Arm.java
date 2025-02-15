@@ -64,10 +64,10 @@ public class Arm extends SubsystemIO{
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .75;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = ArmConstants.kMagnetOffset;
-                
+        
         m_Encoder.getConfigurator().apply(encoderConfig);
 
         m_Motor = new TalonFX(ArmConstants.kMotorId, RobotConstants.kCanivoreBusName);
@@ -84,21 +84,22 @@ public class Arm extends SubsystemIO{
         motorConfig.Feedback.RotorToSensorRatio = ArmConstants.kGearRatio;
 
         Slot0Configs slot0Configs = motorConfig.Slot0;
-        slot0Configs.kG = ArmConstants.kG;
+        slot0Configs.kG = 0;
         slot0Configs.kS = ArmConstants.kS;
         slot0Configs.kV = ArmConstants.kV;
         slot0Configs.kA = ArmConstants.kA;
         slot0Configs.kP = ArmConstants.kP;
         slot0Configs.kI = ArmConstants.kI;
         slot0Configs.kD = ArmConstants.kD;
-        slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
-
+        
         MotionMagicConfigs motionMagicConfigs = motorConfig.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = ArmConstants.kMotionMagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = ArmConstants.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ArmConstants.kMotionMagicJerk;
        
         m_Motor.getConfigurator().apply(motorConfig);
+
+        m_Motor.setControl(m_OutputRequest.withOutput(0));
     }
 
     public static class PeriodicIO {
@@ -109,7 +110,6 @@ public class Arm extends SubsystemIO{
         public double targetAngle = 0;
 
         public double targetOutput = 0; 
-        
     }
 
     public void setOutput(double output){
@@ -117,9 +117,9 @@ public class Arm extends SubsystemIO{
         m_PeriodicIO.targetOutput = output;
     }
 
-    public void setAngle(double angle){
+    public void setDegrees(double degrees){
         m_PeriodicIO.controlMode = ControlMode.POSITION;
-        m_PeriodicIO.targetAngle = angle;
+        m_PeriodicIO.targetAngle = Math.toRadians(degrees);
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -141,24 +141,20 @@ public class Arm extends SubsystemIO{
     }
 
     public Command testCommand(Supplier<Double> outputPercent) {
-        return new Command() {
-            @Override
-            public void execute() {
-                setOutput(outputPercent.get() * 12.0);
-            }
-        };
+        return run(() -> {
+                setOutput(outputPercent.get());
+        });
     }
 
-    public Command setTestPosition(){
+    public Command setTestPosition(double degrees){
         return run(() -> {
+            m_PeriodicIO.targetAngle = Math.toRadians(degrees);
             m_PeriodicIO.controlMode = ControlMode.POSITION;
         });
     }
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stop'");
     }
 
     @Override
@@ -188,7 +184,7 @@ public class Arm extends SubsystemIO{
                 m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
-                m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)));
+                m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));
                 break;
             case SYSID:
 

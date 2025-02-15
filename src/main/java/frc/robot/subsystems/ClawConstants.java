@@ -8,8 +8,6 @@ public class ClawConstants {
     public static final int kCoral = 13;
     public static final int kAlgae = 14;
 
-    //public static final Claw Claw = new Claw();
-
     public static final double kG = 0;
     public static final double kS = 0.0146484375;
     public static final double kV = 0.01;
