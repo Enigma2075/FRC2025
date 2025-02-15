@@ -65,7 +65,7 @@ public class Arm extends SubsystemIO{
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = ArmConstants.kMagnetOffset;
                 
         m_Encoder.getConfigurator().apply(encoderConfig);

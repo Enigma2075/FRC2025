@@ -34,5 +34,5 @@ public class ArmConstants {
     public static final double kMotionMagicAcceleration = (kKraken44RPS * .5)/1.772;
     public static final double kMotionMagicJerk = 0;
 
-    public static final double kMagnetOffset = 0.35791015625;
+    public static final double kMagnetOffset = Utils.getValue(0.35791015625, 0);
 }

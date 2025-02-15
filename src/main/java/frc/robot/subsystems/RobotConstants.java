@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,63 +18,84 @@ public class RobotConstants {
     public static final String kCanivoreBusName = "canivore";
     
     public static String getMACAddress() {
-    
-            try {
-               NetworkInterface myNI = NetworkInterface.networkInterfaces().filter(it -> {
-                 try {
-                   byte[] MA = it.getHardwareAddress();
-                   return null != MA;
-                 } catch (Exception e) {
-                   e.printStackTrace();
-                 }
-                 return false;
-              }).findFirst().orElse(NetworkInterface.networkInterfaces().findFirst().get());
-              byte[] MAC_ADDRESS = myNI.getHardwareAddress();
-              final List<Byte> macList = new ArrayList<>();
-              if (null != MAC_ADDRESS) {
-                for (byte b : MAC_ADDRESS) {
-                  macList.add(b);
-                }
-              }
-              String macString = macList.stream().map(it -> String.format("%02X", it))
-                  .collect(Collectors.joining(":"));
-              SmartDashboard.putString("MAC", macString);
-              return macString;
-            } catch (SocketException e) {
-              e.printStackTrace();
-            }
-            SmartDashboard.putString("MAC", "");
-            return "";
+            // StringBuilder ret = new StringBuilder();
+            // try {
+            //     Stream<NetworkInterface> test = NetworkInterface.networkInterfaces().filter(it -> {
+            //         try {
+            //           byte[] MA = it.getHardwareAddress();
+            //           return null != MA;
+            //         } catch (Exception e) {
+            //           e.printStackTrace();
+            //         }
+            //         return false;
+            //      });
+
+            //      test.forEach(it -> {
+            //        try {
+            //          byte[] MA = it.getHardwareAddress();
+            //          ret.append(it.getDisplayName() + "::");
+            //        } catch (Exception e) {
+            //          e.printStackTrace();
+            //        }
+            //      });
+            
+            //      NetworkInterface myNI = NetworkInterface.networkInterfaces().filter(it -> {
+            //      try {
+            //        byte[] MA = it.getHardwareAddress();
+            //        return null != MA;
+            //      } catch (Exception e) {
+            //        e.printStackTrace();
+            //      }
+            //      return false;
+            //   }).findFirst().orElse(NetworkInterface.networkInterfaces().findFirst().get());
+            //   byte[] MAC_ADDRESS = myNI.getHardwareAddress();
+            //   final List<Byte> macList = new ArrayList<>();
+            //   if (null != MAC_ADDRESS) {
+            //     for (byte b : MAC_ADDRESS) {
+            //       macList.add(b);
+            //     }
+            //   }
+            //   String macString = macList.stream().map(it -> String.format("%02X", it))
+            //       .collect(Collectors.joining(":"));
+            //   SmartDashboard.putString("MAC", macString);
+            //     SmartDashboard.putString("Adapters", ret.toString());
+            //   return macString;
+            // } catch (SocketException e) {
+            //   e.printStackTrace();
+            // }
+            // SmartDashboard.putString("MAC", "");
+            // SmartDashboard.putString("Adapters", ret.toString());
+            // return "";
           
-        // try {
-        //     Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
-        //     StringBuilder ret = new StringBuilder();
-        //     while (nwInterface.hasMoreElements()) {
-        //         NetworkInterface nis = nwInterface.nextElement();
-        //         System.out.println("NIS: " + nis.getDisplayName());
-        //         if (nis != null && "etho".equals(nis.getDisplayName())) {
-        //             byte[] mac = nis.getHardwareAddress();
-        //             if (mac != null){
-        //                 for (int i = 0; i <mac.length; i++) {
-        //                     ret.append(String.format("%02X%s", mac[i], (i < mac.length -1) ? ":" : ""));
-        //                 }
-        //                 String addr = ret.toString();
-        //                 System.out.println("NIS " + nis.getDisplayName() + " addr: " + addr);
+        try {
+            Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
+            StringBuilder ret = new StringBuilder();
+            while (nwInterface.hasMoreElements()) {
+                NetworkInterface nis = nwInterface.nextElement();
+                System.out.println("NIS: " + nis.getDisplayName());
+                if (nis != null && "eth0".equals(nis.getDisplayName())) {
+                    byte[] mac = nis.getHardwareAddress();
+                    if (mac != null){
+                        for (int i = 0; i <mac.length; i++) {
+                            ret.append(String.format("%02X%s", mac[i], (i < mac.length -1) ? ":" : ""));
+                        }
+                        String addr = ret.toString();
+                        System.out.println("NIS " + nis.getDisplayName() + " addr: " + addr);
 
-        //                 SmartDashboard.putString("MAC", addr);
-        //                 return addr;
-        //             } else {
-        //                 System.out.println("Address doesn't exist or is not accessible");
-        //             }
-        //         } else {
-        //             System.out.println("Skipping adaptor: " + nis.getDisplayName());
-        //         }
-        //     }
-        // } catch (SocketException | NullPointerException e) {
-        //     e.printStackTrace();
-        // }
+                        SmartDashboard.putString("MAC", addr);
+                        return addr;
+                    } else {
+                        System.out.println("Address doesn't exist or is not accessible");
+                    }
+                } else {
+                    System.out.println("Skipping adaptor: " + nis.getDisplayName());
+                }
+            }
+        } catch (SocketException | NullPointerException e) {
+            e.printStackTrace();
+        }
 
-        // SmartDashboard.putString("MAC", "");                
-        // return "";
+        SmartDashboard.putString("MAC", "");                
+        return "";
     }
 }
