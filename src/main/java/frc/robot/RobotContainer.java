@@ -22,6 +22,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorConst;
 import frc.robot.subsystems.IOManager;
 import frc.robot.subsystems.IntakeConstants;
+import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.Arm;
@@ -56,11 +57,11 @@ public class RobotContainer {
 
     public final Climb climb = ClimbConstants.Climb;
 
-    /*public final Arm arm = ArmConstants.Arm;
+    public final Arm arm = ArmConstants.Arm;
 
-    public final Claw claw = ClawConstants.Claw;
+    //public final Claw claw = ClawConstants.Claw;
 
-    public final Wrist wrist = WristConstants.Wrist;*/
+    //public final Wrist wrist = WristConstants.Wrist;
 
     public final Intake intake = IntakeConstants.Intake;
 
@@ -72,6 +73,8 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Test");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
         
         configureBindings();
 
@@ -96,14 +99,18 @@ public class RobotContainer {
         );
 
         // Test Code for each subsystem
-        elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
+        //elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
 
         //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.a().whileTrue(elevator.sysIdQuasiStatic(Direction.kReverse));
-        operator.b().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
-        operator.x().whileTrue(elevator.sysIdDynamic(Direction.kForward));
-        operator.y().whileTrue(elevator.sysIdQuasiStatic(Direction.kForward));
+
+        operator.rightBumper().whileTrue(elevator.setTestPosition(30));
+        //operator.a().whileTrue(elevator.setTestPosition(10));
+        
+        operator.a().whileTrue(arm.sysIdQuasiStatic(Direction.kReverse));
+        operator.b().whileTrue(arm.sysIdDynamic(Direction.kReverse));
+        operator.x().whileTrue(arm.sysIdDynamic(Direction.kForward));
+        operator.y().whileTrue(arm.sysIdQuasiStatic(Direction.kForward));
 
         //operator.y().whileTrue(climb.setTestPosition());
         /*

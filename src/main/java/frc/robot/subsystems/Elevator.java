@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,7 +42,7 @@ public class Elevator extends SubsystemIO{
     //private final MotionMagicVoltage m_PivotRequest = new MotionMagicVoltage(0);
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
+    private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
     
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
@@ -127,16 +128,19 @@ public class Elevator extends SubsystemIO{
     }
 
     private double convertHeightToPosition(double height) {
-        double errorCorrection = height / ElevatorConst.kErrorCorrectionRatio;
-        return (height - 7 - errorCorrection) / ElevatorConst.kRotationToInches;
+        double errorCorrection = height * ElevatorConst.kErrorCorrectionRatio;
+        double position = (height - 7 - errorCorrection) / ElevatorConst.kRotationToInches;
+        SmartDashboard.putNumber("Elevator/TargetPosition", position);
+
+        return position;
     }
 
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
-        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction));
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.dynamic(direction));
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.dynamic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }
 
     public Command testCommand(Supplier<Double> outputPercent) {
@@ -183,8 +187,7 @@ public class Elevator extends SubsystemIO{
                 m_Front.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
-                //m_ElevatorFront.setControl(m_FlywheelRequest.withOutput(m_PeriodicIO.targetHeight));
-                m_Front.setControl(m_PositionRequest.withPosition(m_PeriodicIO.targetHeight));
+                m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)));
                 break;
             case SYSID:
 

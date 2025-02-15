@@ -63,6 +63,8 @@ public class Climb extends SubsystemIO{
 
         TalonFXConfiguration backConfig = new TalonFXConfiguration();
 
+        backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
         m_Back.getConfigurator().apply(backConfig);
 
         m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
