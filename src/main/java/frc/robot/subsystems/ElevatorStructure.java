@@ -13,11 +13,12 @@ public class ElevatorStructure extends SubsystemIO {
     //private final Claw m_Claw;
 
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7, 90, 0, "Starting");
+    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15, 118, 0, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoral = new ElevatorStructurePosition(0, 0, 0, "IntakeCoral");
     public static final ElevatorStructurePosition IntakeAlgae = new ElevatorStructurePosition(0, 0, 0, "IntakeAlgae");
     public static final ElevatorStructurePosition ScoreNet = new ElevatorStructurePosition(0, 0, 0, "ScoreNet");
     public static final ElevatorStructurePosition ScoreProcessor = new ElevatorStructurePosition(0, 0, 0, "ScoreProcessor");
-    public static final ElevatorStructurePosition L4 = new ElevatorStructurePosition(0, 0, 0, "L4");
+    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(66, 73, 0, "L4Front");
     public static final ElevatorStructurePosition L3 = new ElevatorStructurePosition(0, 0, 0, "L3");
     public static final ElevatorStructurePosition L2 = new ElevatorStructurePosition(0, 0, 0, "L2");
     public static final ElevatorStructurePosition L1 = new ElevatorStructurePosition(0, 0, 0, "L1");
@@ -53,6 +54,26 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToClimb() {
         return moveToPosition(Climb);
+    }
+
+    public Command moveToL4(boolean front) {
+        if(front) {
+            return moveToPosition(L4Front);
+        } else {
+            return moveToPosition(L4Front);
+        }
+    }
+
+    public Command moveToIntakeCoral(boolean front) {
+        if(front) {
+            return moveToPosition(IntakeCoral);
+        } else {
+            return moveToPosition(IntakeCoralRear);
+        }
+    }
+
+    public Command moveToStarting() {
+        return moveToPosition(Starting);
     }
 
     public boolean isAtPosition() {

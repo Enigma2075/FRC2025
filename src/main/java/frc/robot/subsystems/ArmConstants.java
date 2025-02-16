@@ -19,11 +19,11 @@ public class ArmConstants {
 
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
 
-    public static final double kG = 0.8;
-    public static final double kS = 0.6;
-    public static final double kV = 2.0;
-    public static final double kA = 1.0;
-    public static final double kP = 50;
+    public static final double kG = 0.59;
+    public static final double kS = 0.3;
+    public static final double kV = 5;
+    public static final double kA = .8;
+    public static final double kP = 48;
     public static final double kI = 0;
     public static final double kD = 0;
 
@@ -31,7 +31,7 @@ public class ArmConstants {
     public static final double kMaxArmRPS = kKraken60RPS / kGearRatio;
     public static final double kMotionMagicCruiseVelocity = kMaxArmRPS * .5;
 
-    public static final double kMotionMagicAcceleration = (kMaxArmRPS * .5)/.65;
+    public static final double kMotionMagicAcceleration = (kMaxArmRPS * .5)/.8;
     public static final double kMotionMagicJerk = 0;
 
     public static final double kMagnetOffset = RobotConstants.kPracticeBot ? 0.3125 : 0;

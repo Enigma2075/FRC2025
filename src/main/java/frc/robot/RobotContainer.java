@@ -109,11 +109,14 @@ public class RobotContainer {
 
         //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.leftBumper().whileTrue(elevatorStructure.moveToClimb());
+        operator.y().whileTrue(elevatorStructure.moveToL4(false));
+        operator.a().whileTrue(elevatorStructure.moveToStarting());
+        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
+        operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
-        //operator.a().whileTrue(elevator.setTestPosition(10));
+        //operator.a().whileTrue(arm.setTestPosition(10));
         
         // operator.a().whileTrue(arm.sysIdQuasiStatic(Direction.kReverse));
         // operator.b().whileTrue(arm.sysIdDynamic(Direction.kReverse));
@@ -137,10 +140,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        //driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        //driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        //driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        //driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));

@@ -48,7 +48,7 @@ public class Arm extends SubsystemIO{
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null, // Volts.of(3).per(Seconds.of(1)),
-                    null, // Volts.of(4.5),
+                    Volts.of(3),
                     null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
