@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -14,6 +15,10 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -32,10 +37,26 @@ public class Wrist extends SubsystemIO{
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
 
     public Wrist(){
-        m_Motor = new TalonFX(WristConstants.kMotorId,RobotConstants.kCanivoreBusName);
         m_Encoder = new CANcoder(WristConstants.kEncoderId, RobotConstants.kCanivoreBusName);
+        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderConfig.MagnetSensor.MagnetOffset = WristConstants.kMagnetOffset;
+        
+        m_Encoder.getConfigurator().apply(encoderConfig);
 
+        m_Motor = new TalonFX(WristConstants.kMotorId,RobotConstants.kCanivoreBusName);
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+        motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        motorConfig.Feedback.FeedbackRemoteSensorID = m_Encoder.getDeviceID();
+        motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        motorConfig.Feedback.SensorToMechanismRatio = 1.0;
+        motorConfig.Feedback.RotorToSensorRatio = WristConstants.kGearRatio;
 
         Slot0Configs slot0Configs = motorConfig.Slot0;
         slot0Configs.kG = IntakeConstants.kG;
@@ -54,28 +75,13 @@ public class Wrist extends SubsystemIO{
         m_Motor.getConfigurator().apply(motorConfig);
     }
 
-    public enum State { 
-        START(10), 
-        ENDCLIMB(42);
-        
-        public final double angle;
-
-        private State(double angle) {
-            this.angle = angle;
-        }
-    }
-
     public static class PeriodicIO{
         public ControlMode controlMode = ControlMode.OUTPUT;
-
-        State requestedState = State.START;
-        double enc = 0;
 
         public double CurrentAngle = 0;
         public double TargetAngle = 0;
     
         public double targetOutput = 0;
-        
     }
 
     public void setOutput (double output) {
@@ -83,9 +89,9 @@ public class Wrist extends SubsystemIO{
         m_PeriodicIO.targetOutput = output;
     }
 
-    public void setAngle(double angle){
+    public void setDegrees(double degrees){
         m_PeriodicIO.controlMode = ControlMode.POSITION;
-        m_PeriodicIO.TargetAngle = angle;
+        m_PeriodicIO.TargetAngle = Math.toRadians(degrees);
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -107,11 +113,9 @@ public class Wrist extends SubsystemIO{
         };
     }
 
-    public Command setTestPosition(){
+    public Command setTestPosition(double degrees){
         return run(() -> {
-            m_PeriodicIO.requestedState = State.START;
-            m_PeriodicIO.controlMode = ControlMode.POSITION;
-
+            setDegrees(degrees);
         });
     }
 
@@ -127,29 +131,26 @@ public class Wrist extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Wrist/CurrentAngle", m_PeriodicIO.CurrentAngle);
-        SmartDashboard.putNumber("Wrist/TargetAngle", m_PeriodicIO.TargetAngle);
+        SmartDashboard.putNumber("Wrist/CurrentAngle", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SmartDashboard.putNumber("Wrist/TargetAngle", Math.toDegrees(m_PeriodicIO.TargetAngle));
 
-        SignalLogger.writeDouble("Wrist/CurrentAngle", m_PeriodicIO.CurrentAngle);
-        SignalLogger.writeDouble("Wrist/TargetAngle", m_PeriodicIO.TargetAngle);
+        SignalLogger.writeDouble("Wrist/CurrentAngle", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SignalLogger.writeDouble("Wrist/TargetAngle", Math.toDegrees(m_PeriodicIO.TargetAngle));
     }
 
     @Override
     public void readPeriodicInputs(){
-
+        m_PeriodicIO.CurrentAngle = convertPositionToAngle(m_Motor.getPosition().getValueAsDouble());
     }
 
     @Override
     public void writePeriodicOutputs() {
            switch(m_PeriodicIO.controlMode){
-                /*case VOLTAGE:
-                    if(m_PeriodicIO.targetVoltage != m_PeriodicIO.lastTargetVoltage){
-                        m_Motor.setControl(m_VoltageRequest.withOutput(m_PeriodicIO.targetVoltage));
-                        m_PeriodicIO.lastTargetVoltage = m_PeriodicIO.targetVoltage;
-                    }
-                    break;*/
+                case OUTPUT:
+                    m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
+                    break;
                 case POSITION:
-                    m_Motor.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.angle));
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)));
                     break;
                 case SYSID:
                 

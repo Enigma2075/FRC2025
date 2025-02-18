@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
@@ -17,6 +18,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -41,8 +43,8 @@ public class Intake extends SubsystemIO{
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
-                    null, // Volts.of(3).per(Seconds.of(1)),
-                    null, // Volts.of(4.5),
+                    Volts.of(2).per(Seconds),
+                    Volts.of(4.5),
                     null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -78,24 +80,25 @@ public class Intake extends SubsystemIO{
 
         m_pivot.getConfigurator().apply(pivotConfigs);
 
+        m_pivot.setPosition(IntakeConstants.kZeroOffset);
+
         TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
         
         rollerConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         rollerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_roller.getConfigurator().apply(rollerConfigs);
-
     }
 
-    public enum PivotPosition { 
-        GRABCAGE(-10),
-        FLOORINTAKE(120),
-        CLIMBREADY(45),
-        DEFAULT(90);
+    public enum PivotPositions { 
+        GRABCAGE(0),
+        FLOORINTAKE(34),
+        CLIMBREADY(59),
+        DEFAULT(94);
 
         public final double degrees;
 
-        private PivotPosition(double degrees) {
+        private PivotPositions(double degrees) {
             this.degrees = degrees;
         }
     } 
@@ -103,13 +106,15 @@ public class Intake extends SubsystemIO{
     public static class PeriodicIO {
         public ControlMode controlMode = ControlMode.OUTPUT;    
 
-        PivotPosition requestedPivotPosition = PivotPosition.DEFAULT;
+        PivotPositions targetPivotPosition = PivotPositions.DEFAULT;
         
         public double targetPivotOutput = 0;
-        public double targetPivotPosition = 0;
-        public double currentPivotPosition = 0;
+        
+        public double targetPivotAngle = 0;
+        public double currentPivotAngle = 0;
 
         public double targetRollerOutput = 0;
+        public double currentRollerCurrent = 0;
     }
 
     public void setPivotOutput (double output){
@@ -143,20 +148,22 @@ public class Intake extends SubsystemIO{
     
     public Command setTestPosition(){
         return run(() -> {
-            m_PeriodicIO.requestedPivotPosition = PivotPosition.GRABCAGE;
+            m_PeriodicIO.targetPivotPosition = PivotPositions.GRABCAGE;
             m_PeriodicIO.controlMode = ControlMode.POSITION;
 
         });
     }
 
-    public void setPivotPosition(PivotPosition position){
-        m_PeriodicIO.requestedPivotPosition = position;
+    public void setPivotPosition(PivotPositions position){
+        m_PeriodicIO.targetPivotPosition = position;
+        m_PeriodicIO.targetPivotAngle = Math.toRadians(position.degrees);
         m_PeriodicIO.controlMode = ControlMode.POSITION;
     }
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.currentPivotPosition = m_pivot.getPosition().getValueAsDouble();
+        m_PeriodicIO.currentPivotAngle = convertPositionToAngle(m_pivot.getPosition().getValueAsDouble());
+        m_PeriodicIO.currentRollerCurrent = m_roller.getSupplyCurrent().getValueAsDouble();
     }
 
     @Override
@@ -167,7 +174,7 @@ public class Intake extends SubsystemIO{
                 break;
 
             case POSITION:
-                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.requestedPivotPosition.degrees)));
+                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)));
                 break;
 
             case SYSID:
@@ -194,11 +201,11 @@ public class Intake extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-            SmartDashboard.putNumber("Intake/CurrentAngle", convertPositionToAngle(m_PeriodicIO.currentPivotPosition));
-            SmartDashboard.putNumber("Intake/TargetAngle", convertPositionToAngle(m_PeriodicIO.targetPivotPosition));
+            SmartDashboard.putNumber("Intake/CurrentDegrees", Math.toDegrees(m_PeriodicIO.currentPivotAngle));
+            SmartDashboard.putNumber("Intake/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetPivotAngle));
     
-            SignalLogger.writeDouble("Intake/CurrentAngle", convertPositionToAngle(m_PeriodicIO.currentPivotPosition));
-            SignalLogger.writeDouble("Intake/TargetAngle", convertPositionToAngle(m_PeriodicIO.targetPivotPosition));
+            SignalLogger.writeDouble("Intake/CurrentDegrees", Math.toDegrees(m_PeriodicIO.currentPivotAngle));
+            SignalLogger.writeDouble("Intake/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetPivotAngle));
     }
 
 }

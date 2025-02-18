@@ -63,7 +63,7 @@ public class RobotContainer {
 
     //public final Claw claw = new Claw();
 
-    //public final Wrist wrist = new Wrist();
+    public final Wrist wrist = new Wrist();
     
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm);
 
@@ -86,7 +86,7 @@ public class RobotContainer {
 
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
-        ioManager = new IOManager(climb, elevator, arm, elevatorStructure);
+        ioManager = new IOManager(climb, elevator, arm, wrist, intake, elevatorStructure);
 
     }
 
@@ -109,19 +109,19 @@ public class RobotContainer {
 
         //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.y().whileTrue(elevatorStructure.moveToL4(false));
-        operator.a().whileTrue(elevatorStructure.moveToStarting());
-        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
+        //operator.y().whileTrue(elevatorStructure.moveToL4(false));
+        //operator.a().whileTrue(elevatorStructure.moveToStarting());
+        //operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
         operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
         //operator.a().whileTrue(arm.setTestPosition(10));
         
-        // operator.a().whileTrue(arm.sysIdQuasiStatic(Direction.kReverse));
-        // operator.b().whileTrue(arm.sysIdDynamic(Direction.kReverse));
-        // operator.x().whileTrue(arm.sysIdDynamic(Direction.kForward));
-        // operator.y().whileTrue(arm.sysIdQuasiStatic(Direction.kForward));
+        //operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
+        //operator.b().whileTrue(intake.sysIdDynamic(Direction.kReverse));
+        //operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        //operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
 
         //operator.y().whileTrue(climb.setTestPosition());
         /*
