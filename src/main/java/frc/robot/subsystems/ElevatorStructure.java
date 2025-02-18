@@ -22,7 +22,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L3 = new ElevatorStructurePosition(0, 0, 0, "L3");
     public static final ElevatorStructurePosition L2 = new ElevatorStructurePosition(0, 0, 0, "L2");
     public static final ElevatorStructurePosition L1 = new ElevatorStructurePosition(0, 0, 0, "L1");
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(, 115, 0, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7, 115, 0, "Climb");
 
     public ElevatorStructure(Elevator elevator, Arm arm) {//, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
