@@ -112,7 +112,8 @@ public class RobotContainer {
         //operator.y().whileTrue(elevatorStructure.moveToL4(false));
         //operator.a().whileTrue(elevatorStructure.moveToStarting());
         //operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
-        //operator.x().whileTrue(elevatorStructure.moveToClimb());
+        
+        operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         
 
@@ -125,7 +126,7 @@ public class RobotContainer {
         // operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
         // operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
 
-        operator.y().whileTrue(intake.setTestPosition());
+        //operator.y().whileTrue(intake.setTestPosition());
 
         //operator.y().whileTrue(climb.setTestPosition());
         /*
