@@ -9,9 +9,9 @@ public class IntakeConstants {
     public static final double kGearRatio = kGearRatio1 * kGearRatio2;
     
     public static final double kG = 0.5;
-    public static final double kS = 0.0146484375;
-    public static final double kV = 0.01;
-    public static final double kA = 0.001;
+    public static final double kS = 0.0;
+    public static final double kV = 0.14576;
+    public static final double kA = 0.0058869;
     public static final double kP = 0.0001;
     public static final double kI = 0;
     public static final double kD = 0;

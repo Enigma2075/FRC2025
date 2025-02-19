@@ -1,8 +1,14 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -20,7 +26,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.robot.Robot;
 
 public class Wrist extends SubsystemIO{
@@ -36,11 +44,26 @@ public class Wrist extends SubsystemIO{
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
 
+    private final VoltageOut m_SysIdRequest = new VoltageOut(0);
+    private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volt.of(2).per(Seconds),
+                    Volts.of(4.5),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> {
+                        m_Motor.setControl(m_SysIdRequest.withOutput(m_SysIdRequest.withOutput(volts.in(Volts)).Output));
+                        //System.out.println(volts.in(Volts));
+                    },
+                    (SysIdRoutineLog log) -> log.motor("Wrist").voltage(m_Motor.getMotorVoltage().getValue()).angularPosition(m_Motor.getPosition().getValue()).angularVelocity(m_Motor.getVelocity().getValue()),
+                    (Subsystem)this));
+
     public Wrist(){
         m_Encoder = new CANcoder(WristConstants.kEncoderId, RobotConstants.kCanivoreBusName);
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .45836624;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = WristConstants.kMagnetOffset;
         
@@ -97,12 +120,14 @@ public class Wrist extends SubsystemIO{
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     private double convertPositionToAngle(double position) {
-        return (position / WristConstants.kGearRatio)* 2 * Math.PI ;
+        return position * 2 * Math.PI ;
     }
 
     private double convertAngleToPosition(double angle) {
-        return (angle / 2 * Math.PI) * WristConstants.kGearRatio;
+        return angle / 2 * Math.PI;
     }
+
+    //rad(165)/2 pi = .458
 
     public Command testCommand(Supplier<Double> outputPercent) {
         return new Command() {
