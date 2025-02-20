@@ -113,18 +113,18 @@ public class RobotContainer {
         //operator.a().whileTrue(elevatorStructure.moveToStarting());
         //operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
         
-        operator.x().whileTrue(elevatorStructure.moveToClimb());
+        //operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
-        //operator.a().whileTrue(arm.setTestPosition(10));
+        operator.a().whileTrue(wrist.setTestPosition(90));
         
-        // operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
-        // operator.b().whileTrue(intake.sysIdDynamic(Direction.kReverse));
-        // operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
-        // operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
+        //operator.a().whileTrue(wrist.sysIdQuasiStatic(Direction.kReverse));
+        //operator.b().whileTrue(wrist.sysIdDynamic(Direction.kReverse));
+        //operator.x().whileTrue(wrist.sysIdDynamic(Direction.kForward));
+        //operator.y().whileTrue(wrist.sysIdQuasiStatic(Direction.kForward));
 
         //operator.y().whileTrue(intake.setTestPosition());
 

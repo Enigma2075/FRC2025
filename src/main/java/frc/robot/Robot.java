@@ -12,9 +12,11 @@ import frc.robot.subsystems.RobotConstants;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private final boolean kPracticeBot = RobotConstants.kPracticeBot;
+  public static RobotContainer RobotContainer;
 
-  private final RobotContainer RobotContainer = new RobotContainer();
+  public Robot() {
+    RobotContainer = new RobotContainer();
+  }
 
   @Override
   public void robotPeriodic() {

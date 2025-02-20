@@ -17,6 +17,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -30,6 +31,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 public class Wrist extends SubsystemIO{
     public enum ControlMode{
@@ -42,13 +44,13 @@ public class Wrist extends SubsystemIO{
     private CANcoder m_Encoder;
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
+    private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
 
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
-                    Volt.of(2).per(Seconds),
-                    Volts.of(4.5),
+                    Volt.of(.8).per(Seconds),
+                    Volts.of(2),
                     null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -63,7 +65,7 @@ public class Wrist extends SubsystemIO{
         m_Encoder = new CANcoder(WristConstants.kEncoderId, RobotConstants.kCanivoreBusName);
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .45836624;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = WristConstants.kDiscontinuityPoint;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = WristConstants.kMagnetOffset;
         
@@ -82,18 +84,18 @@ public class Wrist extends SubsystemIO{
         motorConfig.Feedback.RotorToSensorRatio = WristConstants.kGearRatio;
 
         Slot0Configs slot0Configs = motorConfig.Slot0;
-        slot0Configs.kG = IntakeConstants.kG;
-        slot0Configs.kS = IntakeConstants.kS;
-        slot0Configs.kV = IntakeConstants.kV;
-        slot0Configs.kA = IntakeConstants.kA;
-        slot0Configs.kP = IntakeConstants.kP;
-        slot0Configs.kI = IntakeConstants.kI;
-        slot0Configs.kD = IntakeConstants.kD;
+        slot0Configs.kS = WristConstants.kS;
+        slot0Configs.kV = WristConstants.kV;
+        slot0Configs.kA = WristConstants.kA;
+        slot0Configs.kP = WristConstants.kP;
+        slot0Configs.kI = WristConstants.kI;
+        slot0Configs.kD = WristConstants.kD;
 
         MotionMagicConfigs motionMagicConfigs = motorConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0;
-        motionMagicConfigs.MotionMagicAcceleration = 0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = WristConstants.kMotionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = WristConstants.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = 0;
+
 
         m_Motor.getConfigurator().apply(motorConfig);
     }
@@ -120,11 +122,15 @@ public class Wrist extends SubsystemIO{
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     private double convertPositionToAngle(double position) {
-        return position * 2 * Math.PI ;
+        return position * (2 * Math.PI);
     }
 
     private double convertAngleToPosition(double angle) {
-        return angle / 2 * Math.PI;
+        return angle / (2 * Math.PI);
+    }
+
+    private double getGravityOffset() {
+        return Math.cos(Robot.RobotContainer.arm.getCurrentAngle() + m_PeriodicIO.CurrentAngle) * WristConstants.kG;
     }
 
     //rad(165)/2 pi = .458
@@ -142,6 +148,14 @@ public class Wrist extends SubsystemIO{
         return run(() -> {
             setDegrees(degrees);
         });
+    }
+
+    public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.dynamic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }
 
     @Override
@@ -175,7 +189,7 @@ public class Wrist extends SubsystemIO{
                     m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                     break;
                 case POSITION:
-                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)));
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)).withFeedForward(getGravityOffset()));
                     break;
                 case SYSID:
                 

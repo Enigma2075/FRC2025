@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -37,7 +38,7 @@ public class Intake extends SubsystemIO{
     private TalonFX m_roller;
 
     private final DutyCycleOut m_PivotOutputRequest= new DutyCycleOut(0);
-    private final MotionMagicDutyCycle m_PivotPositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
+    private final MotionMagicVoltage m_PivotPositionRequest = new MotionMagicVoltage(0).withSlot(0);
     private final DutyCycleOut m_RollerOutputRequest= new DutyCycleOut(0);
 
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
@@ -174,7 +175,7 @@ public class Intake extends SubsystemIO{
                 break;
 
             case POSITION:
-                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)));
+                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * WristConstants.kG));
                 break;
 
             case SYSID:

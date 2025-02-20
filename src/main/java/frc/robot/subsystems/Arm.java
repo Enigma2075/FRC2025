@@ -64,7 +64,7 @@ public class Arm extends SubsystemIO{
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
-        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .75;
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = ArmConstants.kDiscontinuityPoint;
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = ArmConstants.kMagnetOffset;
         
@@ -110,6 +110,10 @@ public class Arm extends SubsystemIO{
         public double targetAngle = 0;
 
         public double targetOutput = 0; 
+    }
+
+    public double getCurrentAngle() {
+        return m_PeriodicIO.currentAngle;
     }
 
     public void setOutput(double output){

@@ -19,6 +19,8 @@ public class ArmConstants {
 
     public static final double kGearRatio = kGearRatio1 * kGearRatio2 * kGearRatio3;
 
+    public static final double kDiscontinuityPoint = .75;
+
     public static final double kG = 0.59;
     public static final double kS = 0.3;
     public static final double kV = 5;
