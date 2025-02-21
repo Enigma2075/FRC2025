@@ -104,14 +104,11 @@ public class Claw extends SubsystemIO {
         return (angle / 2 * Math.PI) * ArmConstants.kGearRatio;
     }
 
-    public Command testCommand(Supplier<Double> outputPercent) {
-        return new Command() {
-            @Override
-            public void execute() {
-                setOutput(outputPercent.get() * 12.0);
-            }
-        };
-    }
+    public Command testCommand(Double outputPercent) {
+        return run(() -> {
+            setOutput(outputPercent);
+        });
+    };
 
     public Command setTestPosition(){
         return run(() -> {

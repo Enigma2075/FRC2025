@@ -124,7 +124,7 @@ public class RobotContainer {
         //operator.a().whileTrue(wrist.setTestPosition(90));
         
         //operator.a().whileTrue(wrist.sysIdQuasiStatic(Direction.kReverse));
-        //operator.b().whileTrue(wrist.sysIdDynamic(Direction.kReverse));
+        operator.b().whileTrue(claw.testCommand(0.4));
         //operator.x().whileTrue(wrist.sysIdDynamic(Direction.kForward));
         //operator.y().whileTrue(wrist.sysIdQuasiStatic(Direction.kForward));
 
