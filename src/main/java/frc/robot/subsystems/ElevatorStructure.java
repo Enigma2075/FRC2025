@@ -9,26 +9,31 @@ import frc.robot.subsystems.states.ElevatorStructurePosition;
 public class ElevatorStructure extends SubsystemIO {
     private final Elevator m_Elevator;
     private final Arm m_Arm;
-    //private final Wrist m_Wrist;
-    //private final Claw m_Claw;
+    private final Wrist m_Wrist;
+    private final Claw m_Claw;
 
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7, 90, 0, "Starting");
-    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15, 118, 0, "IntakeCoralRear");
-    public static final ElevatorStructurePosition IntakeCoral = new ElevatorStructurePosition(0, 0, 0, "IntakeCoral");
-    public static final ElevatorStructurePosition IntakeAlgae = new ElevatorStructurePosition(0, 0, 0, "IntakeAlgae");
-    public static final ElevatorStructurePosition ScoreNet = new ElevatorStructurePosition(0, 0, 0, "ScoreNet");
-    public static final ElevatorStructurePosition ScoreProcessor = new ElevatorStructurePosition(0, 0, 0, "ScoreProcessor");
-    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(66, 73, 0, "L4Front");
-    public static final ElevatorStructurePosition L3 = new ElevatorStructurePosition(0, 0, 0, "L3");
-    public static final ElevatorStructurePosition L2 = new ElevatorStructurePosition(0, 0, 0, "L2");
-    public static final ElevatorStructurePosition L1 = new ElevatorStructurePosition(0, 0, 0, "L1");
+    public static final ElevatorStructurePosition BargeBack = new ElevatorStructurePosition(60, 125, -75, "BargeBack");
+    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(60, 87, -160, "BargeFront");
+    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15, 118, -153, "IntakeCoralRear");
+    public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(11.5, 76, 137, "IntakeCoralFront");
+    public static final ElevatorStructurePosition IntakeAlgaeHighRear = new ElevatorStructurePosition(30, 52, 175, "IntakeAlgaeHighRear");
+    public static final ElevatorStructurePosition IntakeAlgaeHighFront = new ElevatorStructurePosition(47, 48, 175, "IntakeAlgaeHighFront");
+    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(60, 66, 65, "L4Front");
+    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(39, 66, 65, "L3Front");
+    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(22, 66, 65, "L2Front");
+    public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(7, 66, 85, "L1Front");
+    public static final ElevatorStructurePosition L4Rear = new ElevatorStructurePosition(7, 127, -52, "L4Rear");
+    public static final ElevatorStructurePosition L3Rear = new ElevatorStructurePosition(60, 105, -70, "L3Rear");
+    public static final ElevatorStructurePosition L2Rear = new ElevatorStructurePosition(33.5, 105, -70, "L2Rear");
+    public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(18, 115, -90.5, "L1Rear");
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7, 115, 0, "Climb");
 
-    public ElevatorStructure(Elevator elevator, Arm arm) {//, Wrist wrist, Claw claw) {
+    public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
         m_Arm = arm;
-        //m_Wrist = wrist;
-        //m_Claw = claw;
+        m_Wrist = wrist;
+        m_Claw = claw;
         
         applyPosition();
     }
@@ -66,7 +71,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToIntakeCoral(boolean front) {
         if(front) {
-            return moveToPosition(IntakeCoral);
+            return moveToPosition(IntakeCoralFront);
         } else {
             return moveToPosition(IntakeCoralRear);
         }
@@ -102,7 +107,7 @@ public class ElevatorStructure extends SubsystemIO {
     private void applyPosition(ElevatorStructurePosition state) {
         m_Elevator.setHeight(state.ElevatorHeight);
         m_Arm.setDegrees(state.ArmAngle);
-        //m_Wrist.setAngle(state.WristAngle);
+        m_Wrist.setDegrees(state.WristAngle);
     }
 
     @Override

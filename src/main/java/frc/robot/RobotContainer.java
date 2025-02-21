@@ -61,11 +61,11 @@ public class RobotContainer {
 
     public final Arm arm = new Arm();
 
-    //public final Claw claw = new Claw();
+    public final Claw claw = new Claw();
 
     public final Wrist wrist = new Wrist();
     
-    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm);
+    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw);
 
     public final Intake intake = new Intake();
 
@@ -108,18 +108,20 @@ public class RobotContainer {
         //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
         //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
-
-        //operator.y().whileTrue(elevatorStructure.moveToL4(false));
-        //operator.a().whileTrue(elevatorStructure.moveToStarting());
-        //operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
         
-        //operator.x().whileTrue(elevatorStructure.moveToClimb());
+        //wrist.setDefaultCommand(wrist.testCommand(() -> {return -operator.getLeftY();}));
+
+        operator.y().whileTrue(elevatorStructure.moveToL4(false));
+        operator.a().whileTrue(elevatorStructure.moveToStarting());
+        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
+        
+        operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
-        operator.a().whileTrue(wrist.setTestPosition(90));
+        //operator.a().whileTrue(wrist.setTestPosition(90));
         
         //operator.a().whileTrue(wrist.sysIdQuasiStatic(Direction.kReverse));
         //operator.b().whileTrue(wrist.sysIdDynamic(Direction.kReverse));

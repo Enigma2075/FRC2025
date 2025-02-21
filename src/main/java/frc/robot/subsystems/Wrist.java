@@ -136,12 +136,9 @@ public class Wrist extends SubsystemIO{
     //rad(165)/2 pi = .458
 
     public Command testCommand(Supplier<Double> outputPercent) {
-        return new Command() {
-            @Override
-            public void execute() {
-                setOutput(outputPercent.get() * 12.0);
-            }
-        };
+        return run(() -> {
+                setOutput(outputPercent.get());
+        });
     }
 
     public Command setTestPosition(double degrees){
