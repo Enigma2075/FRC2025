@@ -62,7 +62,7 @@ public class RobotContainer {
 
     public final Arm arm = new Arm();
 
-    public final Claw claw = new Claw();
+    //public final Claw claw = new Claw();
 
     public final Wrist wrist = new Wrist();
     
@@ -87,7 +87,7 @@ public class RobotContainer {
 
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
+        ioManager = new IOManager(climb, elevator, arm, wrist, intake, elevatorStructure);
 
     }
 
