@@ -12,9 +12,9 @@ public class ElevatorStructure extends SubsystemIO {
     private final Elevator m_Elevator;
     private final Arm m_Arm;
     private final Wrist m_Wrist;
-    //private final Claw m_Claw;
+    private final Claw m_Claw;
 
-    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 90, 0, "Starting");
+    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 90, 90, "Starting");
     public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(60, 87, -160, "BargeBack");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(60, 125, -75, "BargeFront");
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(11.5, 76, 137, "IntakeCoralRear");
@@ -31,11 +31,11 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7, 115, -90.5, "L1Rear");
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 0, "Climb");
 
-    public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist){ //, Claw claw) {
+    public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
         m_Arm = arm;
         m_Wrist = wrist;
-        //m_Claw = claw;
+        m_Claw = claw;
         
         applyPosition();
     }
@@ -103,13 +103,13 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Starting);
     }
 
-    // public Command intakeCoral() {
-    //     return run(() -> { m_Claw.setCoralOutput(0.4); });
-    // }
+    public Command intakeCoral() {
+        return run(() -> { m_Claw.setCoralOutput(0.4); });
+    }
 
-    // public Command intakeAlgae() {
-    //     return run(() -> { m_Claw.setAlgaeOutput(0.2); });
-    // }
+    public Command intakeAlgae() {
+        return run(() -> { m_Claw.setAlgaeOutput(0.2); });
+    }
 
     public Command defaultCommand() {
         return run(() -> { 
