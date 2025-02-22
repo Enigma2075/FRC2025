@@ -76,13 +76,14 @@ public class DriveTrainConstants {
     // This needs to be tuned to your individual robot
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.21);
 
+    // L2+ drive train configuration w/ MK4i Swerve Module
+    private static final double kDriveGearRatio = (50.0 / 16.0) * (17.0 / 27.0) * (45 / 15);
+    private static final double kSteerGearRatio = (50.0 / 16.0) * (60.0 / 10.0);
+    private static final Distance kWheelRadius = Inches.of(2);
+
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 3.5714285714285716;
-
-    private static final double kDriveGearRatio = 6.122448979591837;
-    private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(2);
+    private static final double kCoupleRatio = kSteerGearRatio / kDriveGearRatio;
 
     private static final boolean kInvertLeftSide = true;
     private static final boolean kInvertRightSide = false;
