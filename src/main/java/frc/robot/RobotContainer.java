@@ -176,6 +176,8 @@ public class RobotContainer {
         operator.a().whileTrue(elevatorStructure.moveToL2());
         operator.x().whileTrue(elevatorStructure.moveToL1());
 
+        //operator.y().whileTrue(climb.setServo());
+
         //operator.back().whileTrue(elevatorStructure.moveToClimb());
         //operator.start().whileTrue();
 

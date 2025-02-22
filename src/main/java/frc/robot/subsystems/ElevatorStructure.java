@@ -142,7 +142,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     private void applyPosition(ElevatorStructurePosition state) {
-        m_Elevator.setHeight(state.ElevatorHeight);
+       m_Elevator.setHeight(state.ElevatorHeight);
         m_Arm.setDegrees(state.ArmAngle);
         m_Wrist.setDegrees(state.WristAngle);
     }
