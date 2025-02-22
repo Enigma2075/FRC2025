@@ -53,7 +53,7 @@ public class Intake extends SubsystemIO{
                         m_pivot.setControl(m_SysIdRequest.withOutput(m_SysIdRequest.withOutput(volts.in(Volts)).Output));
                         //System.out.println(volts.in(Volts));
                     },
-                    (SysIdRoutineLog log) -> log.motor("Arm").voltage(m_pivot.getMotorVoltage().getValue()).angularPosition(m_pivot.getPosition().getValue()).angularVelocity(m_pivot.getVelocity().getValue()),
+                    (SysIdRoutineLog log) -> log.motor("intake").voltage(m_pivot.getMotorVoltage().getValue()).angularPosition(m_pivot.getPosition().getValue()).angularVelocity(m_pivot.getVelocity().getValue()),
                     (Subsystem)this));
 
     public Intake() {
