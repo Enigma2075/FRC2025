@@ -113,8 +113,8 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command defaultCommand() {
         return run(() -> { 
-            m_Claw.setCoralOutput(.1);
-            m_Claw.setAlgaeOutput(.1);
+            m_Claw.setCoralOutput(.2);
+            m_Claw.setAlgaeOutput(.2);
         });
     }
 
