@@ -66,7 +66,7 @@ public class RobotContainer {
 
     public final Wrist wrist = new Wrist();
     
-    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist); //claw);
+    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw);
 
     public final Intake intake = new Intake();
 
@@ -154,10 +154,10 @@ public class RobotContainer {
         //driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         //run sysid for intake and climb
-        operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
-        operator.b().whileTrue(intake.sysIdDynamic(Direction.kReverse));
-        operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
-        operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
+        // operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
+        // operator.b().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        // operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        // operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
 
         // reset the field-centric heading on left bumper press
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -171,10 +171,12 @@ public class RobotContainer {
         operator.povDownLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
         operator.povDownRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
 
-        // operator.y().whileTrue(elevatorStructure.moveToL4());
-        // operator.b().whileTrue(elevatorStructure.moveToL3());
-        // operator.a().whileTrue(elevatorStructure.moveToL2());
-        // operator.x().whileTrue(elevatorStructure.moveToL1());
+        operator.y().whileTrue(elevatorStructure.moveToL4());
+        operator.b().whileTrue(elevatorStructure.moveToL3());
+        operator.a().whileTrue(elevatorStructure.moveToL2());
+        operator.x().whileTrue(elevatorStructure.moveToL1());
+
+        //operator.y().whileTrue(climb.setServo());
 
         //operator.back().whileTrue(elevatorStructure.moveToClimb());
         //operator.start().whileTrue();

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.BrushedMotorWiringValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -35,6 +36,8 @@ public class Claw extends SubsystemIO {
 
         algaeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        algaeConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
         algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
 
@@ -48,6 +51,8 @@ public class Claw extends SubsystemIO {
         TalonFXSConfiguration coralConfigs = new TalonFXSConfiguration();
 
         coralConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        coralConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;

@@ -22,6 +22,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -37,6 +39,7 @@ public class Climb extends SubsystemIO{
 
     private TalonFX m_Back;
     private TalonFX m_Front;
+    private Servo m_Latch;
 
     //private final VoltageOut m_VoltageRequest = new VoltageOut(0);
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
@@ -62,6 +65,7 @@ public class Climb extends SubsystemIO{
     public Climb() {
         m_Back = new TalonFX(ClimbConstants.kBackId, RobotConstants.kCanivoreBusName);
         m_Front = new TalonFX(ClimbConstants.kFrontId, RobotConstants.kCanivoreBusName);
+        m_Latch = new Servo(ClimbConstants.kLatchPort);
 
         TalonFXConfiguration frontConfig = new TalonFXConfiguration();
         frontConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -116,6 +120,8 @@ public class Climb extends SubsystemIO{
         public double targetOutput = 0;
     }
 
+    private double timeout = 0;
+
     /* 
     public void setVoltage (double voltage) {
         m_PeriodicIO.controlMode = ControlMode.VOLTAGE;
@@ -123,7 +129,12 @@ public class Climb extends SubsystemIO{
     }
     */
 
-    
+    public Command setServo() {
+        return runOnce(() -> {
+            m_Latch.set(1);
+            timeout = Timer.getFPGATimestamp();
+        });
+    }
 
     public void setOutput (double output){
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
@@ -178,6 +189,9 @@ public class Climb extends SubsystemIO{
             default:
 
                 break;
+        }
+        if(Timer.getFPGATimestamp()-timeout>1){
+            m_Latch.setDisabled();
         }
 
     }
