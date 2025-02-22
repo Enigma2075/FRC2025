@@ -177,6 +177,8 @@ public class RobotContainer {
 
         //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
 
+        operator.rightTrigger().whileTrue(elevatorStructure.moveToIntakeCoral());
+
 
     }
 
