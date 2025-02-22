@@ -87,7 +87,7 @@ public class RobotContainer {
 
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, intake, elevatorStructure);
+        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
 
     }
 
