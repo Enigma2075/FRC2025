@@ -4,6 +4,8 @@ import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotState;
+import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 
 public class ElevatorStructure extends SubsystemIO {
@@ -61,11 +63,35 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Climb);
     }
 
-    public Command moveToL4(boolean front) {
-        if(front) {
+    public Command moveToL4() {
+        if(RobotState.scoringSide == ScoringSides.FRONT) {
             return moveToPosition(L4Front);
         } else {
-            return moveToPosition(L4Front);
+            return moveToPosition(L4Rear);
+        }
+    }
+
+    public Command moveToL3() {
+        if(RobotState.scoringSide == ScoringSides.FRONT) {
+            return moveToPosition(L3Front);
+        } else {
+            return moveToPosition(L3Rear);
+        }
+    }
+
+    public Command moveToL2() {
+        if(RobotState.scoringSide == ScoringSides.FRONT) {
+            return moveToPosition(L2Front);
+        } else {
+            return moveToPosition(L2Rear);
+        }
+    }
+
+    public Command moveToL1() {
+        if(RobotState.scoringSide == ScoringSides.FRONT) {
+            return moveToPosition(L1Front);
+        } else {
+            return moveToPosition(L1Rear);
         }
     }
 
