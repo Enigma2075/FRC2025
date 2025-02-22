@@ -107,8 +107,8 @@ public class ElevatorStructure extends SubsystemIO {
         return run(() -> { m_Claw.setCoralOutput(0.4); });
     }
 
-    public Command algaeCoral() {
-        return run(() -> { m_Claw.setCoralOutput(0.2); });
+    public Command intakeAlgae() {
+        return run(() -> { m_Claw.setAlgaeOutput(0.2); });
     }
 
     public Command defaultCommand() {
