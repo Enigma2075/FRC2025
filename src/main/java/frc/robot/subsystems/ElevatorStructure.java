@@ -96,7 +96,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToIntakeCoral() {
-        return moveToPosition(IntakeCoralFront, IntakeCoralRear).alongWith(intakeCoral());
+        return moveToPosition(IntakeCoralFront, IntakeCoralRear);
     }
 
     public Command moveToStarting() {
