@@ -112,14 +112,11 @@ public class RobotContainer {
         
         //wrist.setDefaultCommand(wrist.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.y().whileTrue(elevatorStructure.moveToL4());
-        operator.a().whileTrue(elevatorStructure.moveToStarting());
-        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral());
+        //operator.y().whileTrue(elevatorStructure.moveToL4(false));
+        // operator.a().whileTrue(elevatorStructure.moveToStarting());
+        // operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
         
-        operator.x().whileTrue(elevatorStructure.moveToClimb());
-
-        operator.povUp().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
-        operator.povDown().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
+        // operator.x().whileTrue(elevatorStructure.moveToClimb());
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
@@ -158,6 +155,27 @@ public class RobotContainer {
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        operator.povUp().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
+        operator.povUpLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
+        operator.povUpRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
+        operator.povDown().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
+        operator.povDownLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
+        operator.povDownRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
+
+        operator.y().whileTrue(elevatorStructure.moveToL4());
+        operator.b().whileTrue(elevatorStructure.moveToL3());
+        operator.a().whileTrue(elevatorStructure.moveToL2());
+        operator.x().whileTrue(elevatorStructure.moveToL1());
+
+        //operator.back().whileTrue(elevatorStructure.moveToClimb());
+        //operator.start().whileTrue();
+
+        operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
+
+        //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
+
+
     }
 
     public Command getAutonomousCommand() {
