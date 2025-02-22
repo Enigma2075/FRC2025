@@ -22,6 +22,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     RobotContainer.ioManager.readPeriodicInputs();
     RobotContainer.ioManager.outputTelemetry();
+
+    RobotState.outputTelemetry();
     
     CommandScheduler.getInstance().run(); 
     
