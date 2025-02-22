@@ -155,7 +155,7 @@ public class RobotContainer {
 
         //run sysid for intake and climb
         operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
-        operator.b().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        operator.b().whileTrue(intake.sysIdDynamic(Direction.kReverse));
         operator.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
         operator.y().whileTrue(intake.sysIdQuasiStatic(Direction.kForward));
 

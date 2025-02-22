@@ -38,6 +38,9 @@ public class Claw extends SubsystemIO {
         algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
 
+        algaeConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        algaeConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
         m_Algae.getConfigurator().apply(algaeConfigs);
 
         m_Coral = new TalonFXS(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);

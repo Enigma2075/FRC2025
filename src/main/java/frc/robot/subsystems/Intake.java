@@ -65,7 +65,6 @@ public class Intake extends SubsystemIO{
         pivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
-        slot0Configs.kG = IntakeConstants.kG;
         slot0Configs.kS = IntakeConstants.kS;
         slot0Configs.kV = IntakeConstants.kV;
         slot0Configs.kA = IntakeConstants.kA;
@@ -151,7 +150,6 @@ public class Intake extends SubsystemIO{
         return run(() -> {
             m_PeriodicIO.targetPivotPosition = PivotPositions.GRABCAGE;
             m_PeriodicIO.controlMode = ControlMode.POSITION;
-
         });
     }
 
@@ -173,15 +171,12 @@ public class Intake extends SubsystemIO{
             case OUTPUT:   
                 m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));
                 break;
-
             case POSITION:
                 m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * WristConstants.kG));
                 break;
-
             case SYSID:
 
                 break;
-
             default:
 
                 break;
