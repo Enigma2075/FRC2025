@@ -36,7 +36,7 @@ public class Claw extends SubsystemIO {
 
         algaeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        algaeConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        algaeConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
@@ -49,7 +49,7 @@ public class Claw extends SubsystemIO {
 
         coralConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        coralConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        coralConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
