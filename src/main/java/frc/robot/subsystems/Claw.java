@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.BrushedMotorWiringValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -36,28 +37,25 @@ public class Claw extends SubsystemIO {
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
     public Claw() {
-        m_Coral = new TalonFXS(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
         m_Algae = new TalonFXS(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
+
+        TalonFXSConfiguration algaeConfigs = new TalonFXSConfiguration();
+
+        algaeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
+
+        m_Algae.getConfigurator().apply(algaeConfigs);
+
+        m_Coral = new TalonFXS(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
 
         TalonFXSConfiguration coralConfigs = new TalonFXSConfiguration();
 
+        coralConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
         coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
         coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
-
-
-        Slot0Configs slot0Configs = coralConfigs.Slot0;
-        slot0Configs.kG = ClawConstants.kG;
-        slot0Configs.kS = ClawConstants.kS;
-        slot0Configs.kV = ClawConstants.kV;
-        slot0Configs.kA = ClawConstants.kA;
-        slot0Configs.kP = ClawConstants.kP;
-        slot0Configs.kI = ClawConstants.kI;
-        slot0Configs.kD = ClawConstants.kD;
-
-        MotionMagicConfigs motionMagicConfigs = coralConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = ClawConstants.kMotionMagicCruiseVelocity;
-        motionMagicConfigs.MotionMagicAcceleration = ClawConstants.kMotionMagicAcceleration;
-        motionMagicConfigs.MotionMagicJerk = ClawConstants.kMotionMagicJerk;
 
         m_Coral.getConfigurator().apply(coralConfigs);
     }
