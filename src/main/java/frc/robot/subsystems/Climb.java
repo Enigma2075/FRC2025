@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -11,11 +16,16 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Climb extends SubsystemIO{
      public enum ControlMode{
@@ -33,6 +43,21 @@ public class Climb extends SubsystemIO{
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
     private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     private final StaticBrake m_StaticRequest = new StaticBrake();
+
+     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
+    private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    Volt.of(.8).per(Seconds),
+                    Volts.of(2),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (Voltage volts) -> {
+                        m_Front.setControl(m_SysIdRequest.withOutput(m_SysIdRequest.withOutput(volts.in(Volts)).Output));
+                        //System.out.println(volts.in(Volts));
+                    },
+                    (SysIdRoutineLog log) -> log.motor("Climb").voltage(m_Front.getMotorVoltage().getValue()).angularPosition(m_Front.getPosition().getValue()).angularVelocity(m_Front.getVelocity().getValue()),
+                    (Subsystem)this));
 
     public Climb() {
         m_Back = new TalonFX(ClimbConstants.kBackId, RobotConstants.kCanivoreBusName);
@@ -119,6 +144,14 @@ public class Climb extends SubsystemIO{
             m_PeriodicIO.controlMode = ControlMode.POSITION;
 
         });
+    }
+
+    public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.dynamic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }
 
     @Override
