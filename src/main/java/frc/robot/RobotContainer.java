@@ -103,6 +103,8 @@ public class RobotContainer {
             )
         );
 
+        elevatorStructure.setDefaultCommand(elevatorStructure.defaultCommand());
+
         // Test Code for each subsystem
         //elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
 
