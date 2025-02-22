@@ -63,44 +63,32 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Climb);
     }
 
-    public Command moveToL4() {
+    private Command moveToFrontRear(ElevatorStructurePosition front, ElevatorStructurePosition rear) {
         if(RobotState.scoringSide == ScoringSides.FRONT) {
-            return moveToPosition(L4Front);
+            return moveToPosition(front);
         } else {
-            return moveToPosition(L4Rear);
+            return moveToPosition(rear);
         }
+    }
+
+    public Command moveToL4() {
+        return moveToFrontRear(L4Front, L4Rear);
     }
 
     public Command moveToL3() {
-        if(RobotState.scoringSide == ScoringSides.FRONT) {
-            return moveToPosition(L3Front);
-        } else {
-            return moveToPosition(L3Rear);
-        }
+        return moveToFrontRear(L3Front, L3Rear);
     }
 
     public Command moveToL2() {
-        if(RobotState.scoringSide == ScoringSides.FRONT) {
-            return moveToPosition(L2Front);
-        } else {
-            return moveToPosition(L2Rear);
-        }
+        return moveToFrontRear(L2Front, L2Rear);
     }
 
     public Command moveToL1() {
-        if(RobotState.scoringSide == ScoringSides.FRONT) {
-            return moveToPosition(L1Front);
-        } else {
-            return moveToPosition(L1Rear);
-        }
+        return moveToFrontRear(L1Front, L1Rear);
     }
 
-    public Command moveToIntakeCoral(boolean front) {
-        if(front) {
-            return moveToPosition(IntakeCoralFront);
-        } else {
-            return moveToPosition(IntakeCoralRear);
-        }
+    public Command moveToIntakeCoral() {
+        return moveToFrontRear(IntakeCoralFront, IntakeCoralRear);
     }
 
     public Command moveToStarting() {
