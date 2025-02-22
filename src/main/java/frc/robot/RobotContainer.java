@@ -27,6 +27,7 @@ import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
+import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.Claw;
@@ -65,7 +66,7 @@ public class RobotContainer {
 
     public final Wrist wrist = new Wrist();
     
-    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm);
+    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw);
 
     public final Intake intake = new Intake();
 
@@ -108,21 +109,24 @@ public class RobotContainer {
         //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
 
         //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
-
-        //operator.y().whileTrue(elevatorStructure.moveToL4(false));
-        //operator.a().whileTrue(elevatorStructure.moveToStarting());
-        //operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
         
-        //operator.x().whileTrue(elevatorStructure.moveToClimb());
+        //wrist.setDefaultCommand(wrist.testCommand(() -> {return -operator.getLeftY();}));
 
+        operator.y().whileTrue(elevatorStructure.moveToL4());
+        operator.a().whileTrue(elevatorStructure.moveToStarting());
+        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral());
         
+        operator.x().whileTrue(elevatorStructure.moveToClimb());
+
+        operator.povUp().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
+        operator.povDown().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
 
         //operator.leftBumper().whileTrue(arm.setTestPosition(90));
         //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
-        operator.a().whileTrue(wrist.setTestPosition(90));
+        //operator.a().whileTrue(wrist.setTestPosition(90));
         
         //operator.a().whileTrue(wrist.sysIdQuasiStatic(Direction.kReverse));
-        operator.b().whileTrue(claw.testCommand(0.4));
+        //operator.b().whileTrue(claw.testCommand(0.4));
         //operator.x().whileTrue(wrist.sysIdDynamic(Direction.kForward));
         //operator.y().whileTrue(wrist.sysIdQuasiStatic(Direction.kForward));
 
