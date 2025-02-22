@@ -9,10 +9,12 @@ import com.ctre.phoenix6.signals.BrushedMotorWiringValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -21,20 +23,10 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 
 public class Claw extends SubsystemIO {
-
-    public enum ControlMode {
-        OUTPUT,
-        POSITION,
-        SYSID
-    }
-
     private TalonFXS m_Coral;
     private TalonFXS m_Algae;
 
-    //private final Output m_Output = new Output(0);
-
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
     
     public Claw() {
         m_Algae = new TalonFXS(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
@@ -60,60 +52,22 @@ public class Claw extends SubsystemIO {
         m_Coral.getConfigurator().apply(coralConfigs);
     }
 
-
-    public enum State {
-        L1(0),
-        L2(0),
-        L3(0),
-        L4(0),
-        INTAKE(0);
-
-        public final double clawAngle;
-
-        private State(double clawAngle) {
-            this.clawAngle = clawAngle;
-        }
-    }
-
     public static class PeriodicIO{
-        public ControlMode controlMode = ControlMode.OUTPUT;
-        State requestedState = State.INTAKE;
-
-        double enc = 0;
-
-        public double currentAngle = 0;
-        public double targetAngle = 0;
+        public double coralCurrent = 0;
+        public double algaeCurrent = 0;
         
-        public double targetOutput=0;
+        public double coralOutput=0;
+        public double algaeOutput=0;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
-    public void setOutput(double output){
-        m_PeriodicIO.controlMode = ControlMode.OUTPUT;
-        m_PeriodicIO.targetOutput = output;
+    public void setCoralOutput(double output){
+        m_PeriodicIO.coralOutput = output;
     }
 
-    private double convertPositionToAngle(double position) {
-        return (position / ArmConstants.kGearRatio)* 2 * Math.PI ;
-    }
-
-    private double convertAngleToPosition(double angle) {
-        return (angle / 2 * Math.PI) * ArmConstants.kGearRatio;
-    }
-
-    public Command testCommand(Double outputPercent) {
-        return run(() -> {
-            setOutput(outputPercent);
-        });
-    };
-
-    public Command setTestPosition(){
-        return run(() -> {
-            m_PeriodicIO.requestedState = State.INTAKE;
-            m_PeriodicIO.controlMode = ControlMode.POSITION;
-
-        });
+    public void setAlgaeOutput(double output){
+        m_PeriodicIO.algaeOutput = output;
     }
 
     @Override
@@ -129,28 +83,22 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void outputTelemetry() {
+        SmartDashboard.putNumber("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
+        SmartDashboard.putNumber("Claw/CoralCurrent", m_PeriodicIO.coralCurrent);
 
+        SignalLogger.writeDouble("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
+        SignalLogger.writeDouble("Claw/CoralCurrent", m_PeriodicIO.coralCurrent);
     }
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.enc = m_Coral.getPosition().getValueAsDouble();
-        m_PeriodicIO.enc = m_Algae.getPosition().getValueAsDouble();
+        m_PeriodicIO.coralCurrent = m_Coral.getStatorCurrent().getValueAsDouble();
+        m_PeriodicIO.algaeCurrent = m_Algae.getStatorCurrent().getValueAsDouble();
     }
 
     @Override
     public void writePeriodicOutputs() {
-        switch (m_PeriodicIO.controlMode) {
-            case OUTPUT:
-                if(m_PeriodicIO.targetAngle != m_PeriodicIO.targetOutput) {
-                    m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
-                    m_PeriodicIO.targetOutput = m_PeriodicIO.targetOutput;
-                }
-                break;
-            case POSITION:
-                m_Algae.setControl(m_PositionRequest.withPosition(m_PeriodicIO.requestedState.clawAngle));
-                break;
-            
-        }
+        m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeOutput));
+        m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralOutput));
     }
 }

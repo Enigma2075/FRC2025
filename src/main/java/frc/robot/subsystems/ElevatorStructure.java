@@ -71,6 +71,10 @@ public class ElevatorStructure extends SubsystemIO {
         }
     }
 
+    public Command moveToBarge() {
+        return moveToFrontRear(BargeFront, BargeBack);
+    }
+
     public Command moveToL4() {
         return moveToFrontRear(L4Front, L4Rear);
     }
@@ -93,6 +97,10 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToStarting() {
         return moveToPosition(Starting);
+    }
+
+    public Command intakeCoral() {
+        return run(() -> { m_Claw.setCoralOutput(0); });
     }
 
     public boolean isAtPosition() {
