@@ -112,9 +112,9 @@ public class RobotContainer {
         
         //wrist.setDefaultCommand(wrist.testCommand(() -> {return -operator.getLeftY();}));
 
-        operator.y().whileTrue(elevatorStructure.moveToL4(false));
+        operator.y().whileTrue(elevatorStructure.moveToL4());
         operator.a().whileTrue(elevatorStructure.moveToStarting());
-        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
+        operator.b().whileTrue(elevatorStructure.moveToIntakeCoral());
         
         operator.x().whileTrue(elevatorStructure.moveToClimb());
 
