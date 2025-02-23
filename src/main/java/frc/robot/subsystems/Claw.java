@@ -78,6 +78,10 @@ public class Claw extends SubsystemIO {
         m_PeriodicIO.algaeOutput = output;
     }
 
+    public void setIntakeCoral() {
+        m_PeriodicIO.coralOutput = 0.6;
+    }
+
     @Override
     public void stop() {
     

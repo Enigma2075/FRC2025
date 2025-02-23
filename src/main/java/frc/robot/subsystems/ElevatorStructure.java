@@ -14,10 +14,10 @@ public class ElevatorStructure extends SubsystemIO {
     private final Wrist m_Wrist;
     private final Claw m_Claw;
 
-    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 90, 90, "Starting");
+    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(12, 90, 90, "Starting"); //7.5
     public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(60, 87, -160, "BargeBack");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(60, 125, -75, "BargeFront");
-    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(11.5, 76, 137, "IntakeCoralRear");
+    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(13, 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(15, 118, -153, "IntakeCoralFront");
     public static final ElevatorStructurePosition IntakeAlgaeHighRear = new ElevatorStructurePosition(47, 48, 175, "IntakeAlgaeHighRear");
     public static final ElevatorStructurePosition IntakeAlgaeHighFront = new ElevatorStructurePosition(30, 52, 175, "IntakeAlgaeHighFront");
@@ -29,7 +29,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L3Rear = new ElevatorStructurePosition(33.5, 105, -70, "L3Rear");
     public static final ElevatorStructurePosition L2Rear = new ElevatorStructurePosition(18, 105, -70, "L2Rear");
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7, 115, -90.5, "L1Rear");
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 0, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 66, "Climb");
 
     public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
@@ -41,7 +41,15 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToPosition(ElevatorStructurePosition frontPosition, ElevatorStructurePosition rearPosition) {
+        return moveToPosition(frontPosition, rearPosition, null);
+    }
+
+    public Command moveToPosition(ElevatorStructurePosition frontPosition, ElevatorStructurePosition rearPosition, Runnable action) {
         return run(() -> {
+            if(action != null) {
+                action.run();
+            }
+
             if(RobotState.scoringSide == ScoringSides.FRONT) {
                 m_PeriodicIO.targetPosition = frontPosition;
             }
@@ -49,7 +57,7 @@ public class ElevatorStructure extends SubsystemIO {
                 m_PeriodicIO.targetPosition = rearPosition;    
             }
             applyPosition();
-        }).until(() -> isAtPosition());
+        });//.until(() -> isAtPosition());
     }
 
     public Command moveToPosition(ElevatorStructurePosition position) {
@@ -95,26 +103,22 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(L1Front, L1Rear);
     }
 
-    public Command moveToIntakeCoral() {
-        return moveToPosition(IntakeCoralFront, IntakeCoralRear);
-    }
-
     public Command moveToStarting() {
         return moveToPosition(Starting);
     }
 
     public Command intakeCoral() {
-        return run(() -> { m_Claw.setCoralOutput(0.4); });
+        return moveToPosition(IntakeCoralRear, IntakeCoralFront, () -> { m_Claw.setCoralOutput(0.6); });
     }
 
     public Command intakeAlgae() {
-        return run(() -> { m_Claw.setAlgaeOutput(0.2); });
+        return run(() -> { m_Claw.setIntakeCoral(); });
     }
 
     public Command defaultCommand() {
         return run(() -> { 
             m_Claw.setCoralOutput(.1);
-            m_Claw.setAlgaeOutput(.2);
+            //m_Claw.setAlgaeOutput(.2);
         });
     }
 
