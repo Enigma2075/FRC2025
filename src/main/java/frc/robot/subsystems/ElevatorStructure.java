@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.RobotState.ScoringSides;
+import frc.robot.subsystems.Claw.CoralModes;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 
 public class ElevatorStructure extends SubsystemIO {
@@ -108,19 +109,23 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command intakeCoral() {
-        return moveToPosition(IntakeCoralRear, IntakeCoralFront, () -> { m_Claw.setCoralOutput(0.6); });
+        return moveToPosition(IntakeCoralRear, IntakeCoralFront, () -> { m_Claw.setCoralMode(CoralModes.INTAKE); });
     }
 
     public Command stopCoral(){
-        return run(()-> m_Claw.setCoralOutput(0));
+        return run(()-> m_Claw.setCoralMode(CoralModes.STOP));
     }
 
     public Command holdCoral(){
-        return run(()-> m_Claw.setCoralOutput(0.1));
+        return run(()-> m_Claw.setCoralMode(CoralModes.HOLD));
     }
 
     public Command intakeAlgae() {
-        return run(() -> { m_Claw.setIntakeCoral(); });
+        return run(() -> m_Claw.setCoralMode(CoralModes.INTAKE));
+    }
+
+    public Command outtakeAlgae() {
+        return run(() -> m_Claw.setCoralMode(CoralModes.OUTTAKE));
     }
 
     public Command defaultCommand() {
