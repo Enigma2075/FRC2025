@@ -23,7 +23,7 @@ public class Claw extends SubsystemIO {
         STOP(0,0, null, null),
         HOLD(40, 40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent < timeoutCurrent),
         INTAKE(40, 20, HOLD, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent),
-        OUTTSAKE(-40, -40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent);
+        OUTTAKE(-40, -40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent);
 
         public final double current;
         private final double thresholdCurrent;
@@ -128,6 +128,14 @@ public class Claw extends SubsystemIO {
             m_PeriodicIO.algaeTimeoutCount = 0;
             m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
         }
+    }
+
+    public boolean hasAlgae() {
+        return m_PeriodicIO.algaeMode == AlgaeModes.HOLD;
+    }
+
+    public boolean hasCoral() {
+        return m_PeriodicIO.coralMode == CoralModes.HOLD;
     }
 
     @Override
