@@ -88,13 +88,16 @@ public class Intake extends SubsystemIO{
         rollerConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_roller.getConfigurator().apply(rollerConfigs);
+
+        setPivotPosition(PivotPositions.DEFAULT);
     }
 
     public enum PivotPositions { 
         GRABCAGE(0),
         FLOORINTAKE(34),
         CLIMBREADY(59),
-        DEFAULT(94);
+        TEST(90),
+        DEFAULT(120);
 
         public final double degrees;
 
@@ -145,6 +148,20 @@ public class Intake extends SubsystemIO{
             setPivotOutput(outputPercent.get());
         });
     }
+
+    //set a command that will return a command that will set the output 
+    public Command setTestOutput(double output){
+        return run(()->{
+            setPivotOutput(output);
+        });
+    }
+
+    //return a command that will set the position
+    public Command setPositionCommand(PivotPositions position){
+        return run(()->{
+            setPivotPosition(position);
+        });
+    }
     
     public Command setTestPosition(){
         return run(() -> {
@@ -172,7 +189,7 @@ public class Intake extends SubsystemIO{
                 m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));
                 break;
             case POSITION:
-                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * WristConstants.kG));
+                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * IntakeConstants.kG));
                 break;
             case SYSID:
 

@@ -14,7 +14,7 @@ public class ElevatorStructure extends SubsystemIO {
     private final Wrist m_Wrist;
     private final Claw m_Claw;
 
-    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(12, 90, 90, "Starting"); //7.5
+    public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
     public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(60, 87, -160, "BargeBack");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(60, 125, -75, "BargeFront");
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(13, 73, 137, "IntakeCoralRear");
@@ -111,14 +111,22 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(IntakeCoralRear, IntakeCoralFront, () -> { m_Claw.setCoralOutput(0.6); });
     }
 
+    public Command stopCoral(){
+        return run(()-> m_Claw.setCoralOutput(0));
+    }
+
+    public Command holdCoral(){
+        return run(()-> m_Claw.setCoralOutput(0.1));
+    }
+
     public Command intakeAlgae() {
         return run(() -> { m_Claw.setIntakeCoral(); });
     }
 
     public Command defaultCommand() {
         return run(() -> { 
-            m_Claw.setCoralOutput(.1);
-            //m_Claw.setAlgaeOutput(.2);
+            // m_Claw.setCoralOutput(.1);
+            // m_Claw.setAlgaeOutput(.2);
         });
     }
 
@@ -146,7 +154,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     private void applyPosition(ElevatorStructurePosition state) {
-       m_Elevator.setHeight(state.ElevatorHeight);
+        m_Elevator.setHeight(state.ElevatorHeight);
         m_Arm.setDegrees(state.ArmAngle);
         m_Wrist.setDegrees(state.WristAngle);
     }

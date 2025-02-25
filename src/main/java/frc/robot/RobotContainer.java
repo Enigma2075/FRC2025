@@ -26,6 +26,7 @@ import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
+import frc.robot.subsystems.Intake.PivotPositions;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Arm;
@@ -176,6 +177,8 @@ public class RobotContainer {
         operator.a().whileTrue(elevatorStructure.moveToL2());
         operator.x().whileTrue(elevatorStructure.moveToL1());
 
+        // operator.y().whileTrue(intake.setPositionCommand(PivotPositions.TEST));
+
         operator.rightBumper().whileTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()));
         
         //operator.back().whileTrue(elevatorStructure.moveToClimb());
@@ -185,7 +188,7 @@ public class RobotContainer {
 
         //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
 
-        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.moveToStarting());
+        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.stopCoral());
 
 
     }

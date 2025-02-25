@@ -24,38 +24,38 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 
 public class Claw extends SubsystemIO {
-    private TalonFXS m_Coral;
-    private TalonFXS m_Algae;
+    private TalonFX m_Coral;
+    private TalonFX m_Algae;
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     
     public Claw() {
-        m_Algae = new TalonFXS(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
+        m_Algae = new TalonFX(ClawConstants.kAlgae,RobotConstants.kCanivoreBusName);
 
-        TalonFXSConfiguration algaeConfigs = new TalonFXSConfiguration();
+        TalonFXConfiguration algaeConfigs = new TalonFXConfiguration();
 
         algaeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         algaeConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-        algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
+        // algaeConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        // algaeConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
 
         algaeConfigs.CurrentLimits.StatorCurrentLimit = 40;
         algaeConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         m_Algae.getConfigurator().apply(algaeConfigs);
 
-        m_Coral = new TalonFXS(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
+        m_Coral = new TalonFX(ClawConstants.kCoral,RobotConstants.kCanivoreBusName);
 
-        TalonFXSConfiguration coralConfigs = new TalonFXSConfiguration();
+        TalonFXConfiguration coralConfigs = new TalonFXConfiguration();
 
         coralConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         coralConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-        coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
+        // coralConfigs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+        // coralConfigs.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Enabled;
 
         m_Coral.getConfigurator().apply(coralConfigs);
     }
