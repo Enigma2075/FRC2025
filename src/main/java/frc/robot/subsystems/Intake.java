@@ -97,7 +97,7 @@ public class Intake extends SubsystemIO{
         FLOORINTAKE(34),
         CLIMBREADY(59),
         TEST(90),
-        DEFAULT(120);
+        DEFAULT(110);
 
         public final double degrees;
 

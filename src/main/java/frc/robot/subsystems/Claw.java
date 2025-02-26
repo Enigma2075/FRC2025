@@ -21,9 +21,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 public class Claw extends SubsystemIO {
     public enum AlgaeModes { 
         STOP(0,0, null, null),
-        HOLD(40, 40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent < timeoutCurrent),
-        INTAKE(40, 20, HOLD, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent),
-        OUTTAKE(-40, -40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent);
+        HOLD(20, 16, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent < thresholdCurrent),
+        INTAKE(40, 20, HOLD, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
+        OUTTAKE(-40, -40, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent);
 
         public final double current;
         private final double thresholdCurrent;
@@ -44,9 +44,9 @@ public class Claw extends SubsystemIO {
 
     public enum CoralModes { 
         STOP(0,0, null, null),
-        HOLD(40, 40, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent < timeoutCurrent),
-        INTAKE(40, 20, HOLD, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent),
-        OUTTAKE(-40, -20, STOP, (Double actualCurrent, Double timeoutCurrent) -> actualCurrent > timeoutCurrent);
+        HOLD(20, 16, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent < thresholdCurrent),
+        INTAKE(40, 20, HOLD, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
+        OUTTAKE(-40, -18, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent);
 
         public final double current;
         private final double thresholdCurrent;
@@ -183,8 +183,11 @@ public class Claw extends SubsystemIO {
                 m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
                 m_PeriodicIO.algaeTimeoutCount = 0;
             }
+            m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
         }
-        m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
+        else {
+            m_Algae.stopMotor();
+        }
 
         if(m_PeriodicIO.coralMode != CoralModes.STOP) {
             if(m_PeriodicIO.coralMode.isOverThreshold(m_PeriodicIO.coralCurrent)){ 
@@ -198,7 +201,10 @@ public class Claw extends SubsystemIO {
                 m_PeriodicIO.coralLastCheck = Timer.getFPGATimestamp();
                 m_PeriodicIO.coralTimeoutCount = 0;
             }
+            m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralMode.current));
         }
-        m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralMode.current));
+        else {
+            m_Coral.stopMotor();
+        }
     }
 }

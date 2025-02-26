@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -188,7 +189,12 @@ public class Arm extends SubsystemIO{
                 m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
-                m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));
+                if(Robot.RobotContainer.elevator.isAtPosition()) {
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));    
+                }
+                else {
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(Math.toRadians(90))).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));
+                }
                 break;
             case SYSID:
 

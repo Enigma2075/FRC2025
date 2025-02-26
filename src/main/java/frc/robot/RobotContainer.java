@@ -188,8 +188,10 @@ public class RobotContainer {
 
         //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
 
-        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.stopCoral());
-
+        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.holdCoral());
+        
+        //driver.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.holdCoral());
+        driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
 
     }
 

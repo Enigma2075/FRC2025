@@ -10,8 +10,8 @@ public class RobotState {
     public static ScoringSides scoringSide = ScoringSides.FRONT;
 
     public static void outputTelemetry(){
-        SmartDashboard.putBoolean("RobotState/Front", scoringSide==ScoringSides.FRONT);
+        SmartDashboard.putBoolean("RobotState/ScoringFront", scoringSide==ScoringSides.FRONT);
 
-        SignalLogger.writeBoolean("RobotState/Front", scoringSide==ScoringSides.FRONT);
+        SignalLogger.writeBoolean("RobotState/ScoringFront", scoringSide==ScoringSides.FRONT);
     }
 }
