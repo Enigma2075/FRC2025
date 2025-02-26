@@ -126,7 +126,7 @@ public class DriveTrainConstants {
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
 
-    //gears have to face insides of robot (black ones outside)
+    //Bevel gears out for swerve orientation
 
     // Front Left
     private static final int kFrontLeftDriveMotorId = 2;
