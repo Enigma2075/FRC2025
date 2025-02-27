@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotState;
 
 public class Intake extends SubsystemIO{
     public enum ControlMode {
@@ -93,11 +94,11 @@ public class Intake extends SubsystemIO{
     }
 
     public enum PivotPositions { 
-        GRABCAGE(0),
+        GRABCAGE(95),
         FLOORINTAKE(34),
-        CLIMBREADY(59),
-        TEST(90),
-        DEFAULT(110);
+        CLIMBREADY(0),
+        DEFAULT(110),
+        DISABLE(0);
 
         public final double degrees;
 
@@ -159,6 +160,9 @@ public class Intake extends SubsystemIO{
     //return a command that will set the position
     public Command setPositionCommand(PivotPositions position){
         return run(()->{
+            if(position == PivotPositions.CLIMBREADY) {
+                RobotState.isClimbing = true;
+            }
             setPivotPosition(position);
         });
     }
@@ -189,7 +193,12 @@ public class Intake extends SubsystemIO{
                 m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));
                 break;
             case POSITION:
-                m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * IntakeConstants.kG));
+                if(m_PeriodicIO.targetPivotPosition == PivotPositions.DISABLE) {
+                    m_pivot.disable();
+                }
+                else {
+                    m_pivot.setControl(m_PivotPositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetPivotAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentPivotAngle) * IntakeConstants.kG));
+                }
                 break;
             case SYSID:
 

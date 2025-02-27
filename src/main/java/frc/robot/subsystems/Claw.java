@@ -156,7 +156,6 @@ public class Claw extends SubsystemIO {
         SmartDashboard.putString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
         SmartDashboard.putString("Claw/CoralMode", m_PeriodicIO.coralMode.name());
 
-
         SignalLogger.writeDouble("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
         SignalLogger.writeDouble("Claw/CoralCurrent", m_PeriodicIO.coralCurrent);
         SignalLogger.writeString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());

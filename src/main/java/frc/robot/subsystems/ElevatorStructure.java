@@ -31,7 +31,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(39, 108, -76, "L3Front");
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(24, 108, -70, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(9, 115, -95, "L1Front");
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 66, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 16, "Climb");
 
     public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;

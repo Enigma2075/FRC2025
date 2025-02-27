@@ -16,7 +16,7 @@ public class IntakeConstants {
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double kZeroOffset = 6.0;
+    public static final double kZeroOffset = 5.871;
 
     public static final double kFalconRPS = 6380.0 / 60.0;
     public static final double kMaxRPS = kFalconRPS / kGearRatio;

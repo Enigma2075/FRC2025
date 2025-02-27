@@ -180,10 +180,9 @@ public class RobotContainer {
 
         // operator.y().whileTrue(intake.setPositionCommand(PivotPositions.TEST));
 
-        operator.rightBumper().whileTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(climb.moveToPosition(State.START)));
-        
-        //operator.back().whileTrue(elevatorStructure.moveToClimb().alongWith(climb.moveToPosition(State.START)));
-        operator.start().whileTrue(climb.moveToPosition(State.ENDCLIMB));
+        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setPositionCommand(PivotPositions.CLIMBREADY)));
+        operator.start().and(() -> RobotState.isClimbing).onTrue(intake.setPositionCommand(PivotPositions.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
+        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setPositionCommand(PivotPositions.GRABCAGE));
 
         driver.leftTrigger().whileTrue(intake.setPositionCommand(PivotPositions.FLOORINTAKE));
 

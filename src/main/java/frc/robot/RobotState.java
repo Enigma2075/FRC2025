@@ -9,6 +9,8 @@ public class RobotState {
 
     public static ScoringSides scoringSide = ScoringSides.FRONT;
 
+    public static boolean isClimbing = false;
+
     public static void outputTelemetry(){
         SmartDashboard.putBoolean("RobotState/ScoringFront", scoringSide==ScoringSides.FRONT);
 

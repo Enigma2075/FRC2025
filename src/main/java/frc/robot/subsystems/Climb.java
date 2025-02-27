@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -24,6 +25,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -44,7 +46,7 @@ public class Climb extends SubsystemIO{
     //private final VoltageOut m_VoltageRequest = new VoltageOut(0);
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final PositionVoltage m_ClimbRequest= new PositionVoltage(0);
-    private final MotionMagicDutyCycle m_PositionRequest = new MotionMagicDutyCycle(0).withSlot(0);
+    private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
     private final StaticBrake m_StaticRequest = new StaticBrake();
 
      private final VoltageOut m_SysIdRequest = new VoltageOut(0);
@@ -95,11 +97,13 @@ public class Climb extends SubsystemIO{
         m_Back.getConfigurator().apply(backConfig);
 
         m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
+
+        m_Front.setPosition(0);
     }
 
     public enum State { 
-        START(10), 
-        ENDCLIMB(42);
+        START(0), 
+        ENDCLIMB(130);
         
         public final double distance;
 
@@ -112,10 +116,9 @@ public class Climb extends SubsystemIO{
         public ControlMode controlMode = ControlMode.OUTPUT;
 
         State requestedState = State.START;
-        double enc = 0;
 
-        double lastPosition = Double.MIN_VALUE;
-
+        public double currentPosition = 0;
+        
         //public double targetVoltage = 0;
         public double targetOutput = 0;
     }
@@ -158,7 +161,8 @@ public class Climb extends SubsystemIO{
     }
 
     public Command moveToPosition(State state){
-        return run(() -> { m_PeriodicIO.requestedState = state;
+        return run(() -> { 
+        m_PeriodicIO.requestedState = state;
         m_PeriodicIO.controlMode = ControlMode.POSITION;
         });
     }
@@ -173,8 +177,7 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.enc = m_Front.getPosition().getValueAsDouble();
-        //m_PeriodicIO.enc = m_Front.getPosition().getValueAsDouble();
+        m_PeriodicIO.currentPosition = m_Front.getPosition().getValueAsDouble();
     }
 
     @Override
@@ -199,18 +202,7 @@ public class Climb extends SubsystemIO{
         if(Timer.getFPGATimestamp()-timeout>1){
             m_Latch.setDisabled();
         }
-
     }
-
-        /*switch (m_PeriodicIO.requestedState)
-        {
-            case START:
-                    writeClimb(0);
-            case ENDCLIMB:
-                    writeClimb(0);
-                    
-        }*/
-    
 
     @Override
     public void stop() {
@@ -225,7 +217,9 @@ public class Climb extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
+        SmartDashboard.putNumber("Climb/CurrentPosition", m_PeriodicIO.currentPosition);
         
+        SignalLogger.writeDouble("Climb/CurrentPosition", m_PeriodicIO.currentPosition);
     }
 
 }
