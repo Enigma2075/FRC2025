@@ -157,6 +157,12 @@ public class Climb extends SubsystemIO{
         });
     }
 
+    public Command moveToPosition(State state){
+        return run(() -> { m_PeriodicIO.requestedState = state;
+        m_PeriodicIO.controlMode = ControlMode.POSITION;
+        });
+    }
+
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
         return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }

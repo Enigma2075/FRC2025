@@ -150,7 +150,7 @@ public class Intake extends SubsystemIO{
     }
 
     //set a command that will return a command that will set the output 
-    public Command setTestOutput(double output){
+    public Command setOutputCommand(double output){
         return run(()->{
             setPivotOutput(output);
         });

@@ -26,6 +26,7 @@ import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
+import frc.robot.subsystems.Climb.State;
 import frc.robot.subsystems.Intake.PivotPositions;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.RobotState.ScoringSides;
@@ -179,10 +180,12 @@ public class RobotContainer {
 
         // operator.y().whileTrue(intake.setPositionCommand(PivotPositions.TEST));
 
-        operator.rightBumper().whileTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()));
+        operator.rightBumper().whileTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(climb.moveToPosition(State.START)));
         
-        //operator.back().whileTrue(elevatorStructure.moveToClimb());
-        //operator.start().whileTrue();
+        //operator.back().whileTrue(elevatorStructure.moveToClimb().alongWith(climb.moveToPosition(State.START)));
+        operator.start().whileTrue(climb.moveToPosition(State.ENDCLIMB));
+
+        driver.leftTrigger().whileTrue(intake.setPositionCommand(PivotPositions.FLOORINTAKE));
 
         operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
 
