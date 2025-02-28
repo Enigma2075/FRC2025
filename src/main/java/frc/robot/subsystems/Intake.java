@@ -90,27 +90,29 @@ public class Intake extends SubsystemIO{
 
         m_roller.getConfigurator().apply(rollerConfigs);
 
-        setPivotPosition(PivotPositions.DEFAULT);
+        setState(States.DEFAULT);
     }
 
-    public enum PivotPositions { 
-        GRABCAGE(95),
-        FLOORINTAKE(34),
-        CLIMBREADY(0),
-        DEFAULT(110),
-        DISABLE(0);
+    public enum States { 
+        GRABCAGE(95, 0),
+        FLOORINTAKE(58, 1),
+        CLIMBREADY(0, 0),
+        DEFAULT(110, 0),
+        DISABLE(0, 0);
 
         public final double degrees;
+        public final double rollerOutput;
 
-        private PivotPositions(double degrees) {
+        private States(double degrees, double rollerOutput) {
             this.degrees = degrees;
+            this.rollerOutput = rollerOutput;
         }
     } 
 
     public static class PeriodicIO {
         public ControlMode controlMode = ControlMode.OUTPUT;    
 
-        PivotPositions targetPivotPosition = PivotPositions.DEFAULT;
+        States targetPivotPosition = States.DEFAULT;
         
         public double targetPivotOutput = 0;
         
@@ -151,32 +153,33 @@ public class Intake extends SubsystemIO{
     }
 
     //set a command that will return a command that will set the output 
-    public Command setOutputCommand(double output){
-        return run(()->{
-            setPivotOutput(output);
-        });
-    }
+    //public Command setOutputCommand(double output){
+    //    return run(()->{
+    //        setPivotOutput(output);
+    //    });
+    //}
 
     //return a command that will set the position
-    public Command setPositionCommand(PivotPositions position){
+    public Command setStateCommand(States state){
         return run(()->{
-            if(position == PivotPositions.CLIMBREADY) {
+            if(state == States.CLIMBREADY) {
                 RobotState.isClimbing = true;
             }
-            setPivotPosition(position);
+            setState(state);
         });
     }
     
     public Command setTestPosition(){
         return run(() -> {
-            m_PeriodicIO.targetPivotPosition = PivotPositions.GRABCAGE;
+            m_PeriodicIO.targetPivotPosition = States.GRABCAGE;
             m_PeriodicIO.controlMode = ControlMode.POSITION;
         });
     }
 
-    public void setPivotPosition(PivotPositions position){
+    public void setState(States position){
         m_PeriodicIO.targetPivotPosition = position;
         m_PeriodicIO.targetPivotAngle = Math.toRadians(position.degrees);
+        m_PeriodicIO.targetRollerOutput = position.rollerOutput;
         m_PeriodicIO.controlMode = ControlMode.POSITION;
     }
 
@@ -193,7 +196,7 @@ public class Intake extends SubsystemIO{
                 m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));
                 break;
             case POSITION:
-                if(m_PeriodicIO.targetPivotPosition == PivotPositions.DISABLE) {
+                if(m_PeriodicIO.targetPivotPosition == States.DISABLE) {
                     m_pivot.disable();
                 }
                 else {
@@ -207,6 +210,7 @@ public class Intake extends SubsystemIO{
 
                 break;
         }
+
         m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
     }
 

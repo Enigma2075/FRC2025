@@ -156,13 +156,17 @@ public class Elevator extends SubsystemIO{
         });
     }
 
-    public boolean isAtPosition() {
-        if(Math.abs(m_PeriodicIO.targetHeight - m_PeriodicIO.currentHeight) < 5) {
+    public boolean isAtPosition(double height) {
+        if(Math.abs(height - m_PeriodicIO.currentHeight) < 5) {
             return true;
         }
         else {
             return false;
-        }
+        }        
+    }
+
+    public boolean isAtPosition() {
+        return isAtPosition(m_PeriodicIO.targetHeight);
     }
 
     @Override

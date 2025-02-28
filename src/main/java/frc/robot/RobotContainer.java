@@ -27,7 +27,7 @@ import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.Climb.State;
-import frc.robot.subsystems.Intake.PivotPositions;
+import frc.robot.subsystems.Intake.States;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Arm;
@@ -180,11 +180,11 @@ public class RobotContainer {
 
         // operator.y().whileTrue(intake.setPositionCommand(PivotPositions.TEST));
 
-        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setPositionCommand(PivotPositions.CLIMBREADY)));
-        operator.start().and(() -> RobotState.isClimbing).onTrue(intake.setPositionCommand(PivotPositions.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
-        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setPositionCommand(PivotPositions.GRABCAGE));
+        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
+        operator.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
+        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
 
-        driver.leftTrigger().whileTrue(intake.setPositionCommand(PivotPositions.FLOORINTAKE));
+        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
 
         operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
 
@@ -192,7 +192,7 @@ public class RobotContainer {
 
         operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.holdCoral());
         
-        //driver.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.holdCoral());
+        driver.rightTrigger().onTrue(elevatorStructure.intakeAlgae());
         driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
 
     }

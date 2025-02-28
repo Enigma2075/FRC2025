@@ -107,14 +107,14 @@ public class Arm extends SubsystemIO{
         public ControlMode controlMode = ControlMode.OUTPUT;
         double enc = 0;
 
-        public double currentAngle = 0;
+        public double CurrentAngle = 0;
         public double targetAngle = 0;
 
         public double targetOutput = 0; 
     }
 
     public double getCurrentAngle() {
-        return m_PeriodicIO.currentAngle;
+        return m_PeriodicIO.CurrentAngle;
     }
 
     public void setOutput(double output){
@@ -158,6 +158,11 @@ public class Arm extends SubsystemIO{
         });
     }
 
+    public boolean isAtPosition(double degrees) {
+        double error = Math.toDegrees(m_PeriodicIO.CurrentAngle) - degrees;
+        return Math.abs(error) < 5;
+    }
+
     @Override
     public void stop() {
     }
@@ -170,16 +175,16 @@ public class Arm extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Arm/CurrentAngle", m_PeriodicIO.currentAngle);
-        SmartDashboard.putNumber("Arm/TargetAngle", m_PeriodicIO.targetAngle);
+        SmartDashboard.putNumber("Arm/CurrentDegrees", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SmartDashboard.putNumber("Arm/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetAngle));
 
-        SignalLogger.writeDouble("Arm/CurrentAngle", m_PeriodicIO.currentAngle);
-        SignalLogger.writeDouble("Arm/TargetAngle", m_PeriodicIO.targetAngle);
+        SignalLogger.writeDouble("Arm/CurrentDegrees", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SignalLogger.writeDouble("Arm/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetAngle));
     }
 
     @Override
     public void readPeriodicInputs(){
-        m_PeriodicIO.currentAngle = convertPositionToAngle(m_Motor.getPosition().getValueAsDouble());
+        m_PeriodicIO.CurrentAngle = convertPositionToAngle(m_Motor.getPosition().getValueAsDouble());
     }
 
     @Override
@@ -190,10 +195,10 @@ public class Arm extends SubsystemIO{
                 break;
             case POSITION:
                 if(Robot.RobotContainer.elevator.isAtPosition()) {
-                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));    
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));    
                 }
                 else {
-                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(Math.toRadians(90))).withFeedForward(Math.cos(m_PeriodicIO.currentAngle) * ArmConstants.kG));
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(Math.toRadians(90))).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));
                 }
                 break;
             case SYSID:

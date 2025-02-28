@@ -22,7 +22,7 @@ public class Claw extends SubsystemIO {
     public enum AlgaeModes { 
         STOP(0,0, null, null),
         HOLD(20, 16, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent < thresholdCurrent),
-        INTAKE(40, 20, HOLD, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
+        INTAKE(40, 30, HOLD, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
         OUTTAKE(-40, -40, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent);
 
         public final double current;
@@ -105,6 +105,7 @@ public class Claw extends SubsystemIO {
         public double algaeLastCheck = 0;
         public AlgaeModes algaeLastMode = null;
         public AlgaeModes algaeMode = AlgaeModes.STOP;
+        public boolean algaeDisableTimeout = false;
         
         public double coralCurrent=0;
         public double algaeCurrent=0;
@@ -122,6 +123,11 @@ public class Claw extends SubsystemIO {
     }
 
     public void setAlgaeMode(AlgaeModes mode){
+        setAlgaeMode(mode, false);
+    }
+
+    public void setAlgaeMode(AlgaeModes mode, boolean disableTimeout){
+        m_PeriodicIO.algaeDisableTimeout = disableTimeout;
         if(m_PeriodicIO.algaeLastMode != mode) {
             m_PeriodicIO.algaeMode = mode;
             m_PeriodicIO.algaeLastMode = mode;
@@ -175,10 +181,10 @@ public class Claw extends SubsystemIO {
                 m_PeriodicIO.algaeTimeoutCount++;
             }
 
-            if(m_PeriodicIO.algaeTimeoutCount > 1) {
+            if(m_PeriodicIO.algaeTimeoutCount > 7) {
                 setAlgaeMode(m_PeriodicIO.algaeMode.next);
             }
-            else if(m_PeriodicIO.algaeLastCheck - Timer.getFPGATimestamp() >= .05){
+            else if(m_PeriodicIO.algaeLastCheck - Timer.getFPGATimestamp() >= .02 * 12){
                 m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
                 m_PeriodicIO.algaeTimeoutCount = 0;
             }

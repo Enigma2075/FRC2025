@@ -129,6 +129,11 @@ public class Wrist extends SubsystemIO{
         return angle / (2 * Math.PI);
     }
 
+    public boolean isAtPosition(double degrees) {
+        double error = Math.toDegrees(m_PeriodicIO.CurrentAngle) - degrees;
+        return Math.abs(error) < 5;
+    }
+
     private double getGravityOffset() {
         return Math.cos(Robot.RobotContainer.arm.getCurrentAngle() + m_PeriodicIO.CurrentAngle) * WristConstants.kG;
     }
@@ -167,11 +172,11 @@ public class Wrist extends SubsystemIO{
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Wrist/CurrentAngle", Math.toDegrees(m_PeriodicIO.CurrentAngle));
-        SmartDashboard.putNumber("Wrist/TargetAngle", Math.toDegrees(m_PeriodicIO.TargetAngle));
+        SmartDashboard.putNumber("Wrist/CurrentDegrees", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SmartDashboard.putNumber("Wrist/TargetDegrees", Math.toDegrees(m_PeriodicIO.TargetAngle));
 
-        SignalLogger.writeDouble("Wrist/CurrentAngle", Math.toDegrees(m_PeriodicIO.CurrentAngle));
-        SignalLogger.writeDouble("Wrist/TargetAngle", Math.toDegrees(m_PeriodicIO.TargetAngle));
+        SignalLogger.writeDouble("Wrist/CurrentDegrees", Math.toDegrees(m_PeriodicIO.CurrentAngle));
+        SignalLogger.writeDouble("Wrist/TargetDegrees", Math.toDegrees(m_PeriodicIO.TargetAngle));
     }
 
     @Override
