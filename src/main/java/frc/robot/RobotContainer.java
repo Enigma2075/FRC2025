@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -48,6 +49,10 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+            ;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -77,6 +82,8 @@ public class RobotContainer {
     public IOManager ioManager; 
 
     public RobotContainer() {
+        driveAtAngle.HeadingController.setP(6);
+        
         autoChooser = AutoBuilder.buildAutoChooser("Test");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -99,9 +106,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(Math.signum(-driver.getLeftX()) * (-driver.getLeftX() * -driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -143,10 +150,10 @@ public class RobotContainer {
 
         //operator.a().whileTrue(elevator.setTestPosition(1));
 
-        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driver.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-        ));
+        //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        //driver.b().whileTrue(drivetrain.applyRequest(() ->
+        //    point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
+        //));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -187,14 +194,44 @@ public class RobotContainer {
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
 
         operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
+        operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgae()));
 
         //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
 
-        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.holdCoral());
+        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.moveToStarting());
         
-        driver.rightTrigger().onTrue(elevatorStructure.intakeAlgae());
+        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHigh()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
+        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLow()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
+        
+        //driver.rightTrigger().onTrue(elevatorStructure.intake());
+        driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
         driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
 
+        operator.axisMagnitudeGreaterThan(0, .7).or(operator.axisMagnitudeGreaterThan(1, .7))
+            .whileTrue(drivetrain.applyRequest(() -> driveAtAngle.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withTargetDirection(getRotationForJoystick(operator.getLeftX(), -operator.getLeftY()))
+            ));
+    }
+
+    public Rotation2d getRotationForJoystick(double requestX, double requestY) {
+        double reefSlice = (Math.PI * 2.0) / 6.0;
+        double reefSliceMiddle = reefSlice /2.0;
+        Rotation2d joystickRotation = new Rotation2d(requestX, requestY).rotateBy(new Rotation2d((-Math.PI/2.0)-reefSliceMiddle));
+        SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
+
+        int reefIndex = (int)(joystickRotation.getRadians() / reefSlice);
+        if(Math.signum(joystickRotation.getRadians()) == 1) {
+            reefIndex++;
+        }
+        
+        SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
+
+        Rotation2d output = new Rotation2d((reefIndex * reefSlice));
+
+        SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
+
+        return output;
     }
 
     public Command getAutonomousCommand() {

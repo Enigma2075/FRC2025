@@ -5,7 +5,9 @@ import static edu.wpi.first.units.Units.*;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -190,6 +192,45 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
+        
+                /* Do this for every module */
+        for(int i = 0; i < 4; ++i) {
+            var swerveModule = this.getModule(i);
+            var motor = swerveModule.getDriveMotor(); // Get the drive motor in this instance
+            var motorConfig = new TalonFXConfiguration();
+
+            StatusCode status = StatusCode.StatusCodeNotInitialized;
+            int maxRetries = 10;
+            do {
+                status = motor.getConfigurator().refresh(motorConfig);
+            } while (!status.isOK() && maxRetries-- > 0);
+            if(!status.isOK()) {
+                System.out.println("Could not retrieve configs: " + status.toString());
+                continue; // Move to next module, don't modify configs
+            }
+
+            /* Set a stator current limit on the steer motors */
+            //motorConfig.CurrentLimits.StatorCurrentLimit = 50;
+            //motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+           
+            motorConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
+            motorConfig.CurrentLimits.SupplyCurrentLowerTime = .75;
+            motorConfig.CurrentLimits.SupplyCurrentLimit = 80;
+            motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+            //motorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+            //motorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+
+            status = StatusCode.StatusCodeNotInitialized;
+            maxRetries = 10;
+            do{
+                status = motor.getConfigurator().apply(motorConfig);
+            } while (!status.isOK() && maxRetries-- > 0);
+
+            if (!status.isOK()) {
+                System.out.println("Could not apply configs: " + status.toString());
+            }
+        }
+        
         if (Utils.isSimulation()) {
             startSimThread();
         }

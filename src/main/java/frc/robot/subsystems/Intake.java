@@ -62,7 +62,7 @@ public class Intake extends SubsystemIO{
         m_roller = new TalonFX(IntakeConstants.kRollerId,RobotConstants.kCanivoreBusName);
 
         TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-        pivotConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        pivotConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         pivotConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         Slot0Configs slot0Configs = pivotConfigs.Slot0;
@@ -96,9 +96,12 @@ public class Intake extends SubsystemIO{
     public enum States { 
         GRABCAGE(95, 0),
         FLOORINTAKE(58, 1),
+        OUTTAKE(110, -1),
         CLIMBREADY(0, 0),
         DEFAULT(110, 0),
-        DISABLE(0, 0);
+        DISABLE(0, 0),
+        GRABALGAE(100, 0),
+        HANDOFFALGAE(100, 0);
 
         public final double degrees;
         public final double rollerOutput;

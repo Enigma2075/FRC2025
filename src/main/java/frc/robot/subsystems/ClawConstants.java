@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 public class ClawConstants {
-    public static final int kCoral = 13;
-    public static final int kAlgae = 14;
+    public static final int kCoralId = 13;
+    public static final int kAlgaeId = 14;
+
+    public static final int kCoralSensorId = 2;
 
     public static final double kG = 0;
     public static final double kS = 0.0146484375;

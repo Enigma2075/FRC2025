@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotConstants {
@@ -26,7 +28,7 @@ public class RobotConstants {
             while (nwInterface.hasMoreElements()) {
                 NetworkInterface nis = nwInterface.nextElement();
                 System.out.println("NIS: " + nis.getDisplayName());
-                if (nis != null && "eth0".equals(nis.getDisplayName())) {
+                if (nis != null && ("eth0".equals(nis.getDisplayName()) || Utils.isSimulation())) {
                     byte[] mac = nis.getHardwareAddress();
                     if (mac != null){
                         for (int i = 0; i <mac.length; i++) {

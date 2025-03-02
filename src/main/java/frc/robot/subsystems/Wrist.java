@@ -16,6 +16,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -44,7 +45,7 @@ public class Wrist extends SubsystemIO{
     private CANcoder m_Encoder;
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
+    private final DynamicMotionMagicVoltage m_PositionRequest = new DynamicMotionMagicVoltage(0, WristConstants.kMotionMagicCruiseVelocity, WristConstants.kMotionMagicAcceleration, WristConstants.kMotionMagicJerk).withSlot(0);
 
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
@@ -103,6 +104,8 @@ public class Wrist extends SubsystemIO{
     public static class PeriodicIO{
         public ControlMode controlMode = ControlMode.OUTPUT;
 
+        public boolean overrideVelocity = false;
+
         public double CurrentAngle = 0;
         public double TargetAngle = 0;
     
@@ -118,6 +121,10 @@ public class Wrist extends SubsystemIO{
         m_PeriodicIO.controlMode = ControlMode.POSITION;
         m_PeriodicIO.TargetAngle = Math.toRadians(degrees);
     }
+
+    public void setOverrideVelocity(boolean override) {
+        m_PeriodicIO.overrideVelocity = override;
+    } 
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
@@ -191,7 +198,13 @@ public class Wrist extends SubsystemIO{
                     m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                     break;
                 case POSITION:
-                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)).withFeedForward(getGravityOffset()));
+                    if(m_PeriodicIO.overrideVelocity) {
+                        
+                        m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)).withVelocity(WristConstants.kMotionMagicCruiseVelocity * .5).withFeedForward(getGravityOffset()));
+                    }
+                    else {
+                        m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.TargetAngle)).withFeedForward(getGravityOffset()));
+                    }
                     break;
                 case SYSID:
                 
