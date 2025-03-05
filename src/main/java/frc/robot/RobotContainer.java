@@ -92,15 +92,17 @@ public class RobotContainer {
         
         configureBindings();
 
-        //autoChooser = new SendableChooser<>();
+        autoChooser = new SendableChooser<>();
 
-        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
+        autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
 
     }
 
     private void configureBindings() {
+        drivetrain.registerTelemetry(logger::telemeterize);
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -111,49 +113,6 @@ public class RobotContainer {
                     .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-
-        elevatorStructure.setDefaultCommand(elevatorStructure.defaultCommand());
-
-        // Test Code for each subsystem
-        //elevator.setDefaultCommand(elevator.testCommand(driver::getRightTriggerAxis));
-
-        //climb.setDefaultCommand(climb.testCommand(() -> {return -operator.getLeftY();}));
-
-        //arm.setDefaultCommand(arm.testCommand(() -> {return -operator.getLeftY();}));
-        
-        //wrist.setDefaultCommand(wrist.testCommand(() -> {return -operator.getLeftY();}));
-
-        //operator.y().whileTrue(elevatorStructure.moveToL4(false));
-        // operator.a().whileTrue(elevatorStructure.moveToStarting());
-        // operator.b().whileTrue(elevatorStructure.moveToIntakeCoral(false));
-        
-        // operator.x().whileTrue(elevatorStructure.moveToClimb());
-
-        //operator.leftBumper().whileTrue(arm.setTestPosition(90));
-        //operator.rightBumper().whileTrue(elevator.setTestPosition(30));
-        //operator.a().whileTrue(wrist.setTestPosition(90));
-        
-        //operator.a().whileTrue(wrist.sysIdQuasiStatic(Direction.kReverse));
-        //operator.b().whileTrue(claw.testCommand(0.4));
-        //operator.x().whileTrue(wrist.sysIdDynamic(Direction.kForward));
-        //operator.y().whileTrue(wrist.sysIdQuasiStatic(Direction.kForward));
-
-        //operator.y().whileTrue(intake.setTestPosition());
-
-        //operator.y().whileTrue(climb.setTestPosition());
-        /*
-        operator.b().whileTrue(arm.setTestPosition());
-        operator.a().whileTrue(claw.setTestPosition());
-        operator.x().whileTrue(wrist.setTestPosition());
-        operator.y().whileTrue(intake.setTestPosition());
-        */
-
-        //operator.a().whileTrue(elevator.setTestPosition(1));
-
-        //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        //driver.b().whileTrue(drivetrain.applyRequest(() ->
-        //    point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-        //));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -171,47 +130,43 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        elevatorStructure.setDefaultCommand(elevatorStructure.defaultCommand());
 
-        operator.povUp().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
-        operator.povUpLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
-        operator.povUpRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
-        operator.povDown().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
-        operator.povDownLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
-        operator.povDownRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
-
+        operator.povRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
+        operator.povLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
+        
+        operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHigh());
+        operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLow());
+        
         operator.y().whileTrue(elevatorStructure.moveToL4());
         operator.b().whileTrue(elevatorStructure.moveToL3());
         operator.a().whileTrue(elevatorStructure.moveToL2());
         operator.x().whileTrue(elevatorStructure.moveToL1());
 
-        // operator.y().whileTrue(intake.setPositionCommand(PivotPositions.TEST));
-
-        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
-        operator.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
-        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
-
-        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
-
         operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
         operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgae()));
 
-        //operator.leftBumper().whileTrue(elevatorStructure.moveToBarge());
-
         operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.moveToStarting());
-        
-        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHigh()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
-        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLow()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
-        
-        //driver.rightTrigger().onTrue(elevatorStructure.intake());
-        driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
-        driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
 
+        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
+        
         operator.axisMagnitudeGreaterThan(0, .7).or(operator.axisMagnitudeGreaterThan(1, .7))
             .whileTrue(drivetrain.applyRequest(() -> driveAtAngle.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
             .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withTargetDirection(getRotationForJoystick(operator.getLeftX(), -operator.getLeftY()))
             ));
+
+
+        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
+        driver.back().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
+
+        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
+
+        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHigh()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
+        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLow()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
+
+        driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
+        driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
     }
 
     public Rotation2d getRotationForJoystick(double requestX, double requestY) {

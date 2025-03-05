@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.RobotState;
 import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Claw.AlgaeModes;
@@ -34,11 +39,15 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition IntakeAlgaeHighFrontStart = new ElevatorStructurePosition(26, 119.5, 156, "IntakeAlgaeHighFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeHighFront = new ElevatorStructurePosition(26, 119.5, 70, "IntakeAlgaeHighFront");
     public static final ElevatorStructurePosition IntakeAlgaeHighFrontEnd = new ElevatorStructurePosition(26, 100, 40, "IntakeAlgaeHighFrontEnd");
-    public static final ElevatorStructurePosition IntakeAlgaeHighFrontEndMove = new ElevatorStructurePosition(15, 90, 40, "IntakeAlgaeHighFrontEndMove");
-    public static final ElevatorStructurePositionSequence IntakeAlgaeHighFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighFrontStart, IntakeAlgaeHighFront, IntakeAlgaeHighFrontEnd, IntakeAlgaeHighFrontEndMove, GrabAlgaeRotateBoth, GrabAlgae);
+    public static final ElevatorStructurePositionSequence AlgaeHighFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighFrontStart);
+    public static final ElevatorStructurePositionSequence IntakeAlgaeHighFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighFront, IntakeAlgaeHighFrontEnd);
+    
+    public static final ElevatorStructurePosition StoreAlgaeMove = new ElevatorStructurePosition(15, 90, 40, "IntakeAlgaeHighFrontEndMove");
+    public static final ElevatorStructurePositionSequence StoreAlgaeSequence = new ElevatorStructurePositionSequence(StoreAlgaeMove, GrabAlgaeRotateBoth, GrabAlgae);
     
     public static final ElevatorStructurePosition IntakeAlgaeHighRear = new ElevatorStructurePosition(44, 110, 175, "IntakeAlgaeHighRear");
     public static final ElevatorStructurePositionSequence IntakeAlgaeHighRearSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighRear);
+    public static final ElevatorStructurePositionSequence AlgaeHighRearSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighRear);
     
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontStart = new ElevatorStructurePosition(7.5, 82, 157, "IntakeAlgaeLowFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontTuck = new ElevatorStructurePosition(7.5, 91, 157, "IntakeAlgaeLowFront");
@@ -62,6 +71,14 @@ public class ElevatorStructure extends SubsystemIO {
     
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 16, "Climb");
 
+    private enum QueueModes {ALGAE, REEF, NONE};
+
+    private QueueModes m_QueueMode = QueueModes.NONE;
+    private boolean m_ReefPositionPressed = false;
+    private boolean m_AlgaePositionPressed = false;
+    private boolean m_HasNextCommand = false;
+    private Supplier<Command> m_NextCommand = null;
+    
     public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
         m_Arm = arm;
@@ -169,7 +186,22 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToL4() {
-        return moveToPosition(L4Front, L4Rear);
+        Supplier<Command> movement = () -> { return moveToPosition(L4Front, L4Rear);};
+
+        return runOnce(() -> {
+            m_ReefPositionPressed = true;
+            if(m_QueueMode == QueueModes.ALGAE) {
+                m_NextCommand = movement;
+            }
+            else if(m_QueueMode == QueueModes.NONE) {
+                m_QueueMode = QueueModes.REEF;
+            }
+        })
+        .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.ALGAE))
+        .andThen(run(() -> {}))
+        .finallyDo(() -> {
+            m_ReefPositionPressed = false;
+        });
     }
 
     public Command moveToL3() {
@@ -211,15 +243,56 @@ public class ElevatorStructure extends SubsystemIO {
         return run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE));
     }
 
+    //private Command run
+
     public Command outtakeCoral() {
-        return run(() -> m_Claw.setCoralMode(CoralModes.OUTTAKE));
+        return run(() -> {
+            m_Claw.setCoralMode(CoralModes.OUTTAKE);
+            if(m_NextCommand != null) {
+                CommandScheduler.getInstance().schedule(m_NextCommand.get().andThen(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+            }
+        });
+    }
+    
+    public Command moveToAlgaeHigh() {
+        Supplier<Command> movement = () -> { return runOnce(() -> {m_Wrist.setOverrideVelocity(true);})
+            .andThen(moveToPositionsSide(AlgaeHighFrontSequence, AlgaeHighRearSequence));};
+
+        return runOnce(() -> {
+            m_AlgaePositionPressed = true;
+            if(m_QueueMode == QueueModes.REEF) {
+                m_NextCommand = movement;
+            }
+            else if(m_QueueMode == QueueModes.NONE) {
+                m_QueueMode = QueueModes.ALGAE;
+            }
+        })
+        .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.REEF))
+        .andThen(run(() -> {}))
+        .finallyDo(() -> {
+            m_AlgaePositionPressed = false;
+            m_Wrist.setOverrideVelocity(false);
+        });
+    }
+
+    public Command storeAlgae() {
+        return moveToPositions(StoreAlgaeSequence.getPositions())
+            .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
+            .andThen(moveToPositions(StartingWithAlgae));
     }
 
     public Command intakeAlgaeHigh() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
-        .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeHighFrontSequence, IntakeAlgaeHighRearSequence))
-        .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
-        .andThen(moveToPositions(StartingWithAlgae));
+            .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeHighFrontSequence, IntakeAlgaeHighRearSequence))
+            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , storeAlgae() , () -> m_NextCommand != null));
+    }
+
+    public Command moveToAlgaeLow() {
+        return runOnce(() -> m_Wrist.setOverrideVelocity(true))
+            .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeLowFrontSequence, IntakeAlgaeLowRearSequence))
+            .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
+            .andThen(moveToPositions(StartingWithAlgae))
+            .finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
     public Command intakeAlgaeLow() {
