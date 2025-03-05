@@ -135,18 +135,18 @@ public class RobotContainer {
         operator.povRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
         operator.povLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
         
-        operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHigh());
-        operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLow());
+        operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHighCommand());
+        operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLowCommand());
         
-        operator.y().whileTrue(elevatorStructure.moveToL4());
-        operator.b().whileTrue(elevatorStructure.moveToL3());
-        operator.a().whileTrue(elevatorStructure.moveToL2());
-        operator.x().whileTrue(elevatorStructure.moveToL1());
+        operator.y().whileTrue(elevatorStructure.moveToL4Command());
+        operator.b().whileTrue(elevatorStructure.moveToL3Command());
+        operator.a().whileTrue(elevatorStructure.moveToL2Command());
+        operator.x().whileTrue(elevatorStructure.moveToL1Command());
 
-        operator.rightStick().whileTrue(elevatorStructure.moveToStarting());
-        operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgae()));
+        operator.rightStick().whileTrue(elevatorStructure.moveToStartingCommand());
+        operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgaeCommand()));
 
-        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoral()).onFalse(elevatorStructure.moveToStarting());
+        operator.rightTrigger().whileTrue(elevatorStructure.intakeCoralCommand()).onFalse(elevatorStructure.moveToStartingCommand());
 
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
         
@@ -162,11 +162,11 @@ public class RobotContainer {
 
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
 
-        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHigh()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
-        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLow()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStarting());
+        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHighCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
+        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLowCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
 
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
-        driver.rightBumper().whileTrue(elevatorStructure.outtakeCoral());
+        driver.rightBumper().whileTrue(elevatorStructure.outtakeCoralCommand());
     }
 
     public Rotation2d getRotationForJoystick(double requestX, double requestY) {
