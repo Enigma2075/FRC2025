@@ -132,19 +132,20 @@ public class Climb extends SubsystemIO{
     }
     */
 
+
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+    
+    public void setOutput (double output){
+        m_PeriodicIO.controlMode = ControlMode.OUTPUT;
+        m_PeriodicIO.targetOutput = output;
+    }
+
     public Command setServo() {
         return runOnce(() -> {
             m_Latch.set(1);
             timeout = Timer.getFPGATimestamp();
         });
     }
-
-    public void setOutput (double output){
-        m_PeriodicIO.controlMode = ControlMode.OUTPUT;
-        m_PeriodicIO.targetOutput = output;
-    }
-
-    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     public Command testCommand(Supplier<Double> outputPercent){
         return run(() -> {
