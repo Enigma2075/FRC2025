@@ -113,9 +113,7 @@ public class Arm extends SubsystemIO{
         public double targetOutput = 0; 
     }
 
-    public double getCurrentAngle() {
-        return m_PeriodicIO.CurrentAngle;
-    }
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     public void setOutput(double output){
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
@@ -127,7 +125,9 @@ public class Arm extends SubsystemIO{
         m_PeriodicIO.targetAngle = Math.toRadians(degrees);
     }
 
-    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+    public double getCurrentAngle() {
+        return m_PeriodicIO.CurrentAngle;
+    }
 
     private double convertPositionToAngle(double position) {
         return position * 2 * Math.PI ;
@@ -135,6 +135,11 @@ public class Arm extends SubsystemIO{
 
     private double convertAngleToPosition(double angle) {
         return angle / (2 * Math.PI);
+    }
+
+    public boolean isAtPosition(double degrees) {
+        double error = Math.toDegrees(m_PeriodicIO.CurrentAngle) - degrees;
+        return Math.abs(error) < 5;
     }
 
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
@@ -151,16 +156,11 @@ public class Arm extends SubsystemIO{
         });
     }
 
-    public Command setTestPosition(double degrees){
+    public Command setPositionCommand(double degrees){
         return run(() -> {
             m_PeriodicIO.targetAngle = Math.toRadians(degrees);
             m_PeriodicIO.controlMode = ControlMode.POSITION;
         });
-    }
-
-    public boolean isAtPosition(double degrees) {
-        double error = Math.toDegrees(m_PeriodicIO.CurrentAngle) - degrees;
-        return Math.abs(error) < 5;
     }
 
     @Override

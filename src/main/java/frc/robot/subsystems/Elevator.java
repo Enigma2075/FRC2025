@@ -136,6 +136,19 @@ public class Elevator extends SubsystemIO{
         return position;
     }
 
+    public boolean isAtPosition(double height) {
+        if(Math.abs(height - m_PeriodicIO.currentHeight) < 5) {
+            return true;
+        }
+        else {
+            return false;
+        }        
+    }
+
+    public boolean isAtPosition() {
+        return isAtPosition(m_PeriodicIO.targetHeight);
+    }
+
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
         return runOnce(() -> m_PeriodicIO.controlMode = ControlMode.SYSID).andThen(m_SysIdRoutine.quasistatic(direction)).finallyDo(() -> m_PeriodicIO.controlMode = ControlMode.OUTPUT);
     }
@@ -156,18 +169,6 @@ public class Elevator extends SubsystemIO{
         });
     }
 
-    public boolean isAtPosition(double height) {
-        if(Math.abs(height - m_PeriodicIO.currentHeight) < 5) {
-            return true;
-        }
-        else {
-            return false;
-        }        
-    }
-
-    public boolean isAtPosition() {
-        return isAtPosition(m_PeriodicIO.targetHeight);
-    }
 
     @Override
     public void stop() {

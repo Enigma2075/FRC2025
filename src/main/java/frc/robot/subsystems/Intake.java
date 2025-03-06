@@ -126,12 +126,12 @@ public class Intake extends SubsystemIO{
         public double currentRollerCurrent = 0;
     }
 
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
     public void setPivotOutput (double output){
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
         m_PeriodicIO.targetPivotOutput = output;
     }
-
-    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     private double convertPositionToAngle(double position) {
         return (position / IntakeConstants.kGearRatio)  * 2 * Math.PI;

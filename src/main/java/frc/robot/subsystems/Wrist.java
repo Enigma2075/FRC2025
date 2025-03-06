@@ -112,6 +112,8 @@ public class Wrist extends SubsystemIO{
         public double targetOutput = 0;
     }
 
+    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
+
     public void setOutput (double output) {
         m_PeriodicIO.controlMode = ControlMode.OUTPUT;
         m_PeriodicIO.targetOutput = output;
@@ -125,8 +127,6 @@ public class Wrist extends SubsystemIO{
     public void setOverrideVelocity(boolean override) {
         m_PeriodicIO.overrideVelocity = override;
     } 
-
-    private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
     private double convertPositionToAngle(double position) {
         return position * (2 * Math.PI);
