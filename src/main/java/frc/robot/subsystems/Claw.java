@@ -10,6 +10,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static edu.wpi.first.units.Units.Centimeters;
+
 import java.util.function.BiPredicate;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -72,9 +74,14 @@ public class Claw extends SubsystemIO {
     private final TorqueCurrentFOC m_OutputRequest = new TorqueCurrentFOC(0);
     
     public Claw() {
-        m_CoralSensor = new CANrange(ClawConstants.kCoralSensorId);
+        m_CoralSensor = new CANrange(ClawConstants.kCoralSensorId, RobotConstants.kCanivoreBusName);
 
         CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
+
+        coralSensorConfig.FovParams.FOVCenterX = 1;
+        coralSensorConfig.FovParams.FOVCenterY = 1;
+        coralSensorConfig.FovParams.FOVRangeX = 8;
+        coralSensorConfig.FovParams.FOVRangeY = 8;
 
         m_CoralSensor.getConfigurator().apply(coralSensorConfig);
 
@@ -110,6 +117,7 @@ public class Claw extends SubsystemIO {
 
         public double firstSeenCoral = Double.MIN_VALUE;
         public boolean hasCoral = false;
+        public boolean latchCoralIntake = false;
         
         public double algaeTimeoutCount = 0;
         public double algaeLastCheck = 0;
@@ -125,6 +133,10 @@ public class Claw extends SubsystemIO {
 
     public void setCoralMode(CoralModes mode){
             m_PeriodicIO.coralMode = mode;
+            if(mode == CoralModes.INTAKE) {
+                m_PeriodicIO.latchCoralIntake = true;
+            }
+
             if(mode == CoralModes.INTAKE && m_PeriodicIO.hasCoral && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenCoral > 1.5) {
                 m_PeriodicIO.firstSeenCoral = Double.MIN_VALUE;
             }
@@ -178,7 +190,7 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.hasCoral = m_CoralSensor.getDistance().getValueAsDouble() < 3;
+        m_PeriodicIO.hasCoral = m_CoralSensor.getDistance().getValue().in(Centimeters) < 10 && m_CoralSensor.getIsDetected().getValue();
         if(m_PeriodicIO.hasCoral && m_PeriodicIO.firstSeenCoral == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenCoral = Timer.getFPGATimestamp();
         }
@@ -210,11 +222,22 @@ public class Claw extends SubsystemIO {
         }
 
         if(m_PeriodicIO.coralMode != CoralModes.STOP) {
-            if(!hasCoral() && m_PeriodicIO.coralMode == CoralModes.HOLD) {
+            if(m_PeriodicIO.coralMode == CoralModes.INTAKE) {
+                if(hasCoral() && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenCoral > .5) {
+                    m_PeriodicIO.coralMode = CoralModes.HOLD;
+                }
+                else if(m_PeriodicIO.latchCoralIntake) {
+                    m_PeriodicIO.latchCoralIntake = false;
+                }
+                else {
+                    m_PeriodicIO.coralMode = CoralModes.STOP;
+                }
+            }
+            else if(!hasCoral() && m_PeriodicIO.coralMode == CoralModes.HOLD) {
                 m_PeriodicIO.coralMode = CoralModes.STOP;
             }
-            else if(hasCoral() && m_PeriodicIO.coralMode == CoralModes.INTAKE && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenCoral > .5) {
-                m_PeriodicIO.coralMode = CoralModes.HOLD;
+            else if(!hasCoral() && m_PeriodicIO.coralMode == CoralModes.OUTTAKE) {
+                m_PeriodicIO.coralMode = CoralModes.STOP;
             }
 
             m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralMode.current));
