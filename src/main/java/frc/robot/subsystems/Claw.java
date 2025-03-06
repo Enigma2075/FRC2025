@@ -70,6 +70,7 @@ public class Claw extends SubsystemIO {
     private TalonFX m_Algae;
     
     private CANrange m_CoralSensor;
+    private CANrange m_AlgaeSensor;
 
     private final TorqueCurrentFOC m_OutputRequest = new TorqueCurrentFOC(0);
     
@@ -84,6 +85,18 @@ public class Claw extends SubsystemIO {
         coralSensorConfig.FovParams.FOVRangeY = 8;
 
         m_CoralSensor.getConfigurator().apply(coralSensorConfig);
+
+        m_AlgaeSensor = new CANrange(ClawConstants.kAlgaeSensorId, RobotConstants.kCanivoreBusName);
+
+        CANrangeConfiguration algaeSensorConfig = new CANrangeConfiguration();
+
+        algaeSensorConfig.FovParams.FOVCenterX = 1;
+        algaeSensorConfig.FovParams.FOVCenterY = 1;
+        algaeSensorConfig.FovParams.FOVRangeX = 8;
+        algaeSensorConfig.FovParams.FOVRangeY = 8;
+
+        m_AlgaeSensor.getConfigurator().apply(algaeSensorConfig);
+
 
         m_Algae = new TalonFX(ClawConstants.kAlgaeId,RobotConstants.kCanivoreBusName);
 
@@ -110,24 +123,18 @@ public class Claw extends SubsystemIO {
     }
 
     public static class PeriodicIO{
-        //public double coralLastCheck = 0;
-        //public double coralTimeoutCount = 0;
-        //public CoralModes coralLastMode = null;
         public CoralModes coralMode = CoralModes.STOP;
 
         public double firstSeenCoral = Double.MIN_VALUE;
         public boolean hasCoral = false;
         public boolean latchCoralIntake = false;
         
-        public double algaeTimeoutCount = 0;
-        public double algaeLastCheck = 0;
-        public AlgaeModes algaeLastMode = null;
         public AlgaeModes algaeMode = AlgaeModes.STOP;
-        public boolean algaeDisableTimeout = false;
-        
-        //public double coralCurrent=0;
-        public double algaeCurrent=0;
-    }
+
+        public double firstSeenAlgae = Double.MIN_VALUE;
+        public boolean hasAlgae = false;
+        public boolean latchAlgaeIntake = false;
+   }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
 
@@ -147,12 +154,13 @@ public class Claw extends SubsystemIO {
     }
 
     public void setAlgaeMode(AlgaeModes mode, boolean disableTimeout){
-        m_PeriodicIO.algaeDisableTimeout = disableTimeout;
-        if(m_PeriodicIO.algaeLastMode != mode) {
-            m_PeriodicIO.algaeMode = mode;
-            m_PeriodicIO.algaeLastMode = mode;
-            m_PeriodicIO.algaeTimeoutCount = 0;
-            m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
+        m_PeriodicIO.algaeMode = mode;
+        if(mode == AlgaeModes.INTAKE) {
+            m_PeriodicIO.latchAlgaeIntake = true;
+        }
+
+        if(mode == AlgaeModes.INTAKE && m_PeriodicIO.hasAlgae && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenAlgae > 1.5) {
+            m_PeriodicIO.firstSeenAlgae = Double.MIN_VALUE;
         }
     }
 
@@ -177,12 +185,12 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
+        //TODO:SmartDashboard.putNumber("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
         SmartDashboard.putBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SmartDashboard.putString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
         SmartDashboard.putString("Claw/CoralMode", m_PeriodicIO.coralMode.name());
 
-        SignalLogger.writeDouble("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
+        //TODO:SignalLogger.writeDouble("Claw/AlgaeCurrent", m_PeriodicIO.algaeCurrent);
         SignalLogger.writeBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SignalLogger.writeString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
         SignalLogger.writeString("Claw/CoralMode", m_PeriodicIO.coralMode.name());
@@ -198,23 +206,23 @@ public class Claw extends SubsystemIO {
             m_PeriodicIO.firstSeenCoral = Timer.getFPGATimestamp();
         }
 
-        m_PeriodicIO.algaeCurrent = m_Algae.getStatorCurrent().getValueAsDouble();
+        //TODO:m_PeriodicIO.algaeCurrent = m_Algae.getStatorCurrent().getValueAsDouble();
     }
 
     @Override
     public void writePeriodicOutputs() {
         if(m_PeriodicIO.algaeMode != AlgaeModes.STOP) {
-            if(m_PeriodicIO.algaeMode.isOverThreshold(m_PeriodicIO.algaeCurrent)){ 
-                m_PeriodicIO.algaeTimeoutCount++;
-            }
+            //TODO:if(m_PeriodicIO.algaeMode.isOverThreshold(m_PeriodicIO.algaeCurrent)){ 
+                //TODO:m_PeriodicIO.algaeTimeoutCount++;
+            //TODO:}
 
-            if(m_PeriodicIO.algaeTimeoutCount > 7) {
-                setAlgaeMode(m_PeriodicIO.algaeMode.next);
-            }
-            else if(m_PeriodicIO.algaeLastCheck - Timer.getFPGATimestamp() >= .02 * 12){
-                m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
-                m_PeriodicIO.algaeTimeoutCount = 0;
-            }
+            //TODO:if(m_PeriodicIO.algaeTimeoutCount > 7) {
+            //TODO:    setAlgaeMode(m_PeriodicIO.algaeMode.next);
+            //TODO:}
+            //TODO:else if(m_PeriodicIO.algaeLastCheck - Timer.getFPGATimestamp() >= .02 * 12){
+            //TODO:    m_PeriodicIO.algaeLastCheck = Timer.getFPGATimestamp();
+             //TODO:   m_PeriodicIO.algaeTimeoutCount = 0;
+            //TODO:}
             m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
         }
         else {

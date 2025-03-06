@@ -162,8 +162,10 @@ public class RobotContainer {
 
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
 
-        driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHighCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
-        driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLowCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
+        driver.a().onTrue(elevatorStructure.intakeAlgaeHighCommand());
+        driver.b().onTrue(elevatorStructure.intakeAlgaeLowCommand());
+        // driver.a().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeHighCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
+        // driver.b().onTrue(intake.runOnce(() -> intake.setState(States.GRABALGAE)).andThen(elevatorStructure.intakeAlgaeLowCommand()).finallyDo(() -> intake.setState(States.DEFAULT))).onFalse(elevatorStructure.moveToStartingCommand());
 
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
         driver.rightBumper().whileTrue(elevatorStructure.outtakeCoralCommand());

@@ -5,6 +5,7 @@ public class ClawConstants {
     public static final int kAlgaeId = 14;
 
     public static final int kCoralSensorId = 2;
+    public static final int kAlgaeSensorId = 3;
 
     public static final double kG = 0;
     public static final double kS = 0.0146484375;
