@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import frc.robot.util.LimelightHelpers;
+
 public class Vision extends SubsystemIO {
     public Vision() {
-        
+        LimelightHelpers.setPipelineIndex(getName(), 0);
     }
 
     @Override
