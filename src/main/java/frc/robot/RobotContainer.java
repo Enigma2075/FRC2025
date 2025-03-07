@@ -141,13 +141,13 @@ public class RobotContainer {
         operator.povRight().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.BACK;}));
         operator.povLeft().whileTrue(Commands.run(() -> {RobotState.scoringSide = ScoringSides.FRONT;}));
         
-        operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHighCommand());
-        operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLowCommand());
+        operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHighCommand()).onFalse(elevatorStructure.clearAlgaePress());
+        operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLowCommand()).onFalse(elevatorStructure.clearAlgaePress());
         
-        operator.y().whileTrue(elevatorStructure.moveToL4Command());
-        operator.b().whileTrue(elevatorStructure.moveToL3Command());
-        operator.a().whileTrue(elevatorStructure.moveToL2Command());
-        operator.x().whileTrue(elevatorStructure.moveToL1Command());
+        operator.y().whileTrue(elevatorStructure.moveToL4Command()).onFalse(elevatorStructure.clearCoralPress());
+        operator.b().whileTrue(elevatorStructure.moveToL3Command()).onFalse(elevatorStructure.clearCoralPress());
+        operator.a().whileTrue(elevatorStructure.moveToL2Command()).onFalse(elevatorStructure.clearCoralPress());
+        operator.x().whileTrue(elevatorStructure.moveToL1Command()).onFalse(elevatorStructure.clearCoralPress());
 
         operator.rightStick().whileTrue(elevatorStructure.moveToStartingCommand());
         operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgaeCommand()));
