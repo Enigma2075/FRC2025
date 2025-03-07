@@ -155,7 +155,7 @@ public class RobotContainer {
         operator.rightTrigger().whileTrue(elevatorStructure.intakeCoralCommand()).onFalse(elevatorStructure.moveToStartingCommand());
 
         //right bumper - barge
-        operator.rightBumper().whileTrue(elevatorStructure.moveToBarge());
+        operator.rightBumper().whileTrue(elevatorStructure.moveToBargeCommand());
 
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
         
