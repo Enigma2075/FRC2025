@@ -30,8 +30,8 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition GrabAlgaeRotate = new ElevatorStructurePosition(12, 90, -83, "GrabAlgaeRotate");
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
 
-    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(60, 87, -160, "BargeBack");
-    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(60, 125, 140, "BargeFront");
+    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(67, 87, 75, "BargeBack");
+    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(67, 103, 112, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(13, 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(15, 118, -153, "IntakeCoralFront");
@@ -68,9 +68,9 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
     public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 122, -52, "L4Front");
-    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(39, 108, -76, "L3Front");
-    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(24, 108, -70, "L2Front");
-    public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(9, 115, -95, "L1Front");
+    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 108, -76, "L3Front");
+    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(20, 108, -70, "L2Front");
+    public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 16, "Climb");
 
@@ -264,6 +264,9 @@ public class ElevatorStructure extends SubsystemIO {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             if(m_NextCommand != null) {
                 CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+            }
+            else {
+                applyPosition(Starting);
             }
         });
     }
