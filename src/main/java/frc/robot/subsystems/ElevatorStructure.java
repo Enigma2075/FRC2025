@@ -35,6 +35,7 @@ public class ElevatorStructure extends SubsystemIO {
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(13, 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(15, 118, -153, "IntakeCoralFront");
+    public static final ElevatorStructurePosition IntakeCoralFrontEnd = new ElevatorStructurePosition(15, 90, 100, "IntakeCoralFrontEnd");
     
     public static final ElevatorStructurePosition IntakeAlgaeHighFrontStart = new ElevatorStructurePosition(26, 119.5, 156, "IntakeAlgaeHighFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeHighFront = new ElevatorStructurePosition(26, 119.5, 70, "IntakeAlgaeHighFront");
@@ -76,7 +77,7 @@ public class ElevatorStructure extends SubsystemIO {
     private enum QueueModes {ALGAE, CORAL, NONE};
 
     private QueueModes m_QueueMode = QueueModes.NONE;
-    private boolean m_ReefPositionPressed = false;
+    private boolean m_CoralPositionPressed = false;
     private boolean m_AlgaePositionPressed = false;
     private boolean m_HasNextCommand = false;
     private Supplier<Command> m_NextCommand = null;
@@ -183,45 +184,49 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Climb);
     }
 
-    public Command moveToBarge() {
+    public Command moveToBargeCommand() {
         return moveToPosition(BargeFront, BargeRear);
     }
 
-    private Command moveToCoralLevel(Supplier<Command> movement, QueueModes mode) {
+    private Command moveToCoralLevel(Supplier<Command> movement) {
         return runOnce(() -> {
-            m_ReefPositionPressed = true;
-            if(m_QueueMode == QueueModes.NONE) {
-                m_QueueMode = mode;
+            m_CoralPositionPressed = true;
+            if(m_QueueMode == QueueModes.NONE || !m_AlgaePositionPressed) {
+                m_QueueMode = QueueModes.CORAL;
             }
-            else if(m_QueueMode != mode) {
+            else if(m_QueueMode != QueueModes.CORAL) {
                 m_NextCommand = movement;
             }
         })
-        .andThen(movement.get().unless(() -> m_QueueMode != QueueModes.NONE && m_QueueMode != mode))
+        .andThen(movement.get().unless(() -> m_QueueMode != QueueModes.NONE && m_QueueMode != QueueModes.CORAL))
         .andThen(run(() -> {}))
         .finallyDo(() -> {
-            m_ReefPositionPressed = false;
+            m_CoralPositionPressed = false;
         });
     }
 
     public Command moveToL4Command() {
-        return moveToCoralLevel(() -> { return moveToPosition(L4Front, L4Rear);}, QueueModes.CORAL);
+        return moveToCoralLevel(() -> { return moveToPosition(L4Front, L4Rear);});
     }
 
     public Command moveToL3Command() {
-        return moveToCoralLevel(() -> { return moveToPosition(L3Front, L3Rear);}, QueueModes.CORAL);
+        return moveToCoralLevel(() -> { return moveToPosition(L3Front, L3Rear);});
     }
 
     public Command moveToL2Command() {
-        return moveToCoralLevel(() -> { return moveToPosition(L2Front, L2Rear);}, QueueModes.CORAL);
+        return moveToCoralLevel(() -> { return moveToPosition(L2Front, L2Rear);});
     }
 
     public Command moveToL1Command() {
-        return moveToCoralLevel(() -> { return moveToPosition(L1Front, L1Rear);}, QueueModes.CORAL);
+        return moveToCoralLevel(() -> { return moveToPosition(L1Front, L1Rear);});
     }
 
     public Command moveToStartingCommand() {
         return moveToPosition(Starting);
+    }
+
+    public Command intakeCoralEndCommand() {
+        return moveToPositions(IntakeCoralFrontEnd, Starting);
     }
 
     public Command intakeCoralCommand() {
@@ -253,7 +258,7 @@ public class ElevatorStructure extends SubsystemIO {
         return run(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             if(m_NextCommand != null) {
-                CommandScheduler.getInstance().schedule(m_NextCommand.get().andThen(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+                CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
             }
         });
     }
@@ -270,11 +275,12 @@ public class ElevatorStructure extends SubsystemIO {
 
         return runOnce(() -> {
             m_AlgaePositionPressed = true;
-            if(m_QueueMode == QueueModes.CORAL) {
-                m_NextCommand = movement;
-            }
-            else if(m_QueueMode == QueueModes.NONE) {
+            
+            if(m_QueueMode == QueueModes.NONE || !m_CoralPositionPressed) {
                 m_QueueMode = QueueModes.ALGAE;
+            }
+            else if(m_QueueMode == QueueModes.CORAL) {
+                m_NextCommand = movement;
             }
         })
         .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL))
@@ -298,11 +304,11 @@ public class ElevatorStructure extends SubsystemIO {
 
         return runOnce(() -> {
             m_AlgaePositionPressed = true;
-            if(m_QueueMode == QueueModes.CORAL) {
-                m_NextCommand = movement;
-            }
-            else if(m_QueueMode == QueueModes.NONE) {
+            if(m_QueueMode == QueueModes.NONE || !m_CoralPositionPressed) {
                 m_QueueMode = QueueModes.ALGAE;
+            }
+            else if(m_QueueMode == QueueModes.CORAL) {
+                m_NextCommand = movement;
             }
         })
         .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL))
