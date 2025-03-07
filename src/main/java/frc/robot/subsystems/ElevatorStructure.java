@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotState;
 import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Claw.AlgaeModes;
@@ -79,8 +80,9 @@ public class ElevatorStructure extends SubsystemIO {
     private QueueModes m_QueueMode = QueueModes.NONE;
     private boolean m_CoralPositionPressed = false;
     private boolean m_AlgaePositionPressed = false;
-    private boolean m_HasNextCommand = false;
     private Supplier<Command> m_NextCommand = null;
+
+    private Command m_AlgaeIntakeEndCommand = null;
     
     public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
@@ -249,12 +251,21 @@ public class ElevatorStructure extends SubsystemIO {
         return runOnce(()-> m_Claw.setCoralMode(CoralModes.HOLD));
     }
 
-    public Command intakeAlgaeCommand() {
+    public Command handoffAlgaeCommand() {
         return runOnce(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE); }).andThen(moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae));
     }
 
     public Command outtakeAlgaeCommand() {
         return run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE));
+    }
+
+    public Command intakeAlgaeCommand() {
+        if(m_AlgaeIntakeEndCommand != null) {
+            return m_AlgaeIntakeEndCommand;
+        }
+        else {
+            return run(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE));
+        }
     }
 
     //private Command run
@@ -266,7 +277,7 @@ public class ElevatorStructure extends SubsystemIO {
                 CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
             }
             else {
-                applyPosition(Starting);
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(1).andThen(moveToPosition(Starting)));
             }
         });
     }
@@ -278,7 +289,10 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToAlgaeHighCommand() {
-        Supplier<Command> movement = () -> { return runOnce(() -> {m_Wrist.setOverrideVelocity(true);})
+        Supplier<Command> movement = () -> { return runOnce(() -> {
+                m_Wrist.setOverrideVelocity(true);
+                m_AlgaeIntakeEndCommand = intakeAlgaeHighCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
+            })
             .andThen(moveToPositionsSide(AlgaeHighFrontSequence, AlgaeHighRearSequence));};
 
         return runOnce(() -> {
@@ -298,7 +312,7 @@ public class ElevatorStructure extends SubsystemIO {
         });
     }
 
-    public Command intakeAlgaeHighCommand() {
+    private Command intakeAlgaeHighCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeHighFrontSequence, IntakeAlgaeHighRearSequence))
             .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , storeAlgaeCommand() , () -> m_NextCommand != null))
@@ -306,7 +320,10 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToAlgaeLowCommand() {
-        Supplier<Command> movement = () -> { return runOnce(() -> {m_Wrist.setOverrideVelocity(true);})
+        Supplier<Command> movement = () -> { return runOnce(() -> {
+                m_Wrist.setOverrideVelocity(true);
+                m_AlgaeIntakeEndCommand = intakeAlgaeLowCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
+            })
             .andThen(moveToPositionsSide(AlgaeLowFrontSequence, AlgaeLowRearSequence));};
 
         return runOnce(() -> {
@@ -325,7 +342,7 @@ public class ElevatorStructure extends SubsystemIO {
         });
     }
 
-    public Command intakeAlgaeLowCommand() {
+    private Command intakeAlgaeLowCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeLowFrontSequence, IntakeAlgaeLowRearSequence))
             .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , storeAlgaeCommand() , () -> m_NextCommand != null))

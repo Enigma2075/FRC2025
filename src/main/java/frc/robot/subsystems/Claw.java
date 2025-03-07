@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Centimeters;
 
-import java.util.function.BiPredicate;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -21,49 +19,29 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class Claw extends SubsystemIO {
     public enum AlgaeModes { 
-        STOP(0), //,0, null, null),
-        HOLD(20), //, 16, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent < thresholdCurrent),
-        INTAKE(40), //, 30, HOLD, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
-        OUTTAKE(-40); //, -18, STOP, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent);
+        STOP(0),
+        HOLD(20),
+        INTAKE(40),
+        OUTTAKE(-80);
 
         public final double current;
-        //private final double thresholdCurrent;
-        //public final AlgaeModes next;
-        //private final BiPredicate<Double, Double> checkThreshold;
-
-        private AlgaeModes(double current) { //, double thresholdCurrent, AlgaeModes next, BiPredicate<Double, Double> checkTimeout) {
+        
+        private AlgaeModes(double current) {
             this.current = current;
-            //this.thresholdCurrent = thresholdCurrent;
-            //this.next = next;
-            //this.checkThreshold = checkTimeout;
         }
-
-        //public boolean isOverThreshold(double actualCurrent) {
-        //    return checkThreshold.test(actualCurrent, thresholdCurrent);
-        //}
     } 
 
     public enum CoralModes { 
-        STOP(0), //,0, null, null),
-        HOLD(20), //, 16, STOP), //, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent < thresholdCurrent),
-        INTAKE(40), //, 25, HOLD), //, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent),
-        OUTTAKE(-40); //, -18, STOP); //, (Double actualCurrent, Double thresholdCurrent) -> actualCurrent > thresholdCurrent);
+        STOP(0),
+        HOLD(20),
+        INTAKE(40),
+        OUTTAKE(-40);
 
         public final double current;
-        //private final double thresholdCurrent;
-        //public final CoralModes next;
-        //private final BiPredicate<Double, Double> checkThreshold;
-
-        private CoralModes(double current) { //, double thresholdCurrent, CoralModes next, BiPredicate<Double, Double> checkTimeout) {
+        
+        private CoralModes(double current) {
             this.current = current;
-            //this.thresholdCurrent = thresholdCurrent;
-            //this.next = next;
-        //    this.checkThreshold = checkTimeout;
         }
-
-        //public boolean isOverThreshold(double actualCurrent) {
-        //    return checkThreshold.test(actualCurrent, thresholdCurrent);
-        //}
     } 
 
     private TalonFX m_Coral;
@@ -126,14 +104,16 @@ public class Claw extends SubsystemIO {
         public CoralModes coralMode = CoralModes.STOP;
 
         public double firstSeenCoral = Double.MIN_VALUE;
+        public double lastSeenCoral = Double.MIN_VALUE;
         public boolean hasCoral = false;
-        public boolean latchCoralIntake = false;
+        public boolean latchCoralMode = false;
         
         public AlgaeModes algaeMode = AlgaeModes.STOP;
 
         public double firstSeenAlgae = Double.MIN_VALUE;
+        public double lastSeenAlgae = Double.MIN_VALUE;
         public boolean hasAlgae = false;
-        public boolean latchAlgaeIntake = false;
+        public boolean latchAlgaeMode = false;
    }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -141,7 +121,7 @@ public class Claw extends SubsystemIO {
     public void setCoralMode(CoralModes mode){
             m_PeriodicIO.coralMode = mode;
             if(mode == CoralModes.INTAKE) {
-                m_PeriodicIO.latchCoralIntake = true;
+                m_PeriodicIO.latchCoralMode = true;
             }
 
             if(mode == CoralModes.INTAKE && m_PeriodicIO.hasCoral && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenCoral > 1.5) {
@@ -156,7 +136,7 @@ public class Claw extends SubsystemIO {
     public void setAlgaeMode(AlgaeModes mode, boolean disableTimeout){
         m_PeriodicIO.algaeMode = mode;
         if(mode == AlgaeModes.INTAKE) {
-            m_PeriodicIO.latchAlgaeIntake = true;
+            m_PeriodicIO.latchAlgaeMode = true;
         }
 
         if(mode == AlgaeModes.INTAKE && m_PeriodicIO.hasAlgae && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenAlgae > 1.5) {
@@ -200,17 +180,21 @@ public class Claw extends SubsystemIO {
         m_PeriodicIO.hasCoral = m_CoralSensor.getDistance().getValue().in(Centimeters) < 12 && m_CoralSensor.getIsDetected().getValue();
         if(m_PeriodicIO.hasCoral && m_PeriodicIO.firstSeenCoral == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenCoral = Timer.getFPGATimestamp();
+            m_PeriodicIO.lastSeenCoral = Double.MIN_VALUE;
         }
         else if(!m_PeriodicIO.hasCoral && m_PeriodicIO.firstSeenCoral != Double.MIN_VALUE) {
-            m_PeriodicIO.firstSeenCoral = Timer.getFPGATimestamp();
+            m_PeriodicIO.firstSeenCoral = Double.MIN_VALUE;
+            m_PeriodicIO.lastSeenCoral = Timer.getFPGATimestamp();
         }
 
         m_PeriodicIO.hasAlgae = m_AlgaeSensor.getDistance().getValue().in(Centimeters) < 10 && m_AlgaeSensor.getIsDetected().getValue();
         if(m_PeriodicIO.hasAlgae && m_PeriodicIO.firstSeenAlgae == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenAlgae = Timer.getFPGATimestamp();
+            m_PeriodicIO.lastSeenAlgae = Double.MIN_VALUE;
         }
         else if(!m_PeriodicIO.hasAlgae && m_PeriodicIO.firstSeenAlgae != Double.MIN_VALUE) {
-            m_PeriodicIO.firstSeenAlgae = Timer.getFPGATimestamp();
+            m_PeriodicIO.firstSeenAlgae = Double.MIN_VALUE;
+            m_PeriodicIO.lastSeenAlgae = Timer.getFPGATimestamp();
         }
     }
 
@@ -221,20 +205,19 @@ public class Claw extends SubsystemIO {
                 if(hasAlgae() && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenAlgae > .5) {
                     m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
                 }
-                else if(m_PeriodicIO.latchAlgaeIntake) {
-                    m_PeriodicIO.latchAlgaeIntake = false;
-                }
-                else {
+                else if(!m_PeriodicIO.latchAlgaeMode) {
                     m_PeriodicIO.algaeMode = AlgaeModes.STOP;
                 }
             }
-            else if(!hasAlgae() && m_PeriodicIO.algaeMode == AlgaeModes.HOLD) {
+            else if(m_PeriodicIO.algaeMode == AlgaeModes.HOLD && !hasAlgae()) {
                 m_PeriodicIO.algaeMode = AlgaeModes.STOP;
             }
-            else if(!hasAlgae() && m_PeriodicIO.algaeMode == AlgaeModes.OUTTAKE) {
-                m_PeriodicIO.algaeMode = AlgaeModes.STOP;
+            else if(m_PeriodicIO.algaeMode == AlgaeModes.OUTTAKE && !hasAlgae() && !m_PeriodicIO.latchAlgaeMode) {
+                if(Timer.getFPGATimestamp() - m_PeriodicIO.lastSeenAlgae > 1) {
+                    m_PeriodicIO.algaeMode = AlgaeModes.STOP;
+                }
             }
-            else if(m_PeriodicIO.algaeMode == AlgaeModes.STOP && m_PeriodicIO.hasAlgae) {
+            else if(m_PeriodicIO.algaeMode == AlgaeModes.STOP && hasAlgae()) {
                 m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
             }
 
@@ -244,25 +227,28 @@ public class Claw extends SubsystemIO {
             m_Algae.stopMotor();
         }
 
+        if(m_PeriodicIO.latchAlgaeMode) {
+            m_PeriodicIO.latchAlgaeMode = false;
+        }
+        
         if(m_PeriodicIO.coralMode != CoralModes.STOP || m_PeriodicIO.hasCoral) {
             if(m_PeriodicIO.coralMode == CoralModes.INTAKE) {
                 if(hasCoral() && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenCoral > .5) {
                     m_PeriodicIO.coralMode = CoralModes.HOLD;
                 }
-                else if(m_PeriodicIO.latchCoralIntake) {
-                    m_PeriodicIO.latchCoralIntake = false;
-                }
-                else {
+                else if(!m_PeriodicIO.latchCoralMode) {
                     m_PeriodicIO.coralMode = CoralModes.STOP;
                 }
             }
-            else if(!hasCoral() && m_PeriodicIO.coralMode == CoralModes.HOLD) {
+            else if(m_PeriodicIO.coralMode == CoralModes.HOLD && !hasCoral()) {
                 m_PeriodicIO.coralMode = CoralModes.STOP;
             }
-            else if(!hasCoral() && m_PeriodicIO.coralMode == CoralModes.OUTTAKE) {
-                m_PeriodicIO.coralMode = CoralModes.STOP;
+            else if(m_PeriodicIO.coralMode == CoralModes.OUTTAKE && !hasCoral() && !m_PeriodicIO.latchCoralMode) {
+                if(Timer.getFPGATimestamp() - m_PeriodicIO.lastSeenCoral > 1) {
+                    m_PeriodicIO.coralMode = CoralModes.STOP;
+                }
             }
-            else if(m_PeriodicIO.coralMode == CoralModes.STOP && m_PeriodicIO.hasCoral) {
+            else if(m_PeriodicIO.coralMode == CoralModes.STOP && hasCoral()) {
                 m_PeriodicIO.coralMode = CoralModes.HOLD;
             }
 
@@ -270,6 +256,10 @@ public class Claw extends SubsystemIO {
         }
         else {
             m_Coral.stopMotor();
+        }
+
+        if(m_PeriodicIO.latchCoralMode) {
+            m_PeriodicIO.latchCoralMode = false;
         }
     }
 }
