@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,6 +35,7 @@ import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.CoralModes;
 import frc.robot.subsystems.ClawConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ClimbConstants;
@@ -83,6 +85,10 @@ public class RobotContainer {
 
     public RobotContainer() {
         driveAtAngle.HeadingController.setP(6);
+
+        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(()-> claw.hasCoral()));
+        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
+        NamedCommands.registerCommand("outtake", elevatorStructure.outtakeCoralCommand().until(()-> !claw.hasCoral()));
         
         autoChooser = AutoBuilder.buildAutoChooser("Test");
 
@@ -147,6 +153,9 @@ public class RobotContainer {
         operator.leftTrigger().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.intakeAlgaeCommand()));
 
         operator.rightTrigger().whileTrue(elevatorStructure.intakeCoralCommand()).onFalse(elevatorStructure.moveToStartingCommand());
+
+        //right bumper - barge
+        operator.rightBumper().whileTrue(elevatorStructure.moveToBarge());
 
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
         
