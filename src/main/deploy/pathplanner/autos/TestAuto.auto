@@ -41,6 +41,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "P5-Source2"
