@@ -170,6 +170,7 @@ public class RobotContainer {
         driver.back().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
 
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE)).onFalse(intake.setStateCommand(States.DEFAULT));
+        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
 
         driver.a().onTrue(elevatorStructure.intakeAlgaeHighCommand());
         driver.b().onTrue(elevatorStructure.intakeAlgaeLowCommand());
