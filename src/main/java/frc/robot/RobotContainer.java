@@ -113,10 +113,17 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+            drivetrain.applyRequest(() -> {
+                if(elevator.getHeight() > 30){
+                    return drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * (MaxSpeed * 0.1)) // Drive forward with negative Y (forward)
+                    .withVelocityY(Math.signum(-driver.getLeftX()) * (-driver.getLeftX() * -driver.getLeftX()) * (MaxSpeed * 0.1)) // Drive left with negative X (left)
+                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * (MaxAngularRate * 0.1)); // Drive counterclockwise with negative X (left)
+                } else {
+                    return drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * MaxSpeed ) // Drive forward with negative Y (forward)
                     .withVelocityY(Math.signum(-driver.getLeftX()) * (-driver.getLeftX() * -driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * MaxAngularRate); // Drive counterclockwise with negative X (left)
+                }}
+
             )
         );
 
