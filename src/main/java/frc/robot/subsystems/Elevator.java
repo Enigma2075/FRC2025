@@ -123,6 +123,10 @@ public class Elevator extends SubsystemIO{
         m_PeriodicIO.targetHeight = height;
     }
 
+    public double getHeight(){
+        return m_PeriodicIO.currentHeight;
+    }
+
     private double convertPositionToHeight(double position) {
         double rawHeight = ElevatorConst.kHeightOffset + (position * ElevatorConst.kRotationToInches);
         return rawHeight + (rawHeight * ElevatorConst.kErrorCorrectionRatio);

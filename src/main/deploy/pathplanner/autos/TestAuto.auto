@@ -59,9 +59,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Source2-P6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         },
         {
@@ -71,9 +89,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Source2-P7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         },
         {
@@ -83,9 +119,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Source2-P8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         },
         {
@@ -95,9 +149,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Source2-P4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         }
       ]
