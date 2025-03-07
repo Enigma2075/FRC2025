@@ -184,6 +184,14 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Climb);
     }
 
+    public Command clearCoralPress() {
+        return run(() -> m_CoralPositionPressed = false);
+    }
+
+    public Command clearAlgaePress() {
+        return run(() -> m_AlgaePositionPressed = false);
+    }
+
     public Command moveToBargeCommand() {
         return moveToPosition(BargeFront, BargeRear);
     }
@@ -199,10 +207,7 @@ public class ElevatorStructure extends SubsystemIO {
             }
         })
         .andThen(movement.get().unless(() -> m_QueueMode != QueueModes.NONE && m_QueueMode != QueueModes.CORAL))
-        .andThen(run(() -> {}))
-        .finallyDo(() -> {
-            m_CoralPositionPressed = false;
-        });
+        .andThen(run(() -> {}));
     }
 
     public Command moveToL4Command() {
@@ -286,7 +291,6 @@ public class ElevatorStructure extends SubsystemIO {
         .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL))
         .andThen(run(() -> {}))
         .finallyDo(() -> {
-            m_AlgaePositionPressed = false;
             m_Wrist.setOverrideVelocity(false);
         });
     }
@@ -314,7 +318,6 @@ public class ElevatorStructure extends SubsystemIO {
         .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL))
         .andThen(run(() -> {}))
         .finallyDo(() -> {
-            m_AlgaePositionPressed = false;
             m_Wrist.setOverrideVelocity(false);
         });
     }
