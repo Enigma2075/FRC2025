@@ -177,7 +177,7 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void readPeriodicInputs() {
-        m_PeriodicIO.hasCoral = m_CoralSensor.getDistance().getValue().in(Centimeters) < 12 && m_CoralSensor.getIsDetected().getValue();
+        m_PeriodicIO.hasCoral = m_CoralSensor.getDistance().getValue().in(Centimeters) < ClawConstants.kCoralDistanceThreshold && m_CoralSensor.getIsDetected().getValue();
         if(m_PeriodicIO.hasCoral && m_PeriodicIO.firstSeenCoral == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenCoral = Timer.getFPGATimestamp();
             m_PeriodicIO.lastSeenCoral = Double.MIN_VALUE;
@@ -187,7 +187,7 @@ public class Claw extends SubsystemIO {
             m_PeriodicIO.lastSeenCoral = Timer.getFPGATimestamp();
         }
 
-        m_PeriodicIO.hasAlgae = m_AlgaeSensor.getDistance().getValue().in(Centimeters) < 10 && m_AlgaeSensor.getIsDetected().getValue();
+        m_PeriodicIO.hasAlgae = m_AlgaeSensor.getDistance().getValue().in(Centimeters) < ClawConstants.kAlgaeDistanceThreshold && m_AlgaeSensor.getIsDetected().getValue();
         if(m_PeriodicIO.hasAlgae && m_PeriodicIO.firstSeenAlgae == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenAlgae = Timer.getFPGATimestamp();
             m_PeriodicIO.lastSeenAlgae = Double.MIN_VALUE;

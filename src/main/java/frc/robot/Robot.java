@@ -89,9 +89,11 @@ public class Robot extends TimedRobot {
     if(!hasSetOdometry) {
       if(AllianceColor.isPresent() && AllianceColor.get() == Alliance.Red) {
         RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(180));
+        hasSetOdometry = true;
       }
       else {
         RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(0));
+        hasSetOdometry = true;
       }
     }
 

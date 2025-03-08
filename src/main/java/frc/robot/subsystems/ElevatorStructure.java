@@ -256,7 +256,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command outtakeAlgaeCommand() {
-        return run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE));
+        return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE));
     }
 
     public Command intakeAlgaeCommand() {
@@ -274,10 +274,10 @@ public class ElevatorStructure extends SubsystemIO {
         return run(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             if(m_NextCommand != null) {
-                CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(m_NextCommand.get()).finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
             }
             else {
-                CommandScheduler.getInstance().schedule(Commands.waitSeconds(1).andThen(moveToPosition(Starting)));
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(moveToPosition(Starting)));
             }
         });
     }
