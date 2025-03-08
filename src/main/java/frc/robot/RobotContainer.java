@@ -104,7 +104,7 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        autoChooser.addOption("Test", drivetrain.getAutoPath("2L4")); 
+        autoChooser.addOption("Test", drivetrain.getAutoPath("test")); 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
 
