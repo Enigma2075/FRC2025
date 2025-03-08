@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +47,9 @@ import frc.robot.subsystems.DriveTrainConstants;
 public class RobotContainer {
     private double MaxSpeed = DriveTrainConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double CalculatedMaxSpeed = MaxSpeed;
+    private double CalculatedMaxAngularRate = MaxAngularRate;
+
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -106,6 +110,20 @@ public class RobotContainer {
 
     }
 
+    private void calculateMaxSpeed() {
+        double maxSpeedReduction = .9;
+        double maxAngularRateReduction = .9;
+
+        double percentOfMaxHeight = elevator.getHeightWithoutOffset()/elevator.getMaxHeightWithoutOffset();
+        double percentOfMaxHeightSquared = percentOfMaxHeight * percentOfMaxHeight;
+
+        CalculatedMaxSpeed = MaxSpeed * (1.0 - (percentOfMaxHeightSquared* maxSpeedReduction));
+        CalculatedMaxAngularRate = MaxAngularRate * (1.0 - (percentOfMaxHeightSquared * maxAngularRateReduction));
+
+        SmartDashboard.putNumber("Drivetrain/CalculatedMaxSpeed", CalculatedMaxSpeed);
+        SmartDashboard.putNumber("Drivetrain/CalculatedMaxAngularRate", CalculatedMaxAngularRate);
+    }
+
     private void configureBindings() {
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -114,17 +132,12 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                if(elevator.getHeight() > 30){
-                    return drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * (MaxSpeed * 0.2)) // Drive forward with negative Y (forward)
-                    .withVelocityY(Math.signum(-driver.getLeftX()) * (-driver.getLeftX() * -driver.getLeftX()) * (MaxSpeed * 0.2)) // Drive left with negative X (left)
-                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * (MaxAngularRate * 0.3)); // Drive counterclockwise with negative X (left)
-                } else {
-                    return drive.withVelocityX(Math.signum(-driver.getLeftY()) * (-driver.getLeftY() * -driver.getLeftY()) * MaxSpeed ) // Drive forward with negative Y (forward)
-                    .withVelocityY(Math.signum(-driver.getLeftX()) * (-driver.getLeftX() * -driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(Math.signum(-driver.getRightX()) * (-driver.getRightX() * -driver.getRightX()) * MaxAngularRate); // Drive counterclockwise with negative X (left)
-                }}
+                calculateMaxSpeed();
 
-            )
+                return drive.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(-driver.getRightX() * CalculatedMaxAngularRate); // Drive counterclockwise with negative X (left)
+            })
         );
 
         // Run SysId routines when holding back/start and X/Y.
@@ -167,10 +180,12 @@ public class RobotContainer {
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
         
         operator.axisMagnitudeGreaterThan(0, .7).or(operator.axisMagnitudeGreaterThan(1, .7))
-            .whileTrue(drivetrain.applyRequest(() -> driveAtAngle.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withTargetDirection(getRotationForJoystick(operator.getLeftX(), -operator.getLeftY()))
-            ));
+            .whileTrue(drivetrain.applyRequest(() -> {
+                calculateMaxSpeed();
+                return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(getRotationForJoystick(operator.getLeftX(), -operator.getLeftY()));
+        }));
 
 
         driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
@@ -201,6 +216,14 @@ public class RobotContainer {
         SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
 
         Rotation2d output = new Rotation2d((reefIndex * reefSlice));
+
+        if(Robot.AllianceColor.get() == Alliance.Red) {
+            output = output.rotateBy(new Rotation2d(Math.PI));
+            SmartDashboard.putBoolean("Drivetrain/DegreesInvert", true);
+        }
+        else {
+            SmartDashboard.putBoolean("Drivetrain/DegreesInvert", true);
+        }
 
         SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 

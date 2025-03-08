@@ -127,6 +127,18 @@ public class Elevator extends SubsystemIO{
         return m_PeriodicIO.currentHeight;
     }
 
+    public double getMaxHeight() {
+        return ElevatorConst.kMaxHeight;
+    }
+
+    public double getMaxHeightWithoutOffset() {
+        return ElevatorConst.kMaxHeight - ElevatorConst.kHeightOffset;
+    }
+
+    public double getHeightWithoutOffset() {
+        return m_PeriodicIO.currentHeight - ElevatorConst.kHeightOffset;
+    }
+
     private double convertPositionToHeight(double position) {
         double rawHeight = ElevatorConst.kHeightOffset + (position * ElevatorConst.kRotationToInches);
         return rawHeight + (rawHeight * ElevatorConst.kErrorCorrectionRatio);
