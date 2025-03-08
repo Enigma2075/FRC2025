@@ -81,7 +81,7 @@ public class Arm extends SubsystemIO{
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-            motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
