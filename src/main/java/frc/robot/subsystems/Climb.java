@@ -19,6 +19,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -74,6 +76,10 @@ public class Climb extends SubsystemIO{
 
         frontConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        frontConfig.HardwareLimitSwitch.ForwardLimitEnable = true;
+        frontConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
+        frontConfig.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+        
         Slot0Configs slot0Configs = frontConfig.Slot0;
         slot0Configs.kG = ClimbConstants.kG;
         slot0Configs.kS = ClimbConstants.kS;
@@ -103,7 +109,7 @@ public class Climb extends SubsystemIO{
 
     public enum State { 
         START(0), 
-        ENDCLIMB(130);
+        ENDCLIMB(110);
         
         public final double distance;
 

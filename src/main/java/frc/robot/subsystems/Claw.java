@@ -57,7 +57,7 @@ public class Claw extends SubsystemIO {
 
         CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
 
-        coralSensorConfig.FovParams.FOVCenterX = -6;
+        coralSensorConfig.FovParams.FOVCenterX = -2;
         coralSensorConfig.FovParams.FOVCenterY = 1;
         coralSensorConfig.FovParams.FOVRangeX = 7;
         coralSensorConfig.FovParams.FOVRangeY = 7;

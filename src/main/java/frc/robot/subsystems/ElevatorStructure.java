@@ -82,7 +82,7 @@ public class ElevatorStructure extends SubsystemIO {
     private boolean m_AlgaePositionPressed = false;
     private Supplier<Command> m_NextCommand = null;
 
-    private Command m_AlgaeIntakeEndCommand = null;
+    private Supplier<Command> m_AlgaeIntakeEndCommand = null;
     
     public ElevatorStructure(Elevator elevator, Arm arm, Wrist wrist, Claw claw) {
         m_Elevator = elevator;
@@ -261,7 +261,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command intakeAlgaeCommand() {
         if(m_AlgaeIntakeEndCommand != null) {
-            return m_AlgaeIntakeEndCommand;
+            return m_AlgaeIntakeEndCommand.get();
         }
         else {
             return run(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE));
@@ -291,7 +291,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command moveToAlgaeHighCommand() {
         Supplier<Command> movement = () -> { return runOnce(() -> {
                 m_Wrist.setOverrideVelocity(true);
-                m_AlgaeIntakeEndCommand = intakeAlgaeHighCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
+                m_AlgaeIntakeEndCommand = () -> intakeAlgaeHighCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
             })
             .andThen(moveToPositionsSide(AlgaeHighFrontSequence, AlgaeHighRearSequence));};
 
@@ -322,7 +322,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command moveToAlgaeLowCommand() {
         Supplier<Command> movement = () -> { return runOnce(() -> {
                 m_Wrist.setOverrideVelocity(true);
-                m_AlgaeIntakeEndCommand = intakeAlgaeLowCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
+                m_AlgaeIntakeEndCommand = () -> intakeAlgaeLowCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
             })
             .andThen(moveToPositionsSide(AlgaeLowFrontSequence, AlgaeLowRearSequence));};
 
