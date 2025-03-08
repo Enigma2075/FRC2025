@@ -13,12 +13,6 @@
         {
           "type": "named",
           "data": {
-            "name": "move_to_L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "outtake"
           }
         },
@@ -29,21 +23,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Source2-P5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "move_to_L4"
           }
         },
         {
