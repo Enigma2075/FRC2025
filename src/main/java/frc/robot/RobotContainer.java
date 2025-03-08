@@ -98,9 +98,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         NamedCommands.registerCommand("outtake", elevatorStructure.outtakeCoralCommand().until(()-> !claw.hasCoral()));
         
-        autoChooser = AutoBuilder.buildAutoChooser("Test");
-
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
 
         SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
         
@@ -108,9 +106,10 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        autoChooser.addOption("Test", drivetrain.getAutoPath("2L4")); 
+        autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
     }
 
