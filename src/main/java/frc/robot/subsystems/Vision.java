@@ -7,6 +7,18 @@ public class Vision extends SubsystemIO {
         LimelightHelpers.setPipelineIndex(getName(), 0);
     }
 
+    public double getHorizAngleFromTag(String limelightName) {
+        double targetAngle = 0.0;
+        String tempLimelightName = limelightName;
+
+        if (LimelightHelpers.getTV(tempLimelightName) == true) {
+            targetAngle = LimelightHelpers.getTXNC(tempLimelightName);
+            return targetAngle;
+        } else {
+            return 0.0;
+        }
+    }
+
     @Override
     public void stop() {
     }
