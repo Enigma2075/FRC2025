@@ -112,7 +112,7 @@ public class RobotContainer {
 
     private void calculateMaxSpeed() {
         double maxSpeedReduction = .9;
-        double maxAngularRateReduction = .9;
+        double maxAngularRateReduction = .85;
 
         double percentOfMaxHeight = elevator.getHeightWithoutOffset()/elevator.getMaxHeightWithoutOffset();
         double percentOfMaxHeightSquared = percentOfMaxHeight * percentOfMaxHeight;
