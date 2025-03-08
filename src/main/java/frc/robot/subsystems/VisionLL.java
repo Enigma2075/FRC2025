@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.LimelightHelpers;
@@ -10,13 +11,15 @@ public class VisionLL {
 
     private boolean m_connected = false;
     private TargetObservation m_latestTargetObservation = null;
+
+    private final DoubleSubscriber txSubscriber;
+    private final DoubleSubscriber tySubscriber;
     
     public VisionLL(String name) {
         m_name = name;
         var table = NetworkTableInstance.getDefault().getTable(name);
-        //txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
-        //tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
-
+        txSubscriber = table.getDoubleTopic("tx").subscribe(0.0, null);
+        tySubscriber = table.getDoubleTopic("ty").subscribe(0.0, null);
     }
 
       /** Represents the angle to a simple target, not used for pose estimation. */

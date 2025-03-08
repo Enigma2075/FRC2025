@@ -66,7 +66,13 @@ public class Arm extends SubsystemIO{
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = ArmConstants.kDiscontinuityPoint;
-        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        if(RobotConstants.kPracticeBot) {
+            encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        }
+        else {
+            encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        }
+
         encoderConfig.MagnetSensor.MagnetOffset = ArmConstants.kMagnetOffset;
         
         m_Encoder.getConfigurator().apply(encoderConfig);
@@ -75,8 +81,8 @@ public class Arm extends SubsystemIO{
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
+            motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         motorConfig.Feedback.FeedbackRemoteSensorID = m_Encoder.getDeviceID();
