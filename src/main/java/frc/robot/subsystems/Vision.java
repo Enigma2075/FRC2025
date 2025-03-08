@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.Utils;
 
 public class Vision extends SubsystemIO {
     public Vision() {
-        LimelightHelpers.setPipelineIndex(getName(), 0);
+        LimelightHelpers.setPipelineIndex(VisionConstant.kFrontRightLLName, 0);
+        LimelightHelpers.setPipelineIndex(VisionConstant.kFrontLeftLLName, 0);
+        LimelightHelpers.setPipelineIndex(VisionConstant.kBackRightLLName, 0);
+        LimelightHelpers.setPipelineIndex(VisionConstant.kBackLeftLLName, 0);
     }
 
     public double getHorizAngleFromTag(String limelightName) {
@@ -17,6 +21,12 @@ public class Vision extends SubsystemIO {
         } else {
             return 0.0;
         }
+    }
+
+    
+
+    public void frontLeftOuttake(){
+        
     }
 
     @Override
