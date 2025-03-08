@@ -8,10 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -58,6 +60,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
             ;
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -88,7 +91,8 @@ public class RobotContainer {
     public IOManager ioManager; 
 
     public RobotContainer() {
-        driveAtAngle.HeadingController.setP(6);
+        driveAtAngle.HeadingController.setP(8);
+        
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(()-> claw.hasCoral()));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
@@ -181,9 +185,28 @@ public class RobotContainer {
         operator.axisMagnitudeGreaterThan(0, .7).or(operator.axisMagnitudeGreaterThan(1, .7))
             .whileTrue(drivetrain.applyRequest(() -> {
                 calculateMaxSpeed();
+                Rotation2d targetRotation = getRotationForJoystick(operator.getLeftX(), -operator.getLeftY());
+
+                double error = targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
+
+                SmartDashboard.putNumber("Drive/AngleError", error);
+
+                if(elevator.getHeight() > 25) {
+                    if(Math.abs(targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians()) < Math.PI/4.0) {
+                        driveAtAngle.HeadingController.setP(8);
+                    }
+                    else if(Math.abs(targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians()) < Math.PI/2.0) {
+                        driveAtAngle.HeadingController.setP(4);
+                    }
+                    else {
+                        driveAtAngle.HeadingController.setP(1);    
+                    }
+                }
+
                 return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
-                    .withTargetDirection(getRotationForJoystick(operator.getLeftX(), -operator.getLeftY()));
+                    .withTargetDirection(targetRotation)
+                    ;
         }));
 
 
@@ -215,14 +238,8 @@ public class RobotContainer {
         SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
 
         Rotation2d output = new Rotation2d((reefIndex * reefSlice));
-
-        if(Robot.AllianceColor.get() == Alliance.Red) {
-            output = output.rotateBy(new Rotation2d(Math.PI));
-            SmartDashboard.putBoolean("Drivetrain/DegreesInvert", true);
-        }
-        else {
-            SmartDashboard.putBoolean("Drivetrain/DegreesInvert", true);
-        }
+        output = output.rotateBy(new Rotation2d(Math.PI));
+            
 
         SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 
