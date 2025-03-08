@@ -35,7 +35,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(67, 103, 112, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(17, 73, 137, "IntakeCoralRear");
-    public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(15, 118, -153, "IntakeCoralFront");
+    public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
     public static final ElevatorStructurePosition IntakeCoralFrontEnd = new ElevatorStructurePosition(15, 90, 100, "IntakeCoralFrontEnd");
     
     public static final ElevatorStructurePosition IntakeAlgaeHighFrontStart = new ElevatorStructurePosition(26, 119.5, 156, "IntakeAlgaeHighFrontStart");
