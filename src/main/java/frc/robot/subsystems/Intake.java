@@ -101,7 +101,7 @@ public class Intake extends SubsystemIO{
         DEFAULT(110, 0),
         DISABLE(0, 0),
         GRABALGAE(100, 0),
-        HANDOFFALGAE(100, 0);
+        HANDOFFALGAE(90, 0);
 
         public final double degrees;
         public final double rollerOutput;
@@ -164,7 +164,7 @@ public class Intake extends SubsystemIO{
 
     //return a command that will set the position
     public Command setStateCommand(States state){
-        return run(()->{
+        return runOnce(()->{
             if(state == States.CLIMBREADY) {
                 RobotState.isClimbing = true;
             }

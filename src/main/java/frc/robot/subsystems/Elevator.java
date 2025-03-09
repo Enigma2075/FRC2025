@@ -95,6 +95,7 @@ public class Elevator extends SubsystemIO{
         m_Front.getConfigurator().apply(frontConfig);
 
         m_Front.setControl(m_OutputRequest.withOutput(0));
+        
     }
    
     private static class PeriodicIO {

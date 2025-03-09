@@ -21,7 +21,7 @@ public class ClawConstants {
     public static final double kMotionMagicJerk = 0;
     
     public static final double kCoralDistanceThreshold = 12;
-    public static final double kAlgaeDistanceThreshold = 10;
+    public static final double kAlgaeDistanceThreshold = 6;
 
     }
 

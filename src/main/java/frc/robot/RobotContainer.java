@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Drivetrain;
@@ -109,8 +112,6 @@ public class RobotContainer {
         autoChooser.addOption("Test", drivetrain.getAutoPath("Test")); 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
-
     }
 
     private void calculateMaxSpeed() {
@@ -135,6 +136,13 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
+                if(RobotState.isClimbing) {
+                    driveAtAngle.HeadingController.setP(8);
+                return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                .withTargetDirection(Rotation2d.kCCW_90deg);
+                }
+
                 calculateMaxSpeed();
 
                 return drive.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)
@@ -178,7 +186,10 @@ public class RobotContainer {
         operator.rightTrigger().whileTrue(elevatorStructure.intakeCoralCommand()).onFalse(elevatorStructure.moveToStartingCommand());
 
         //right bumper - barge
-        operator.rightBumper().whileTrue(elevatorStructure.moveToBargeCommand());
+        operator.rightBumper().whileTrue(
+            new ConditionalCommand(elevatorStructure.moveToBargeCommand(), 
+                elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae()).andThen(intake.setStateCommand(States.HANDOFFALGAE).andThen(elevatorStructure.pickupAlgaeCommand())), () -> claw.hasAlgae()).andThen(intake.setStateCommand(States.DEFAULT)));
+        operator.leftBumper().onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.storeAlgaeCommand()).andThen(intake.setStateCommand(States.DEFAULT)));
 
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb()).alongWith(intake.setStateCommand(States.CLIMBREADY)));
         
@@ -191,16 +202,19 @@ public class RobotContainer {
 
                 SmartDashboard.putNumber("Drive/AngleError", error);
 
-                if(elevator.getHeight() > 25) {
-                    if(Math.abs(targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians()) < Math.PI/4.0) {
+                if(elevator.getHeight() > 20) {
+                    if(Math.abs(error) < Math.PI/8.0) {
                         driveAtAngle.HeadingController.setP(8);
                     }
-                    else if(Math.abs(targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians()) < Math.PI/2.0) {
-                        driveAtAngle.HeadingController.setP(4);
+                    else if(Math.abs(error) < Math.PI/2.0) {
+                        driveAtAngle.HeadingController.setP(2.5);
                     }
                     else {
-                        driveAtAngle.HeadingController.setP(1);    
+                        driveAtAngle.HeadingController.setP(1.5);    
                     }
+                }
+                else {
+                    driveAtAngle.HeadingController.setP(8);
                 }
 
                 return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y (forward)

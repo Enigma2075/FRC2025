@@ -26,13 +26,17 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
     public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
 
-    public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7.5, 116, -83, "GrabAlgae");
+    public static final ElevatorStructurePosition PickupAlgae = new ElevatorStructurePosition(12, 105, -100, "PickuptAlgae");
+    
+    public static final ElevatorStructurePosition StoreAlgae = new ElevatorStructurePosition(10, 105, -100, "StoreAlgae");
+    
+    public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7, 105, -100, "GrabAlgae");
     public static final ElevatorStructurePosition GrabAlgaeHeight = new ElevatorStructurePosition(12, 90, 100, "GrabAlgaeHeight");
     public static final ElevatorStructurePosition GrabAlgaeRotate = new ElevatorStructurePosition(12, 90, -83, "GrabAlgaeRotate");
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
 
-    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(67, 87, 75, "BargeBack");
-    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(67, 103, 112, "BargeFront");
+    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(67, 75, 75, "BargeBack");
+    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(67, 103, 120, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15.5, 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
@@ -45,7 +49,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePositionSequence IntakeAlgaeHighFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighFront, IntakeAlgaeHighFrontEnd);
     
     public static final ElevatorStructurePosition StoreAlgaeMove = new ElevatorStructurePosition(15, 90, 40, "IntakeAlgaeHighFrontEndMove");
-    public static final ElevatorStructurePositionSequence StoreAlgaeSequence = new ElevatorStructurePositionSequence(StoreAlgaeMove, GrabAlgaeRotateBoth, GrabAlgae);
+    public static final ElevatorStructurePositionSequence StoreAlgaeSequence = new ElevatorStructurePositionSequence(StoreAlgaeMove, GrabAlgaeRotateBoth, StoreAlgae);
     
     public static final ElevatorStructurePosition IntakeAlgaeHighRear = new ElevatorStructurePosition(44, 110, 175, "IntakeAlgaeHighRear");
     public static final ElevatorStructurePositionSequence IntakeAlgaeHighRearSequence = new ElevatorStructurePositionSequence(IntakeAlgaeHighRear);
@@ -69,11 +73,11 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
     public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 122, -54, "L4Front");
-    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 108, -76, "L3Front");
-    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(20, 108, -70, "L2Front");
+    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(34.5, 112, -80, "L3Front");
+    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 112, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 16, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 18, "Climb");
 
     private enum QueueModes {ALGAE, CORAL, NONE};
 
@@ -252,7 +256,11 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command handoffAlgaeCommand() {
-        return runOnce(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE); }).andThen(moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae));
+        return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae).andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }));
+    }
+
+    public Command pickupAlgaeCommand() {
+        return moveToPositions(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true), PickupAlgae);
     }
 
     public Command outtakeAlgaeCommand() {
@@ -260,12 +268,14 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command intakeAlgaeCommand() {
-        if(m_AlgaeIntakeEndCommand != null) {
-            return m_AlgaeIntakeEndCommand.get();
-        }
-        else {
-            return run(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE));
-        }
+        return runOnce( () -> {
+            if(m_AlgaeIntakeEndCommand != null) {
+               CommandScheduler.getInstance().schedule(m_AlgaeIntakeEndCommand.get());
+            }
+            else {
+                CommandScheduler.getInstance().schedule(run(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE)));
+            }
+        });
     }
 
     //private Command run
@@ -291,7 +301,8 @@ public class ElevatorStructure extends SubsystemIO {
     public Command moveToAlgaeHighCommand() {
         Supplier<Command> movement = () -> { return runOnce(() -> {
                 m_Wrist.setOverrideVelocity(true);
-                m_AlgaeIntakeEndCommand = () -> intakeAlgaeHighCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
+                m_AlgaeIntakeEndCommand = () -> intakeAlgaeHighCommand();
+
             })
             .andThen(moveToPositionsSide(AlgaeHighFrontSequence, AlgaeHighRearSequence));};
 
@@ -411,6 +422,7 @@ public class ElevatorStructure extends SubsystemIO {
     public void outputTelemetry() {
         SmartDashboard.putString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SmartDashboard.putString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
+        SmartDashboard.putBoolean("ElevatorStructure/AlgaeIntakeEnd", m_AlgaeIntakeEndCommand == null);
         
         SignalLogger.writeString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SignalLogger.writeString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
