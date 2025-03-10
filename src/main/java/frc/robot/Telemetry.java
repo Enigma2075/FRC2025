@@ -78,6 +78,7 @@ public class Telemetry {
             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
     };
 
+    private final double[] m_speedArray = new double[3];
     private final double[] m_poseArray = new double[3];
     private final double[] m_moduleStatesArray = new double[8];
     private final double[] m_moduleTargetsArray = new double[8];
@@ -104,7 +105,12 @@ public class Telemetry {
             m_moduleTargetsArray[i*2 + 1] = state.ModuleTargets[i].speedMetersPerSecond;
         }
 
+        m_speedArray[0] = state.Speeds.vxMetersPerSecond;
+        m_speedArray[1] = state.Speeds.vyMetersPerSecond;
+        m_speedArray[2] = state.Speeds.omegaRadiansPerSecond;
+
         SignalLogger.writeDoubleArray("DriveState/Pose", m_poseArray);
+        SignalLogger.writeDoubleArray("DriveState/Speed", m_speedArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", m_moduleStatesArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleTargets", m_moduleTargetsArray);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
