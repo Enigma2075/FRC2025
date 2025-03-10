@@ -200,7 +200,7 @@ public class RobotContainer {
                 .whileTrue(elevatorStructure.intakeCoralCommand().alongWith(drivetrain.applyRequest(() -> {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForIntake(drivetrain.getState().Pose.getRotation());
-
+                    //Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
                     setDriveAtAngleP(targetRotation);
 
                     return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
@@ -290,34 +290,33 @@ public class RobotContainer {
     // return output;
     // }
 
-    // public Rotation2d getRotationForReef(double currentAngle) {
-    // double reefSlice = (Math.PI * 2.0) / 6.0;
-    // double reefSliceMiddle = reefSlice /2.0;
-    // Rotation2d joystickRotation = new Rotation2d(requestX, requestY).rotateBy(new
-    // Rotation2d((-Math.PI/2.0)-reefSliceMiddle));
-    // SmartDashboard.putNumber("Drivetrain/joystickDegrees",
-    // joystickRotation.getDegrees());
+    public Rotation2d getRotationForReef(Rotation2d currentRotation) {
+        double reefSlice = (Math.PI * 2.0) / 6.0;
+        double reefSliceMiddle = reefSlice / 2.0;
 
-    // int reefIndex = (int)(joystickRotation.getRadians() / reefSlice);
-    // if(Math.signum(joystickRotation.getRadians()) == 1) {
-    // reefIndex++;
-    // }
+        double currentReefSlice;
+        if(currentRotation.getRadians() > -reefSliceMiddle * 5.0 && currentRotation.getRadians() < reefSliceMiddle) {
+            currentReefSlice = (int)(currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getRadians() / reefSlice);
+        }
+        else if(currentRotation.getRadians() < reefSliceMiddle * 5.0 && Math.signum(currentRotation.getRadians() ) ==1) {
+            currentReefSlice = (int)(currentRotation.rotateBy(Rotation2d.fromRadians(reefSliceMiddle)).getRadians() / reefSlice);
+        }
+        else {
+            currentReefSlice = 3;
+        }
 
-    // SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
-
-    // Rotation2d output = new Rotation2d((reefIndex * reefSlice));
-    // output = output.rotateBy(new Rotation2d(Math.PI));
-
-    // SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
-
-    // return output;
-    // }
+        Rotation2d joystickRotation = Rotation2d.fromRadians((reefSlice * currentReefSlice));
+        //SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
+        //SmartDashboard.putNumber("Drivetrain/joystickDegrees1", (currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getDegrees()));
+        
+        return joystickRotation;
+    }
 
     public Rotation2d getRotationForIntake(Rotation2d currentRotation) {
         var intakeRotation = Rotation2d.fromDegrees(55);
         var invertCheck = Robot.AllianceColor.get() == Alliance.Blue ? -1 : 1;
 
-        if(Math.signum(currentRotation.getRadians()) == invertCheck) {
+        if (Math.signum(currentRotation.getRadians()) == invertCheck) {
             intakeRotation = Rotation2d.fromDegrees(intakeRotation.getDegrees() * -1);
         }
 
@@ -329,19 +328,19 @@ public class RobotContainer {
         double reefSliceMiddle = reefSlice / 2.0;
         Rotation2d joystickRotation = new Rotation2d(requestX, requestY)
                 .rotateBy(new Rotation2d((-Math.PI / 2.0) - reefSliceMiddle));
-        SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
+        //SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
 
         int reefIndex = (int) (joystickRotation.getRadians() / reefSlice);
         if (Math.signum(joystickRotation.getRadians()) == 1) {
             reefIndex++;
         }
 
-        SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
+        //SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
 
         Rotation2d output = new Rotation2d((reefIndex * reefSlice));
         output = output.rotateBy(new Rotation2d(Math.PI));
 
-        SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
+        //SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 
         return output;
     }
