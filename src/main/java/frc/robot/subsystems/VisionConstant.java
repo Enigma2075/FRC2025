@@ -44,6 +44,6 @@ public class VisionConstant {
 
       // AprilTag layout
   public static AprilTagFieldLayout aprilTagLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
 }
