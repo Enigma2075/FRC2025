@@ -190,11 +190,15 @@ public class Claw extends SubsystemIO {
         SmartDashboard.putBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SmartDashboard.putString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
         SmartDashboard.putString("Claw/CoralMode", m_PeriodicIO.coralMode.name());
+        SmartDashboard.putNumber("Claw/CoralTryAgain", m_PeriodicIO.tryAgainCoral);
+        SmartDashboard.putNumber("Claw/AlgaeTryAgain", m_PeriodicIO.tryAgainAlgae);
 
         SignalLogger.writeBoolean("Claw/HasAlgae", m_PeriodicIO.hasAlgae);
         SignalLogger.writeBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SignalLogger.writeString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
         SignalLogger.writeString("Claw/CoralMode", m_PeriodicIO.coralMode.name());
+        SignalLogger.writeDouble("Claw/CoralTryAgain", m_PeriodicIO.tryAgainCoral);
+        SignalLogger.writeDouble("Claw/AlgaeTryAgain", m_PeriodicIO.tryAgainAlgae);
     }
 
     @Override

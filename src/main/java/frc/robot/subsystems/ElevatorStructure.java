@@ -18,6 +18,9 @@ import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.subsystems.states.ElevatorStructurePositionSequence;
 
 public class ElevatorStructure extends SubsystemIO {
+    // Intake physical position 35 high, 5.5 away from wall.
+
+
     private final Elevator m_Elevator;
     private final Arm m_Arm;
     private final Wrist m_Wrist;
@@ -199,7 +202,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command moveToBargeCommand() {
-        return moveToPosition(BargeFront, BargeRear);
+        return moveToPosition(BargeRear, BargeRear);
     }
 
     private Command moveToCoralLevel(Supplier<Command> movement) {

@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -38,6 +41,8 @@ public class Intake extends SubsystemIO{
     private TalonFX m_pivot;
     private TalonFX m_roller;
 
+    private CANrange m_Sensor;
+
     private final DutyCycleOut m_PivotOutputRequest= new DutyCycleOut(0);
     private final MotionMagicVoltage m_PivotPositionRequest = new MotionMagicVoltage(0).withSlot(0);
     private final DutyCycleOut m_RollerOutputRequest= new DutyCycleOut(0);
@@ -58,6 +63,18 @@ public class Intake extends SubsystemIO{
                     (Subsystem)this));
 
     public Intake() {
+        m_Sensor = new CANrange(ClawConstants.kCoralSensorId, RobotConstants.kCanivoreBusName);
+
+        CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
+
+        sensorConfig.FovParams.FOVCenterX = 6;
+        sensorConfig.FovParams.FOVCenterY = 11;
+        sensorConfig.FovParams.FOVRangeX = 7;
+        sensorConfig.FovParams.FOVRangeY = 7;
+
+        m_Sensor.getConfigurator().apply(sensorConfig);
+
+
         m_pivot = new TalonFX(IntakeConstants.kPivotId,RobotConstants.kCanivoreBusName);
         m_roller = new TalonFX(IntakeConstants.kRollerId,RobotConstants.kCanivoreBusName);
 
@@ -124,6 +141,8 @@ public class Intake extends SubsystemIO{
 
         public double targetRollerOutput = 0;
         public double currentRollerCurrent = 0;
+
+        public double currentDistance = 0;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -190,6 +209,7 @@ public class Intake extends SubsystemIO{
     public void readPeriodicInputs() {
         m_PeriodicIO.currentPivotAngle = convertPositionToAngle(m_pivot.getPosition().getValueAsDouble());
         m_PeriodicIO.currentRollerCurrent = m_roller.getSupplyCurrent().getValueAsDouble();
+        m_PeriodicIO.currentDistance = m_Sensor.getDistance().getValue().in(Centimeters);
     }
 
     @Override
@@ -214,7 +234,12 @@ public class Intake extends SubsystemIO{
                 break;
         }
 
-        m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
+        if(m_PeriodicIO.targetRollerOutput == 0 && m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange && m_PeriodicIO.currentDistance > IntakeConstants.kMinRange) {
+            m_roller.setControl(m_RollerOutputRequest.withOutput(.05));
+        }
+        else {
+            m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
+        }
     }
 
      @Override

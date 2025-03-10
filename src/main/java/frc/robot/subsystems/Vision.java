@@ -77,10 +77,10 @@ public void readPeriodicInputs() {
     for (int i = 0; i < io.length; i++) {
         io[i].updateInputs(inputs[i]);
         
-        // var logName = "Vision/" + Integer.toString(i);
-        // SmartDashboard.putBoolean(logName + "Connected", inputs[i].connected);
-        // SmartDashboard.putNumber(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
-        // SmartDashboard.putNumber(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
+        var logName = "Vision/" + Integer.toString(i);
+        SmartDashboard.putBoolean(logName + "Connected", inputs[i].connected);
+        SmartDashboard.putNumber(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
+        SmartDashboard.putNumber(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
         // (logName + "LatestObservation-ty", inputs[i].poseObservations);
         
         
@@ -197,7 +197,7 @@ public void readPeriodicInputs() {
 @Override
 public void stop() {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'stop'");
+    //throw new UnsupportedOperationException("Unimplemented method 'stop'");
 }
 
 @Override

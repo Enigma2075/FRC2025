@@ -6,47 +6,32 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import javax.net.ssl.SSLEngineResult.HandshakeStatus;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ElevatorConst;
 import frc.robot.subsystems.ElevatorStructure;
 import frc.robot.subsystems.IOManager;
-import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.RobotConstants;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.WristConstants;
 import frc.robot.subsystems.Climb.State;
 import frc.robot.subsystems.Intake.States;
-import frc.robot.subsystems.states.ElevatorStructurePosition;
-import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.CoralModes;
-import frc.robot.subsystems.ClawConstants;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.ClimbConstants;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.IntakeConstants;
 import frc.robot.subsystems.DriveTrainConstants;
 
 public class RobotContainer {
@@ -89,6 +74,8 @@ public class RobotContainer {
 
     public final Intake intake = new Intake();
 
+    public final Vision vision = new Vision(drivetrain::addVisionMeasurement, () -> drivetrain.getState().Pose.getRotation());
+
     private SendableChooser<Command> autoChooser;
 
     public IOManager ioManager;
@@ -100,7 +87,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         NamedCommands.registerCommand("outtake", elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral()));
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure);
+        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
         SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
 
@@ -175,12 +162,12 @@ public class RobotContainer {
 
         elevatorStructure.setDefaultCommand(elevatorStructure.defaultCommand());
 
-        operator.povRight().whileTrue(Commands.run(() -> {
-            RobotState.scoringSide = ScoringSides.BACK;
-        }));
-        operator.povLeft().whileTrue(Commands.run(() -> {
-            RobotState.scoringSide = ScoringSides.FRONT;
-        }));
+        // operator.povRight().whileTrue(Commands.run(() -> {
+        //     RobotState.scoringSide = ScoringSides.BACK;
+        // }));
+        // operator.povLeft().whileTrue(Commands.run(() -> {
+        //     RobotState.scoringSide = ScoringSides.FRONT;
+        // }));
 
         operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHighCommand())
                 .onFalse(elevatorStructure.clearAlgaePress());

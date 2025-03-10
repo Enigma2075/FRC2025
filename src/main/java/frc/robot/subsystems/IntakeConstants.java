@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 public class IntakeConstants {
     public static final int kPivotId = 15;
     public static final int kRollerId = 16;
+    public static final int kSensorId = 1;
+
+    public static final double kMaxRange = .2;
+    public static final double kMinRange = 0.05;
 
     public static final double kGearRatio1 = 7.0/1.0;
     public static final double kGearRatio2 = 3.0/1.0;
