@@ -39,7 +39,7 @@ public class RobotContainer {
     private double MaxSpeed = DriveTrainConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                        // speed
     private double MaxAngularRate = RotationsPerSecond.of(.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
+                                                                                      // max angular velocity = 166.16
     private double CalculatedMaxSpeed = MaxSpeed;
     private double CalculatedMaxAngularRate = MaxAngularRate;
 
@@ -222,8 +222,8 @@ public class RobotContainer {
                             .withTargetDirection(targetRotation);
                 }));
 
-        driver.start().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
-        driver.back().and(() -> RobotState.isClimbing)
+        driver.back().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
+        driver.start().and(() -> RobotState.isClimbing)
                 .onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
 
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE))

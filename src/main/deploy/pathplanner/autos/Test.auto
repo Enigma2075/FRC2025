@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "test"
+            "pathName": "Start-P4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         }
       ]

@@ -86,7 +86,7 @@ public class DriveTrainConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.7); //MetersPerSecond.of(5.21);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.7); //true max vel = 4.7 
 
     // L2+ drive train configuration w/ MK4i Swerve Module
     private static final double kDriveGearRatio = (50.0 / 16.0) * (17.0 / 27.0) * (45 / 15);
