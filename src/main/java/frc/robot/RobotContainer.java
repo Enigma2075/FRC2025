@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,7 +38,7 @@ import frc.robot.subsystems.DriveTrainConstants;
 public class RobotContainer {
     private double MaxSpeed = DriveTrainConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                        // speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+    private double MaxAngularRate = RotationsPerSecond.of(.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
     private double CalculatedMaxSpeed = MaxSpeed;
     private double CalculatedMaxAngularRate = MaxAngularRate;
@@ -147,10 +148,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
+        // driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
+        // driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward));
+        // driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse));
 
         // run sysid for intake and climb
         // operator.a().whileTrue(intake.sysIdQuasiStatic(Direction.kReverse));
