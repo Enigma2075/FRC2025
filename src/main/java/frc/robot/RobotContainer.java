@@ -307,6 +307,10 @@ public class RobotContainer {
         //SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
         //SmartDashboard.putNumber("Drivetrain/joystickDegrees1", (currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getDegrees()));
         
+        if(Robot.AllianceColor.get() == Alliance.Red) {
+            joystickRotation = joystickRotation.rotateBy(Rotation2d.fromDegrees(180));
+        }
+
         return joystickRotation;
     }
 
