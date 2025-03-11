@@ -235,14 +235,8 @@ public class Intake extends SubsystemIO{
                 break;
         }
 
-
-            SmartDashboard.putNumber("Intake/RollerOutput", m_PeriodicIO.targetRollerOutput);
-            SmartDashboard.putBoolean("Intake/RollerOutputBool", m_PeriodicIO.targetRollerOutput == 0);
-            SmartDashboard.putBoolean("Intake/RollerBool1", m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange);
-            SmartDashboard.putBoolean("Intake/RollerBool2", m_PeriodicIO.currentDistance > IntakeConstants.kMinRange);
         if(m_PeriodicIO.targetRollerOutput == 0 && m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange && m_PeriodicIO.currentDistance > IntakeConstants.kMinRange) {
             m_roller.setControl(m_RollerOutputRequest.withOutput(.1));
-            SmartDashboard.putBoolean("Intake/AtMaxRange", false);
         }
         else {
             m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
