@@ -13,8 +13,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.util.LimelightHelpers;
 
 public class VisionLL {
     public static class VisionIOInputs {
@@ -22,6 +24,8 @@ public class VisionLL {
         public TargetObservation latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
         public PoseObservation[] poseObservations = new PoseObservation[0];
         public int[] tagIds = new int[0];
+        public long targetId = 0;
+        public Pose3d targetPose = new Pose3d();
     }
 
     /** Represents the angle to a simple target, not used for pose estimation. */
@@ -54,6 +58,8 @@ public class VisionLL {
     private final DoubleSubscriber latencySubscriber;
     private final DoubleArraySubscriber megatag1Subscriber;
     private final DoubleArraySubscriber megatag2Subscriber;
+    private final DoubleArraySubscriber targetPoseSubscriber;
+    private final IntegerSubscriber targetIdSubscriber;
 
     public VisionLL(String name, Supplier<Rotation2d> rotationSupplier) {
         this.name = name;
@@ -65,9 +71,15 @@ public class VisionLL {
         tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
         megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
         megatag2Subscriber = table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
+
+        targetPoseSubscriber = table.getDoubleArrayTopic("targetpose_robotspace").subscribe(new double[] {});
+        targetIdSubscriber = table.getIntegerTopic("tid").subscribe(0);
     }
 
     public void updateInputs(VisionIOInputs inputs) {
+        inputs.targetId = targetIdSubscriber.get();
+        inputs.targetPose = parsePose(targetPoseSubscriber.get());
+
         // Update connection status based on whether an update has been seen in the last
         // 250ms
         inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;

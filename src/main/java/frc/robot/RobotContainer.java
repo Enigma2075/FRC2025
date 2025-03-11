@@ -74,7 +74,7 @@ public class RobotContainer {
 
     public final Intake intake = new Intake();
 
-    public final Vision vision = new Vision(drivetrain::addVisionMeasurement, () -> drivetrain.getState().Pose.getRotation());
+    public final Vision vision = new Vision(drivetrain::addVisionMeasurement, () -> drivetrain.getState().Pose.getRotation(), null);
 
     private SendableChooser<Command> autoChooser;
 
