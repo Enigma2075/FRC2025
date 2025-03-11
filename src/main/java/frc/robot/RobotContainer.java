@@ -81,7 +81,8 @@ public class RobotContainer {
     public IOManager ioManager;
 
     public RobotContainer() {
-        driveAtAngle.HeadingController.setP(8);
+        driveAtAngle.HeadingController.setP(10);
+        driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
@@ -110,6 +111,8 @@ public class RobotContainer {
         CalculatedMaxSpeed = MaxSpeed * (1.0 - (percentOfMaxHeightSquared * maxSpeedReduction));
         CalculatedMaxAngularRate = MaxAngularRate * (1.0 - (percentOfMaxHeightSquared * maxAngularRateReduction));
 
+        driveAtAngle.MaxAbsRotationalRate = CalculatedMaxAngularRate;
+
         SmartDashboard.putNumber("Drivetrain/CalculatedMaxSpeed", CalculatedMaxSpeed);
         SmartDashboard.putNumber("Drivetrain/CalculatedMaxAngularRate", CalculatedMaxAngularRate);
     }
@@ -123,7 +126,6 @@ public class RobotContainer {
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> {
                     if (RobotState.isClimbing) {
-                        driveAtAngle.HeadingController.setP(8);
                         return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                                    // negative Y
                                                                                                    // (forward)
@@ -188,8 +190,7 @@ public class RobotContainer {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForIntake(drivetrain.getState().Pose.getRotation());
                     //Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
-                    setDriveAtAngleP(targetRotation);
-
+                    
                     return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
                             .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
@@ -213,8 +214,7 @@ public class RobotContainer {
                 .whileTrue(drivetrain.applyRequest(() -> {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForJoystick(operator.getLeftX(), -operator.getLeftY());
-                    setDriveAtAngleP(targetRotation);
-
+                    
                     return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
                             .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
@@ -234,25 +234,36 @@ public class RobotContainer {
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
         driver.rightBumper().whileTrue(elevatorStructure.outtakeCoralCommand());
+
+
+        driver.b().whileTrue(drivetrain.applyRequest(() -> {
+            calculateMaxSpeed();
+            Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
+            
+            return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
+                                                                                       // negative Y (forward)
+                    .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(targetRotation);
+        }));
     }
 
-    public void setDriveAtAngleP(Rotation2d targetRotation) {
-        double error = targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
+    // public void setDriveAtAngleP(Rotation2d targetRotation) {
+    //     double error = targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
 
-        SmartDashboard.putNumber("Drive/AngleError", error);
+    //     SmartDashboard.putNumber("Drive/AngleError", error);
 
-        if (elevator.getHeight() > 20) {
-            if (Math.abs(error) < Math.PI / 8.0) {
-                driveAtAngle.HeadingController.setP(8);
-            } else if (Math.abs(error) < Math.PI / 2.0) {
-                driveAtAngle.HeadingController.setP(2.5);
-            } else {
-                driveAtAngle.HeadingController.setP(1.5);
-            }
-        } else {
-            driveAtAngle.HeadingController.setP(8);
-        }
-    }
+    //     if (elevator.getHeight() > 20) {
+    //         if (Math.abs(error) < Math.PI / 8.0) {
+    //             driveAtAngle.HeadingController.setP(10);
+    //         } else if (Math.abs(error) < Math.PI / 2.0) {
+    //             driveAtAngle.HeadingController.setP(2.5);
+    //         } else {
+    //             driveAtAngle.HeadingController.setP(1.5);
+    //         }
+    //     } else {
+    //         driveAtAngle.HeadingController.setP(10);
+    //     }
+    // }
 
     // public Rotation2d getRotationForBarge(double currentAngle) {
     // double reefSlice = (Math.PI * 2.0) / 6.0;
