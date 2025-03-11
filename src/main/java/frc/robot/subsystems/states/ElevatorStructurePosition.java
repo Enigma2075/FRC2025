@@ -2,7 +2,9 @@ package frc.robot.subsystems.states;
 
 import frc.robot.subsystems.ArmConstants;
 import frc.robot.subsystems.ElevatorConst;
+import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.WristConstants;
+import frc.robot.util.Utils;
 
 public class ElevatorStructurePosition {
     public double ElevatorHeight; //height 
@@ -10,7 +12,7 @@ public class ElevatorStructurePosition {
     public double WristAngle; //angles
     public String Name;
 
-    public ElevatorStructurePosition(double elevator, double arm, double wrist, String name){
+    public ElevatorStructurePosition(double elevator, double arm, double wrist, String name) {
         this.ElevatorHeight = elevator;
         this.ArmAngle = arm;
         this.WristAngle = wrist;
@@ -23,6 +25,7 @@ public class ElevatorStructurePosition {
         this.WristAngle = other.WristAngle;
         this.Name = other.Name;
     }
+
 
     //default position
     private ElevatorStructurePosition(){

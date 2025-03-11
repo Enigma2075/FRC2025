@@ -30,6 +30,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
 
     public static final ElevatorStructurePosition PickupAlgae = new ElevatorStructurePosition(12, 105, -100, "PickuptAlgae");
+    public static final ElevatorStructurePosition PickupAlgaeEnd = new ElevatorStructurePosition(12, 105, 100, "PickuptAlgae");
     
     public static final ElevatorStructurePosition StoreAlgae = new ElevatorStructurePosition(10, 105, -100, "StoreAlgae");
     
@@ -259,11 +260,11 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command handoffAlgaeCommand() {
-        return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae).andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }));
+        return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae).withTimeout(1).andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }));
     }
 
     public Command pickupAlgaeCommand() {
-        return moveToPositions(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true), PickupAlgae);
+        return moveToPositions(() -> {m_Wrist.setOverrideVelocity(true); m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, PickupAlgae, PickupAlgaeEnd).finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
     public Command outtakeAlgaeCommand() {

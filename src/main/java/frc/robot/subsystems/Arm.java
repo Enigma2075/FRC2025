@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.util.Utils;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -201,7 +202,10 @@ public class Arm extends SubsystemIO{
                 break;
             case POSITION:
                 if(Robot.RobotContainer.elevator.isAtPosition()) {
-                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(m_PeriodicIO.targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));    
+                    double sign = m_PeriodicIO.targetAngle < Math.PI/2 ? -1 : -1;
+                    double targetAngle = m_PeriodicIO.targetAngle + ((sign * Utils.getValue(0, Math.toRadians(3.4))));
+    
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));    
                 }
                 else {
                     m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(Math.toRadians(90))).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -63,7 +64,7 @@ public class Intake extends SubsystemIO{
                     (Subsystem)this));
 
     public Intake() {
-        m_Sensor = new CANrange(ClawConstants.kCoralSensorId, RobotConstants.kCanivoreBusName);
+        m_Sensor = new CANrange(IntakeConstants.kSensorId, RobotConstants.kCanivoreBusName);
 
         CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
 
@@ -234,8 +235,14 @@ public class Intake extends SubsystemIO{
                 break;
         }
 
+
+            SmartDashboard.putNumber("Intake/RollerOutput", m_PeriodicIO.targetRollerOutput);
+            SmartDashboard.putBoolean("Intake/RollerOutputBool", m_PeriodicIO.targetRollerOutput == 0);
+            SmartDashboard.putBoolean("Intake/RollerBool1", m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange);
+            SmartDashboard.putBoolean("Intake/RollerBool2", m_PeriodicIO.currentDistance > IntakeConstants.kMinRange);
         if(m_PeriodicIO.targetRollerOutput == 0 && m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange && m_PeriodicIO.currentDistance > IntakeConstants.kMinRange) {
-            m_roller.setControl(m_RollerOutputRequest.withOutput(.05));
+            m_roller.setControl(m_RollerOutputRequest.withOutput(.1));
+            SmartDashboard.putBoolean("Intake/AtMaxRange", false);
         }
         else {
             m_roller.setControl(m_RollerOutputRequest.withOutput(m_PeriodicIO.targetRollerOutput));
@@ -257,9 +264,11 @@ public class Intake extends SubsystemIO{
     public void outputTelemetry() {
             SmartDashboard.putNumber("Intake/CurrentDegrees", Math.toDegrees(m_PeriodicIO.currentPivotAngle));
             SmartDashboard.putNumber("Intake/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetPivotAngle));
+            SmartDashboard.putNumber("Intake/CurrentDistance", m_PeriodicIO.currentDistance);
     
             SignalLogger.writeDouble("Intake/CurrentDegrees", Math.toDegrees(m_PeriodicIO.currentPivotAngle));
             SignalLogger.writeDouble("Intake/TargetDegrees", Math.toDegrees(m_PeriodicIO.targetPivotAngle));
+            SignalLogger.writeDouble("Intake/CurrentDistance", m_PeriodicIO.currentDistance);
     }
 
 }
