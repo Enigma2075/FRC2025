@@ -79,7 +79,7 @@ public class Vision extends SubsystemIO {
   @FunctionalInterface
   public static interface TargetPoseConsumer {
     public void accept(
-        Pose3d targetPose3d);
+        Pose2d targetPose3d);
   }
 
   @Override
@@ -111,7 +111,9 @@ public class Vision extends SubsystemIO {
     }
 
     if(reefTagPoses.size() > 0 && targetPoseConsumer != null) {
-      targetPoseConsumer.accept(reefTagPoses.get(0));
+      var reefPose = reefTagPoses.get(0).toPose2d();
+      SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose.getX(), reefPose.getY(), reefPose.getRotation().getRadians()});
+      targetPoseConsumer.accept(reefPose);
     }
     
     // Initialize logging values
@@ -179,6 +181,8 @@ public class Vision extends SubsystemIO {
           angularStdDev *= VisionConstant.cameraStdDevFactors[cameraIndex];
         }
 
+        var pose1 = observation.pose().toPose2d();
+        SmartDashboard.putNumberArray("Vision/Pose", new double [] {pose1.getX(), pose1.getY(), pose1.getRotation().getRadians()});
         // Send vision observation
         consumer.accept(
             observation.pose().toPose2d(),
