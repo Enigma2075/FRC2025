@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "move_to_L4",
-      "waypointRelativePos": 0.8750173950195315,
+      "waypointRelativePos": 0.3269235229492188,
       "endWaypointRelativePos": null,
       "command": null
     }
