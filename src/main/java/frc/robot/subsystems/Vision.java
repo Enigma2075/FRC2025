@@ -106,7 +106,7 @@ public class Vision extends SubsystemIO {
     List<Pose3d> reefTagPoses = new LinkedList<>();
     for (int i = 0; i < 2; i++) {
       int[] reefTags = VisionConstant.blueReefTagIds;
-      if(Robot.AllianceColor.get() == Alliance.Blue) {
+      if(Robot.AllianceColor.get() == Alliance.Red) {
         reefTags = VisionConstant.redReefTagIds;
       }
     
@@ -192,6 +192,9 @@ public class Vision extends SubsystemIO {
         var pose1 = observation.pose().toPose2d();
         SmartDashboard.putNumberArray("Vision/Pose", new double [] {pose1.getX(), pose1.getY(), pose1.getRotation().getRadians()});
         SignalLogger.writeDoubleArray("Vision/Pose", new double [] {pose1.getX(), pose1.getY(), pose1.getRotation().getRadians()});
+        SmartDashboard.putNumberArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
+        SignalLogger.writeDoubleArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
+        
         // Send vision observation
         consumer.accept(
             observation.pose().toPose2d(),

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotState;
 import frc.robot.RobotState.ScoringSides;
 import frc.robot.subsystems.Claw.AlgaeModes;
@@ -27,6 +28,7 @@ public class ElevatorStructure extends SubsystemIO {
     private final Wrist m_Wrist;
     private final Claw m_Claw;
 
+    public static final ElevatorStructurePosition AutoStart = new ElevatorStructurePosition(7.5, 85, -100, "AutoStart"); //7.5
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
     public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
 
@@ -247,6 +249,10 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPositions(IntakeCoralFrontEnd, Starting);
     }
 
+    public void applyAutoStartPosition() {
+        applyPosition(AutoStart);
+    }
+
     public Command intakeCoralCommand() {
         return run(() -> { 
             m_Claw.setCoralMode(CoralModes.INTAKE);
@@ -287,6 +293,13 @@ public class ElevatorStructure extends SubsystemIO {
 
     //private Command run
 
+    public Command autoOuttakeCoralCommand() {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(runOnce(() -> {
+            m_Claw.setCoralMode(CoralModes.OUTTAKE);
+            }
+        )).andThen(Commands.waitSeconds(.25)).andThen(moveToPosition(false, Starting));
+    }
+
     public Command outtakeCoralCommand() {
         return run(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
@@ -294,7 +307,7 @@ public class ElevatorStructure extends SubsystemIO {
                 CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(m_NextCommand.get()).finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
             }
             else {
-                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(moveToPosition(Starting)));
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(moveToPosition(false, Starting)));
             }
         });
     }

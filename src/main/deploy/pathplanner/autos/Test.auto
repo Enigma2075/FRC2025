@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "start_position"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Start-P4"
@@ -14,6 +20,18 @@
           "type": "named",
           "data": {
             "name": "outtake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P4-Source2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         }
       ]

@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -85,13 +86,13 @@ public class RobotContainer {
     public IOManager ioManager;
 
     public RobotContainer() {
+        drivetrain.setStateStdDevs(VecBuilder.fill(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, 0));
         driveAtAngle.HeadingController.setP(10);
         driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake", new WaitUntilCommand(() -> elevatorStructure.isAtPosition())
-                .andThen(elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral())));
+        NamedCommands.registerCommand("outtake", elevatorStructure.autoOuttakeCoralCommand());
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -101,7 +102,8 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
+        autoChooser.setDefaultOption("Test", drivetrain.getAutoPath("Test"));
+        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

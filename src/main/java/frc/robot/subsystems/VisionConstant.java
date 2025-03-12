@@ -24,14 +24,16 @@ public class VisionConstant {
 
     // Standard deviation baselines, for 1 meter distance and 1 tag
     // (Adjusted automatically based on distance and # of tags)
-    public static double linearStdDevBaseline = 0.02; // Meters
+    public static double linearStdDevBaseline = 0.000002; // Meters
     public static double angularStdDevBaseline = 0.06; // Radians
 
     // Standard deviation multipliers for each camera
     // (Adjust to trust some cameras more than others)
     public static double[] cameraStdDevFactors = new double[] {
             1.0, // Camera 0
-            1.0 // Camera 1
+            1.0, // Camera 1
+            1.0, // Camera 2
+            1.0 // Camera 3
     };
 
     // Multipliers to apply for MegaTag 2 observations
