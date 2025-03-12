@@ -73,10 +73,10 @@ public class RobotContainer {
 
     public final Wrist wrist = new Wrist();
 
-    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw);
-
     public final Intake intake = new Intake();
-
+    
+    public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
+    
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
             () -> drivetrain.getState().Pose.getRotation(), null);
 

@@ -118,8 +118,7 @@ public class Intake extends SubsystemIO{
         CLIMBREADY(0, 0),
         DEFAULT(110, 0),
         DISABLE(0, 0),
-        GRABALGAE(100, 0),
-        HANDOFFALGAE(90, 0);
+        HANDOFFALGAE(100, 0);
 
         public final double degrees;
         public final double rollerOutput;
