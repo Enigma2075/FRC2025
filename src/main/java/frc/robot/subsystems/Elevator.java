@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -68,6 +69,15 @@ public class Elevator extends SubsystemIO{
 
         backConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        backConfig.withCurrentLimits(new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerLimit(.75)
+            .withSupplyCurrentLimitEnable(true)
+        );
+
         m_Back.getConfigurator().apply(backConfig);
         
         m_Back.setControl(new Follower(m_Front.getDeviceID(), true));
@@ -91,6 +101,15 @@ public class Elevator extends SubsystemIO{
         motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConst.kMotionMagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = ElevatorConst.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ElevatorConst.kMotionMagicJerk;
+
+        frontConfig.withCurrentLimits(new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerLimit(.75)
+            .withSupplyCurrentLimitEnable(true)
+        );
 
         m_Front.getConfigurator().apply(frontConfig);
 

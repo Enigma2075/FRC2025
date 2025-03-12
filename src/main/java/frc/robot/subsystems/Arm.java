@@ -12,6 +12,7 @@ import frc.robot.util.Utils;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -105,6 +106,15 @@ public class Arm extends SubsystemIO{
         motionMagicConfigs.MotionMagicAcceleration = ArmConstants.kMotionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ArmConstants.kMotionMagicJerk;
        
+        motorConfig.withCurrentLimits(new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerLimit(.75)
+            .withSupplyCurrentLimitEnable(true)
+        );
+
         m_Motor.getConfigurator().apply(motorConfig);
 
         m_Motor.setControl(m_OutputRequest.withOutput(0));

@@ -62,10 +62,13 @@ public class DriveTrainConstants {
                 // stator current limit to help avoid brownouts without impacting performance.
                 .withStatorCurrentLimit(Amps.of(120))
                 .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(Amps.of(80))
+                .withSupplyCurrentLimit(Amps.of(70))
                 .withSupplyCurrentLowerLimit(40)
                 .withSupplyCurrentLowerTime(.75)
                 .withSupplyCurrentLimitEnable(true)
+        )
+        .withOpenLoopRamps(new OpenLoopRampsConfigs()
+            .withVoltageOpenLoopRampPeriod(.25)
         );
 
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
