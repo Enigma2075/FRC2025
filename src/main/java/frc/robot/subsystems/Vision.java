@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -91,6 +93,11 @@ public class Vision extends SubsystemIO {
       SmartDashboard.putBoolean(logName + "Connected", inputs[i].connected);
       SmartDashboard.putNumber(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
       SmartDashboard.putNumber(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
+      
+      SignalLogger.writeBoolean(logName + "Connected", inputs[i].connected);
+      SignalLogger.writeDouble(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
+      SignalLogger.writeDouble(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
+      
       // (logName + "LatestObservation-ty", inputs[i].poseObservations);
 
       // Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
@@ -113,6 +120,7 @@ public class Vision extends SubsystemIO {
     if(reefTagPoses.size() > 0 && targetPoseConsumer != null) {
       var reefPose = reefTagPoses.get(0).toPose2d();
       SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose.getX(), reefPose.getY(), reefPose.getRotation().getRadians()});
+      SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose.getX(), reefPose.getY(), reefPose.getRotation().getRadians()});
       targetPoseConsumer.accept(reefPose);
     }
     
@@ -183,6 +191,7 @@ public class Vision extends SubsystemIO {
 
         var pose1 = observation.pose().toPose2d();
         SmartDashboard.putNumberArray("Vision/Pose", new double [] {pose1.getX(), pose1.getY(), pose1.getRotation().getRadians()});
+        SignalLogger.writeDoubleArray("Vision/Pose", new double [] {pose1.getX(), pose1.getY(), pose1.getRotation().getRadians()});
         // Send vision observation
         consumer.accept(
             observation.pose().toPose2d(),
