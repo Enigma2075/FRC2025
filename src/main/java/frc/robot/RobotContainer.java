@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -87,7 +89,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake", elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral()));
+        NamedCommands.registerCommand("outtake", new WaitUntilCommand(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral())));
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 

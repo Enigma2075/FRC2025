@@ -62,9 +62,9 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontStart = new ElevatorStructurePosition(7.5, 82, 157, "IntakeAlgaeLowFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontTuck = new ElevatorStructurePosition(7.5, 91, 157, "IntakeAlgaeLowFront");
     public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(7.5, 105, 143, "IntakeAlgaeLowFront");
-    public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrab = new ElevatorStructurePosition(10.5, 132, 85, "IntakeAlgaeLowFrontGrab");
-    public static final ElevatorStructurePosition IntakeAlgaeLowFrontEnd = new ElevatorStructurePosition(10.5, 90, 85, "IntakeAlgaeLowFrontEnd");
-    public static final ElevatorStructurePositionSequence AlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFrontStart, IntakeAlgaeLowFrontTuck, IntakeAlgaeLowFront);
+    public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrab = new ElevatorStructurePosition(9, 132, 90, "IntakeAlgaeLowFrontGrab");
+    public static final ElevatorStructurePosition IntakeAlgaeLowFrontEnd = new ElevatorStructurePosition(9, 90, 90, "IntakeAlgaeLowFrontEnd");
+    public static final ElevatorStructurePositionSequence AlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFront);
     public static final ElevatorStructurePositionSequence IntakeAlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFrontGrab, IntakeAlgaeLowFrontEnd);
     
     public static final ElevatorStructurePosition IntakeAlgaeLowRear = new ElevatorStructurePosition(30, 110, 175, "IntakeAlgaeLowRear");

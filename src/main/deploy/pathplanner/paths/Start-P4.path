@@ -20,8 +20,8 @@
         "y": 2.827984004407315
       },
       "prevControl": {
-        "x": 5.6957771339932,
-        "y": 2.4956467551154047
+        "x": 5.694188006154283,
+        "y": 2.491579868061718
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,9 +34,14 @@
   "eventMarkers": [
     {
       "name": "move_to_L4",
-      "waypointRelativePos": 0.3269235229492188,
+      "waypointRelativePos": 0.80241125251173,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "move_to_L4"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -49,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 118.36072926081032
+    "rotation": 119.93554460807044
   },
   "reversed": false,
   "folder": null,
