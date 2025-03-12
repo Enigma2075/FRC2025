@@ -41,7 +41,7 @@ public class RobotContainer {
     private double MaxSpeed = DriveTrainConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                        // speed
     private double MaxAngularRate = RotationsPerSecond.of(.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity = 166.16
+                                                                                     // max angular velocity = 166.16
     private double CalculatedMaxSpeed = MaxSpeed;
     private double CalculatedMaxAngularRate = MaxAngularRate;
 
@@ -77,7 +77,8 @@ public class RobotContainer {
 
     public final Intake intake = new Intake();
 
-    public final Vision vision = new Vision(drivetrain::addVisionMeasurement, () -> drivetrain.getState().Pose.getRotation(), null);
+    public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
+            () -> drivetrain.getState().Pose.getRotation(), null);
 
     private SendableChooser<Command> autoChooser;
 
@@ -89,7 +90,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake", new WaitUntilCommand(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral())));
+        NamedCommands.registerCommand("outtake", new WaitUntilCommand(() -> elevatorStructure.isAtPosition())
+                .andThen(elevatorStructure.outtakeCoralCommand().until(() -> !claw.hasCoral())));
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -168,14 +170,17 @@ public class RobotContainer {
         elevatorStructure.setDefaultCommand(elevatorStructure.defaultCommand());
 
         // operator.povRight().whileTrue(Commands.run(() -> {
-        //     RobotState.scoringSide = ScoringSides.BACK;
+        // RobotState.scoringSide = ScoringSides.BACK;
         // }));
         // operator.povLeft().whileTrue(Commands.run(() -> {
-        //     RobotState.scoringSide = ScoringSides.FRONT;
+        // RobotState.scoringSide = ScoringSides.FRONT;
         // }));
 
+        // move to Algae High
         operator.povUp().whileTrue(elevatorStructure.moveToAlgaeHighCommand())
                 .onFalse(elevatorStructure.clearAlgaePress());
+        
+        // move to Algae Low
         operator.povDown().whileTrue(elevatorStructure.moveToAlgaeLowCommand())
                 .onFalse(elevatorStructure.clearAlgaePress());
 
@@ -184,15 +189,18 @@ public class RobotContainer {
         operator.a().whileTrue(elevatorStructure.moveToL2Command()).onFalse(elevatorStructure.clearCoralPress());
         operator.x().whileTrue(elevatorStructure.moveToL1Command()).onFalse(elevatorStructure.clearCoralPress());
 
+        // Reset arm
         operator.rightStick().whileTrue(elevatorStructure.moveToStartingCommand());
+        
+        // Handoff algae
         operator.leftTrigger()
                 .onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.handoffAlgaeCommand()));
 
+        // Intake Coral
         operator.rightTrigger()
                 .whileTrue(elevatorStructure.intakeCoralCommand().alongWith(drivetrain.applyRequest(() -> {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForIntake(drivetrain.getState().Pose.getRotation());
-                    //Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
                     
                     return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
@@ -207,42 +215,53 @@ public class RobotContainer {
                                 .andThen(intake.setStateCommand(States.HANDOFFALGAE)
                                         .andThen(elevatorStructure.pickupAlgaeCommand())),
                         () -> claw.hasAlgae()).andThen(intake.setStateCommand(States.DEFAULT)));
+        
+        // Store algae                
         operator.leftBumper().onTrue(intake.setStateCommand(States.HANDOFFALGAE)
                 .alongWith(elevatorStructure.storeAlgaeCommand()).andThen(intake.setStateCommand(States.DEFAULT)));
 
+        // Start climb
         operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb())
                 .alongWith(intake.setStateCommand(States.CLIMBREADY)));
 
+        // Align to joystick position
         operator.axisMagnitudeGreaterThan(0, .7).or(operator.axisMagnitudeGreaterThan(1, .7))
                 .whileTrue(drivetrain.applyRequest(() -> {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForJoystick(operator.getLeftX(), -operator.getLeftY());
-                    
+
                     return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
                             .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
                 }));
 
+        // Climb Grab Cage
         driver.back().and(() -> RobotState.isClimbing).onTrue(intake.setStateCommand(States.GRABCAGE));
+        // Climb Actually Climb
         driver.start().and(() -> RobotState.isClimbing)
                 .onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
 
+        // Floor Intake
         driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
-        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
-
-        driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
-
+        // Floor Outtake
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
+        
+        // Intake Algae based on position
+        driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
+        // Score Algage
+        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
+
+        // Score Coral
         driver.rightBumper().whileTrue(elevatorStructure.outtakeCoralCommand());
 
-
+        // Align based on current angle to reef
         driver.b().whileTrue(drivetrain.applyRequest(() -> {
             calculateMaxSpeed();
             Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
-            
+
             return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
                                                                                        // negative Y (forward)
                     .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
@@ -251,21 +270,22 @@ public class RobotContainer {
     }
 
     // public void setDriveAtAngleP(Rotation2d targetRotation) {
-    //     double error = targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
+    // double error =
+    // targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
 
-    //     SmartDashboard.putNumber("Drive/AngleError", error);
+    // SmartDashboard.putNumber("Drive/AngleError", error);
 
-    //     if (elevator.getHeight() > 20) {
-    //         if (Math.abs(error) < Math.PI / 8.0) {
-    //             driveAtAngle.HeadingController.setP(10);
-    //         } else if (Math.abs(error) < Math.PI / 2.0) {
-    //             driveAtAngle.HeadingController.setP(2.5);
-    //         } else {
-    //             driveAtAngle.HeadingController.setP(1.5);
-    //         }
-    //     } else {
-    //         driveAtAngle.HeadingController.setP(10);
-    //     }
+    // if (elevator.getHeight() > 20) {
+    // if (Math.abs(error) < Math.PI / 8.0) {
+    // driveAtAngle.HeadingController.setP(10);
+    // } else if (Math.abs(error) < Math.PI / 2.0) {
+    // driveAtAngle.HeadingController.setP(2.5);
+    // } else {
+    // driveAtAngle.HeadingController.setP(1.5);
+    // }
+    // } else {
+    // driveAtAngle.HeadingController.setP(10);
+    // }
     // }
 
     // public Rotation2d getRotationForBarge(double currentAngle) {
@@ -296,21 +316,24 @@ public class RobotContainer {
         double reefSliceMiddle = reefSlice / 2.0;
 
         double currentReefSlice;
-        if(currentRotation.getRadians() > -reefSliceMiddle * 5.0 && currentRotation.getRadians() < reefSliceMiddle) {
-            currentReefSlice = (int)(currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getRadians() / reefSlice);
-        }
-        else if(currentRotation.getRadians() < reefSliceMiddle * 5.0 && Math.signum(currentRotation.getRadians() ) ==1) {
-            currentReefSlice = (int)(currentRotation.rotateBy(Rotation2d.fromRadians(reefSliceMiddle)).getRadians() / reefSlice);
-        }
-        else {
+        if (currentRotation.getRadians() > -reefSliceMiddle * 5.0 && currentRotation.getRadians() < reefSliceMiddle) {
+            currentReefSlice = (int) (currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getRadians()
+                    / reefSlice);
+        } else if (currentRotation.getRadians() < reefSliceMiddle * 5.0
+                && Math.signum(currentRotation.getRadians()) == 1) {
+            currentReefSlice = (int) (currentRotation.rotateBy(Rotation2d.fromRadians(reefSliceMiddle)).getRadians()
+                    / reefSlice);
+        } else {
             currentReefSlice = 3;
         }
 
         Rotation2d joystickRotation = Rotation2d.fromRadians((reefSlice * currentReefSlice));
-        //SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
-        //SmartDashboard.putNumber("Drivetrain/joystickDegrees1", (currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getDegrees()));
-        
-        if(Robot.AllianceColor.get() == Alliance.Red) {
+        // SmartDashboard.putNumber("Drivetrain/joystickDegrees",
+        // joystickRotation.getDegrees());
+        // SmartDashboard.putNumber("Drivetrain/joystickDegrees1",
+        // (currentRotation.rotateBy(Rotation2d.fromRadians(-reefSliceMiddle)).getDegrees()));
+
+        if (Robot.AllianceColor.get() == Alliance.Red) {
             joystickRotation = joystickRotation.rotateBy(Rotation2d.fromDegrees(180));
         }
 
@@ -333,19 +356,20 @@ public class RobotContainer {
         double reefSliceMiddle = reefSlice / 2.0;
         Rotation2d joystickRotation = new Rotation2d(requestX, requestY)
                 .rotateBy(new Rotation2d((-Math.PI / 2.0) - reefSliceMiddle));
-        //SmartDashboard.putNumber("Drivetrain/joystickDegrees", joystickRotation.getDegrees());
+        // SmartDashboard.putNumber("Drivetrain/joystickDegrees",
+        // joystickRotation.getDegrees());
 
         int reefIndex = (int) (joystickRotation.getRadians() / reefSlice);
         if (Math.signum(joystickRotation.getRadians()) == 1) {
             reefIndex++;
         }
 
-        //SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
+        // SmartDashboard.putNumber("Drivetrain/reefIndex", reefIndex);
 
         Rotation2d output = new Rotation2d((reefIndex * reefSlice));
         output = output.rotateBy(new Rotation2d(Math.PI));
 
-        //SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
+        // SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 
         return output;
     }
