@@ -269,25 +269,6 @@ public class RobotContainer {
         }));
     }
 
-    // public void setDriveAtAngleP(Rotation2d targetRotation) {
-    // double error =
-    // targetRotation.minus(drivetrain.getState().Pose.getRotation()).getRadians();
-
-    // SmartDashboard.putNumber("Drive/AngleError", error);
-
-    // if (elevator.getHeight() > 20) {
-    // if (Math.abs(error) < Math.PI / 8.0) {
-    // driveAtAngle.HeadingController.setP(10);
-    // } else if (Math.abs(error) < Math.PI / 2.0) {
-    // driveAtAngle.HeadingController.setP(2.5);
-    // } else {
-    // driveAtAngle.HeadingController.setP(1.5);
-    // }
-    // } else {
-    // driveAtAngle.HeadingController.setP(10);
-    // }
-    // }
-
     // public Rotation2d getRotationForBarge(double currentAngle) {
     // double reefSlice = (Math.PI * 2.0) / 6.0;
     // double reefSliceMiddle = reefSlice /2.0;
