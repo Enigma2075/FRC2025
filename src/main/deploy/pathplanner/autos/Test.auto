@@ -33,6 +33,42 @@
           "data": {
             "name": "intake"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2-P5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P5-Source2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2-P6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
         }
       ]
     }
