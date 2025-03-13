@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -86,7 +87,9 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose);
+            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::getPriorityId);
+
+    private int priorityId = 0;
 
     private SendableChooser<Command> autoChooser;
 
@@ -268,6 +271,8 @@ public class RobotContainer {
         
         // Intake Algae based on position
         driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
+
+        driver.y().whileTrue(setPriorityId(9).alongWith(driveToTarget()));
         // Score Algage
         driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
 
@@ -308,6 +313,18 @@ public class RobotContainer {
 
     // return output;
     // }
+
+    public int getPriorityId() {
+        return priorityId;
+    }
+
+    public Command setPriorityId(int id) {
+        return Commands.runOnce(() -> priorityId = id, vision);
+    }
+
+    public Command driveToTarget() {
+        return drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(.11 * MaxSpeed));
+    }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
         double reefSlice = (Math.PI * 2.0) / 6.0;

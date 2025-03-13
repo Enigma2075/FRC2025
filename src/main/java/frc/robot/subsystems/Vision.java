@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -26,20 +27,22 @@ public class Vision extends SubsystemIO {
   private final VisionConsumer consumer;
   private final Supplier<Rotation2d> rotationSupplier;
   private final TargetPoseConsumer targetPoseConsumer;
+  private final Supplier<Integer> targetIdSubscriber;
 
   private final VisionLL[] io;
   private final VisionLL.VisionIOInputs[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer) {
+  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer, Supplier<Integer> targetIdSubscriber) {
     this.consumer = consumer;
     this.rotationSupplier = rotationSupplier;
     this.targetPoseConsumer = targetPoseConsumer;
+    this.targetIdSubscriber = targetIdSubscriber;
     this.io = new VisionLL[] {
-        new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier),
-        new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier),
-        new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier),
-        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier)
+        new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier, this::getPriorityId),
+        new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier,this::getPriorityId),
+        new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
+        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
     };
 
     // Initialize inputs
@@ -54,6 +57,10 @@ public class Vision extends SubsystemIO {
       disconnectedAlerts[i] = new Alert(
           "Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
     }
+  }
+
+  public int getPriorityId() {
+    return (int)targetIdSubscriber.get();
   }
 
   /**
@@ -84,6 +91,12 @@ public class Vision extends SubsystemIO {
         Pose2d targetPose3d);
   }
 
+  @FunctionalInterface
+  public static interface TargetConsumer {
+    public void accept(
+        double tx, double ty);
+  }
+
   @Override
   public void readPeriodicInputs() {
     for (int i = 0; i < io.length; i++) {
@@ -106,7 +119,7 @@ public class Vision extends SubsystemIO {
     List<Pose3d> reefTagPoses = new LinkedList<>();
     for (int i = 0; i < 2; i++) {
       int[] reefTags = VisionConstant.blueReefTagIds;
-      if(Robot.AllianceColor.get() == Alliance.Red) {
+      if(Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
         reefTags = VisionConstant.redReefTagIds;
       }
     

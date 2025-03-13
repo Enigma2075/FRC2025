@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
@@ -55,13 +56,16 @@ public class VisionLL {
 
     private final Supplier<Rotation2d> rotationSupplier;
     private final DoubleArrayPublisher orientationPublisher;
+    private final IntegerPublisher targetIdPublisher;
     private final DoubleSubscriber latencySubscriber;
     private final DoubleArraySubscriber megatag1Subscriber;
     private final DoubleArraySubscriber megatag2Subscriber;
     private final DoubleArraySubscriber targetPoseSubscriber;
     private final IntegerSubscriber targetIdSubscriber;
 
-    public VisionLL(String name, Supplier<Rotation2d> rotationSupplier) {
+    private final Supplier<Integer> targetIdSupplier;
+
+    public VisionLL(String name, Supplier<Rotation2d> rotationSupplier, Supplier<Integer> targetIdSupplier) {
         this.name = name;
         var table = NetworkTableInstance.getDefault().getTable(name);
         this.rotationSupplier = rotationSupplier;
@@ -74,16 +78,26 @@ public class VisionLL {
 
         targetPoseSubscriber = table.getDoubleArrayTopic("targetpose_robotspace").subscribe(new double[] {});
         targetIdSubscriber = table.getIntegerTopic("tid").subscribe(0);
+
+        targetIdPublisher = table.getIntegerTopic("priorityid").publish();
+
+        this.targetIdSupplier = targetIdSupplier;
     }
 
     public void updateInputs(VisionIOInputs inputs) {
-        inputs.targetId = targetIdSubscriber.get();
-        inputs.targetPose = parsePose(targetPoseSubscriber.get());
-
         // Update connection status based on whether an update has been seen in the last
         // 250ms
         inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
+        if(!inputs.connected) {
+            return;
+        }
+
+        targetIdPublisher.accept(targetIdSupplier.get());
+
+        inputs.targetId = targetIdSubscriber.get();
+        inputs.targetPose = parsePose(targetPoseSubscriber.get());
+        
         // Update target observation
         inputs.latestTargetObservation = new TargetObservation(
                 Rotation2d.fromDegrees(txSubscriber.get()), Rotation2d.fromDegrees(tySubscriber.get()));

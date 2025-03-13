@@ -38,7 +38,7 @@ public class VisionConstant {
 
     // Multipliers to apply for MegaTag 2 observations
     public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
-    public static double angularStdDevMegatag2Factor = 99999; // No rotation data available
+    public static double angularStdDevMegatag2Factor = 9999999; // No rotation data available
 
     // AprilTag layout
     public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
