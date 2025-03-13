@@ -90,7 +90,7 @@ public class RobotContainer {
         driveAtAngle.HeadingController.setP(10);
         driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
 
-        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()));
+        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()).withTimeout(1));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         NamedCommands.registerCommand("outtake", elevatorStructure.autoOuttakeCoralCommand());
 
