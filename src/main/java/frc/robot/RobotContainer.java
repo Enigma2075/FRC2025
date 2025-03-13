@@ -9,11 +9,14 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -47,6 +50,10 @@ public class RobotContainer {
     private double CalculatedMaxAngularRate = MaxAngularRate;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
+    private final RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -79,20 +86,28 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), null);
+            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose);
 
     private SendableChooser<Command> autoChooser;
 
     public IOManager ioManager;
 
     public RobotContainer() {
-        drivetrain.setStateStdDevs(VecBuilder.fill(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, 0));
+        //drivetrain.setStateStdDevs(VecBuilder.fill(9999, 9999, 0));
         driveAtAngle.HeadingController.setP(10);
         driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()).withTimeout(1));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         NamedCommands.registerCommand("outtake", elevatorStructure.autoOuttakeCoralCommand());
+        NamedCommands.registerCommand("align", drivetrain.applyRequest(() -> {
+            calculateMaxSpeed();
+            return driveRobotCentric.withVelocityX(.05 * CalculatedMaxSpeed) // Drive forward with negative Y
+                    // (forward)
+                    .withVelocityY(0 * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    ;//.withTargetDirection(targetRotation);
+        }).withTimeout(.5));
+
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -355,6 +370,10 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 
         return output;
+    }
+
+    public void updateReefPose(Pose2d pose) {
+
     }
 
     public Command getAutonomousCommand() {
