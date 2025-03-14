@@ -84,7 +84,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(17.5, 112, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 18, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 120, 60, "Climb");
 
     private enum QueueModes {ALGAE, CORAL, NONE};
 
