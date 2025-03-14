@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Candle;
+import frc.robot.subsystems.CandleConst;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorStructure;
@@ -70,6 +72,8 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
+    public final Candle Candle = CandleConst.Candle;
+
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
 
     public final Elevator elevator = new Elevator();
@@ -112,7 +116,7 @@ public class RobotContainer {
         }).withTimeout(.5));
 
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
+        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision, CandleConst.Candle);
 
         SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
 
