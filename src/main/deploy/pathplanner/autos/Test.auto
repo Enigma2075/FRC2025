@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Source2-P5"
+            "pathName": "Source2-P6"
           }
         },
         {
@@ -49,7 +49,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P5-Source2"
+            "pathName": "P6-Source2"
           }
         },
         {
@@ -61,7 +61,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Source2-P6"
+            "pathName": "Source2-P5"
           }
         },
         {
