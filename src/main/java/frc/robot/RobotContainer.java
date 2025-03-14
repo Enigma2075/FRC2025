@@ -351,7 +351,7 @@ public class RobotContainer {
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
-            var xError = .4 - tx;
+            var xError = .38 - tx;
             var yError = .155 - ty;
 
             xError *= 3.0;
