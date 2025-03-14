@@ -114,7 +114,7 @@ public class Intake extends SubsystemIO{
     public enum States { 
         GRABCAGE(95, 0),
         FLOORINTAKE(53, 1),
-        OUTTAKE(110, -1),
+        OUTTAKE(110, -.5),
         CLIMBREADY(0, 0),
         DEFAULT(110, 0),
         DISABLE(0, 0),
