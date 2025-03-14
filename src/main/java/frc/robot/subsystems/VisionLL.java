@@ -139,7 +139,7 @@ public class VisionLL {
         //                     PoseObservationType.MEGATAG_1));
         // }
         for (var rawSample : megatag2Subscriber.readQueue()) {
-            if (rawSample.value.length == 0)
+            if (rawSample.value.length == 0 || rawSample.value.length < 10)
                 continue;
             for (int i = 11; i < rawSample.value.length; i += 7) {
                 tagIds.add((int) rawSample.value[i]);
@@ -181,6 +181,10 @@ public class VisionLL {
 
     /** Parses the 3D pose from a Limelight botpose array. */
     private static Pose3d parsePose(double[] rawLLArray) {
+        if(rawLLArray.length < 6) {
+            return new Pose3d();
+        }
+
         return new Pose3d(
                 rawLLArray[0],
                 rawLLArray[1],

@@ -28,21 +28,23 @@ public class Vision extends SubsystemIO {
   private final Supplier<Rotation2d> rotationSupplier;
   private final TargetPoseConsumer targetPoseConsumer;
   private final Supplier<Integer> targetIdSubscriber;
+  private final TargetConsumer targetConsumer;
 
   private final VisionLL[] io;
   private final VisionLL.VisionIOInputs[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer, Supplier<Integer> targetIdSubscriber) {
+  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer, Supplier<Integer> targetIdSubscriber, TargetConsumer targetConsumer) {
     this.consumer = consumer;
     this.rotationSupplier = rotationSupplier;
     this.targetPoseConsumer = targetPoseConsumer;
     this.targetIdSubscriber = targetIdSubscriber;
+    this.targetConsumer = targetConsumer;
     this.io = new VisionLL[] {
         new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier, this::getPriorityId),
         new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier,this::getPriorityId),
-        new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
-        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
+        //new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
+        //new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
     };
 
     // Initialize inputs
@@ -99,6 +101,7 @@ public class Vision extends SubsystemIO {
 
   @Override
   public void readPeriodicInputs() {
+    boolean sentTarget = false;
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
 
@@ -106,18 +109,30 @@ public class Vision extends SubsystemIO {
       SmartDashboard.putBoolean(logName + "Connected", inputs[i].connected);
       SmartDashboard.putNumber(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
       SmartDashboard.putNumber(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
+      SmartDashboard.putNumber(logName + "TargetId", inputs[i].targetId);
       
       SignalLogger.writeBoolean(logName + "Connected", inputs[i].connected);
       SignalLogger.writeDouble(logName + "LatestObservation-tx", inputs[i].latestTargetObservation.tx().getRadians());
       SignalLogger.writeDouble(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
+      SignalLogger.writeDouble(logName + "TargetId", inputs[i].targetId);
       
+
+      if(inputs[i].targetId != -1 && !sentTarget) {
+        //sentTarget = true;
+        //targetConsumer.accept(inputs[i].latestTargetObservation.tx().getRadians(), inputs[i].latestTargetObservation.ty().getRadians());
+      }
+
       // (logName + "LatestObservation-ty", inputs[i].poseObservations);
 
       // Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
 
+    if(!sentTarget) {
+      //targetConsumer.accept(0, 0);
+    }
+
     List<Pose3d> reefTagPoses = new LinkedList<>();
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2 && i < inputs.length; i++) {
       int[] reefTags = VisionConstant.blueReefTagIds;
       if(Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
         reefTags = VisionConstant.redReefTagIds;
@@ -131,12 +146,18 @@ public class Vision extends SubsystemIO {
     }
 
     if(reefTagPoses.size() > 0 && targetPoseConsumer != null) {
-      var reefPose = reefTagPoses.get(0).toPose2d();
-      SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose.getX(), reefPose.getY(), reefPose.getRotation().getRadians()});
-      SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose.getX(), reefPose.getY(), reefPose.getRotation().getRadians()});
-      targetPoseConsumer.accept(reefPose);
+      var reefPose = reefTagPoses.get(0);
+      var reefPose2d = reefPose.toPose2d();
+      SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
+      SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
+      
+      targetConsumer.accept(reefPose.getZ(), reefPose.getX());
+      
+      targetPoseConsumer.accept(reefPose2d);
+    }else {
+      targetConsumer.accept(0, 0);
     }
-    
+
     // Initialize logging values
     List<Pose3d> allTagPoses = new LinkedList<>();
     List<Pose3d> allRobotPoses = new LinkedList<>();
@@ -209,10 +230,10 @@ public class Vision extends SubsystemIO {
         SignalLogger.writeDoubleArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
         
         // Send vision observation
-        consumer.accept(
-            observation.pose().toPose2d(),
-            observation.timestamp(),
-            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+        //consumer.accept(
+        //    observation.pose().toPose2d(),
+        //    observation.timestamp(),
+        //    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
 
       // Log camera datadata

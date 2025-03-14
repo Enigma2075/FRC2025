@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -52,7 +53,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -87,9 +88,12 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::getPriorityId);
+            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::getPriorityId, this::updateTarget);
 
     private int priorityId = 0;
+
+    private double tx = 0;
+    private double ty = 0;
 
     private SendableChooser<Command> autoChooser;
 
@@ -100,16 +104,11 @@ public class RobotContainer {
         driveAtAngle.HeadingController.setP(10);
         driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
 
-        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand().until(() -> claw.hasCoral()).withTimeout(1));
+        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
+        NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveForwardCommand()).until(() -> claw.hasCoral()).withTimeout(1));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake", elevatorStructure.autoOuttakeCoralCommand());
-        NamedCommands.registerCommand("align", drivetrain.applyRequest(() -> {
-            calculateMaxSpeed();
-            return driveRobotCentric.withVelocityX(.05 * CalculatedMaxSpeed) // Drive forward with negative Y
-                    // (forward)
-                    .withVelocityY(0 * CalculatedMaxSpeed) // Drive left with negative X (left)
-                    ;//.withTargetDirection(targetRotation);
-        }).withTimeout(.5));
+        NamedCommands.registerCommand("outtake1", setPriorityId(9, 22).alongWith(driveToTarget().andThen(elevatorStructure.autoOuttakeCoralCommand())));
+        NamedCommands.registerCommand("outtake2", setPriorityId(8, 17).alongWith(driveToTarget().andThen(elevatorStructure.autoOuttakeCoralCommand())));
 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
@@ -322,8 +321,56 @@ public class RobotContainer {
         return Commands.runOnce(() -> priorityId = id, vision);
     }
 
+    public Command setPriorityId(int red, int blue) {
+        return Commands.runOnce(() -> {
+                if(Robot.AllianceColor.get() == Alliance.Red) {
+                    priorityId = red;
+                } else {
+                    priorityId = blue;
+                }
+            
+        }
+        , vision);
+    }
+
+    
+    public Command driveForwardCommand() {
+        return drivetrain.applyRequest(() -> {
+            return driveRobotCentric
+            // TX = Front/Back
+            .withVelocityX(-.15 * (MaxSpeed))
+            ;
+        }
+        ).withTimeout(1.5);
+    }
+
     public Command driveToTarget() {
-        return drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(.11 * MaxSpeed));
+        // Offset Target = .15, -.21
+        
+
+        // 82 X
+        // 56.2 Y
+        return drivetrain.applyRequest(() -> {
+            var xError = .4 - tx;
+            var yError = .155 - ty;
+
+            xError *= 3.0;
+            yError *= 3.0;
+
+            double yVel = MathUtil.clamp(yError, -1, 1);
+            double xVel = MathUtil.clamp(xError, -1, 1);
+            
+            SmartDashboard.putNumber("Align/xVel", xVel);
+            SmartDashboard.putNumber("Align/yVel", yVel);
+
+            return driveRobotCentric
+            // TX = Front/Back
+            .withVelocityX(-xVel * (MaxSpeed/6.0))
+            // TY = Left/Right
+            .withVelocityY(yVel * (MaxSpeed/6.0))
+            ;
+        }
+        ).withTimeout(1.5);
     }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
@@ -387,6 +434,12 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Drivetrain/reefDegrees", output.getDegrees());
 
         return output;
+    }
+
+    public void updateTarget(double tx, double ty) {
+        SmartDashboard.putNumberArray("Align/Target", new Double[] { tx, ty });
+        this.tx = tx;
+        this.ty = ty;
     }
 
     public void updateReefPose(Pose2d pose) {

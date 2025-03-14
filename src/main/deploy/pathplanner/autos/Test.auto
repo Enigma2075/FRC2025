@@ -19,13 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake"
+            "name": "outtake1"
           }
         },
         {
@@ -37,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "drive_forward"
           }
         },
         {
@@ -49,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake"
+            "name": "outtake2"
           }
         },
         {
@@ -61,7 +55,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "drive_forward"
           }
         },
         {
