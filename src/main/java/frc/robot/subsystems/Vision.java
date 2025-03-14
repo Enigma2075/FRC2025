@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.VisionLL.PoseObservationType;
+import frc.robot.subsystems.VisionLL.VisionIOInputs;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Utils;
 
@@ -27,24 +29,29 @@ public class Vision extends SubsystemIO {
   private final VisionConsumer consumer;
   private final Supplier<Rotation2d> rotationSupplier;
   private final TargetPoseConsumer targetPoseConsumer;
-  private final Supplier<Integer> targetIdSubscriber;
   private final TargetConsumer targetConsumer;
+
+  private int priorityId = -1;
+
+  private int currentTargetId = -1;
 
   private final VisionLL[] io;
   private final VisionLL.VisionIOInputs[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer, Supplier<Integer> targetIdSubscriber, TargetConsumer targetConsumer) {
+  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer,
+      TargetConsumer targetConsumer) {
     this.consumer = consumer;
     this.rotationSupplier = rotationSupplier;
     this.targetPoseConsumer = targetPoseConsumer;
-    this.targetIdSubscriber = targetIdSubscriber;
     this.targetConsumer = targetConsumer;
     this.io = new VisionLL[] {
         new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier, this::getPriorityId),
-        new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier,this::getPriorityId),
-        //new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
-        //new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
+        new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier, this::getPriorityId),
+        // new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier,
+        // this::getPriorityId),
+        // new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier,
+        // this::getPriorityId)
     };
 
     // Initialize inputs
@@ -62,7 +69,7 @@ public class Vision extends SubsystemIO {
   }
 
   public int getPriorityId() {
-    return (int)targetIdSubscriber.get();
+    return priorityId;
   }
 
   /**
@@ -131,7 +138,7 @@ public class Vision extends SubsystemIO {
       //targetConsumer.accept(0, 0);
     }
 
-    List<Pose3d> reefTagPoses = new LinkedList<>();
+    List<VisionIOInputs> reefInputs = new LinkedList<>();
     for (int i = 0; i < 2 && i < inputs.length; i++) {
       int[] reefTags = VisionConstant.blueReefTagIds;
       if(Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
@@ -140,21 +147,30 @@ public class Vision extends SubsystemIO {
     
       for (var tagId : reefTags) {
         if (tagId == inputs[i].targetId) {
-          reefTagPoses.add(inputs[i].targetPose);
-        }
+          reefInputs.add(inputs[i]);
+       }
       }
     }
 
-    if(reefTagPoses.size() > 0 && targetPoseConsumer != null) {
-      var reefPose = reefTagPoses.get(0);
+    if(reefInputs.size() > 0 && targetPoseConsumer != null) {
+      if(reefInputs.size() > 1) {
+        SmartDashboard.putNumber("Vision/ReefPoseCount", reefInputs.size());
+        SignalLogger.writeInteger("Vision/ReefPoseCount", reefInputs.size());
+      }
+
+      var reefInput = reefInputs.get(0);
+      var reefPose = reefInput.targetPose;
       var reefPose2d = reefPose.toPose2d();
       SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       
       targetConsumer.accept(reefPose.getZ(), reefPose.getX());
       
+      currentTargetId = (int)reefInput.targetId;
+
       targetPoseConsumer.accept(reefPose2d);
     }else {
+      targetPoseConsumer.accept(new Pose2d());
       targetConsumer.accept(0, 0);
     }
 
@@ -289,4 +305,23 @@ public class Vision extends SubsystemIO {
     // 'outputTelemetry'");
   }
 
+  public Command setPriorityId(int id) {
+    return runOnce(() -> priorityId = id);
+  }
+
+  public Command setPriorityId(int blueId, int redId) {
+    return runOnce(() -> {
+      if (Robot.AllianceColor.get() == Alliance.Blue) {
+        priorityId = blueId;
+      } else {
+        priorityId = redId;
+      }
+    });
+  }
+
+  public Command setPriorityId() {
+    return runOnce(() -> {
+      priorityId = currentTargetId;
+    });
+  }
 }

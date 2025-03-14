@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.hal.SimDevice.Direction;
@@ -57,10 +58,10 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -88,7 +89,7 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::getPriorityId, this::updateTarget);
+            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::updateTarget);
 
     private int priorityId = 0;
 
@@ -107,8 +108,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(1));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake1", setPriorityId(9, 22).alongWith(driveToTarget().andThen(elevatorStructure.autoOuttakeCoralCommand())));
-        NamedCommands.registerCommand("outtake2", setPriorityId(8, 17).alongWith(driveToTarget().andThen(elevatorStructure.autoOuttakeCoralCommand())));
+        NamedCommands.registerCommand("outtake1", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())));
+        NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())));
 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
@@ -141,6 +142,10 @@ public class RobotContainer {
         SmartDashboard.putNumber("Drivetrain/CalculatedMaxAngularRate", CalculatedMaxAngularRate);
     }
 
+    private double applyExpo(double val) {
+        return Math.signum(val) * val * val;
+    }
+
     private void configureBindings() {
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -150,20 +155,20 @@ public class RobotContainer {
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> {
                     if (RobotState.isClimbing) {
-                        return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
+                        return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
                                                                                                    // negative Y
                                                                                                    // (forward)
-                                .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X
+                                .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X
                                                                                         // (left)
                                 .withTargetDirection(Rotation2d.kCCW_90deg);
                     }
 
                     calculateMaxSpeed();
 
-                    return drive.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with negative Y
+                    return drive.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with negative Y
                                                                                         // (forward)
-                            .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
-                            .withRotationalRate(-driver.getRightX() * CalculatedMaxAngularRate); // Drive
+                            .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
+                            .withRotationalRate(-applyExpo(driver.getRightX()) * CalculatedMaxAngularRate); // Drive
                                                                                                  // counterclockwise
                                                                                                  // with negative X
                                                                                                  // (left)
@@ -221,9 +226,9 @@ public class RobotContainer {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForIntake(drivetrain.getState().Pose.getRotation());
                     
-                    return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
+                    return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
-                            .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                            .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
                 }))).onFalse(elevatorStructure.moveToStartingCommand());
 
@@ -249,9 +254,9 @@ public class RobotContainer {
                     calculateMaxSpeed();
                     Rotation2d targetRotation = getRotationForJoystick(operator.getLeftX(), -operator.getLeftY());
 
-                    return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
+                    return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
                                                                                                // negative Y (forward)
-                            .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                            .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
                 }));
 
@@ -271,7 +276,8 @@ public class RobotContainer {
         // Intake Algae based on position
         driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
 
-        driver.y().whileTrue(setPriorityId(9).alongWith(driveToTarget()));
+        driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT)));
+        driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT)));
         // Score Algage
         driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
 
@@ -283,9 +289,9 @@ public class RobotContainer {
             calculateMaxSpeed();
             Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
 
-            return driveAtAngle.withVelocityX(-driver.getLeftY() * CalculatedMaxSpeed) // Drive forward with
+            return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
                                                                                        // negative Y (forward)
-                    .withVelocityY(-driver.getLeftX() * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                     .withTargetDirection(targetRotation);
         }));
     }
@@ -316,23 +322,6 @@ public class RobotContainer {
     public int getPriorityId() {
         return priorityId;
     }
-
-    public Command setPriorityId(int id) {
-        return Commands.runOnce(() -> priorityId = id, vision);
-    }
-
-    public Command setPriorityId(int red, int blue) {
-        return Commands.runOnce(() -> {
-                if(Robot.AllianceColor.get() == Alliance.Red) {
-                    priorityId = red;
-                } else {
-                    priorityId = blue;
-                }
-            
-        }
-        , vision);
-    }
-
     
     public Command driveBackwardCommand() {
         return drivetrain.applyRequest(() -> {
@@ -344,24 +333,36 @@ public class RobotContainer {
         ).withTimeout(1);
     }
 
-    public Command driveToTarget() {
+    private enum ReefSides { RIGHT, LEFT }
+
+    public Command driveToTarget(ReefSides side) {
         // Offset Target = .15, -.21
         
 
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
-            var xError = .38 - tx;
-            var yError = .155 - ty;
+            // LEFT
+            var goalX = .38;
+            var goalY = .145;
+            if(side == ReefSides.RIGHT) {
+                goalX = .38;
+                goalY = -.145;    
+            }
+            
+            var xError = goalX - tx;
+            var yError = goalY - ty;
 
-            xError *= 3.0;
-            yError *= 3.0;
+            xError *= 2.0;
+            yError *= 6.0;
 
             double yVel = MathUtil.clamp(yError, -1, 1);
             double xVel = MathUtil.clamp(xError, -1, 1);
             
             SmartDashboard.putNumber("Align/xVel", xVel);
             SmartDashboard.putNumber("Align/yVel", yVel);
+            SignalLogger.writeDouble("Align/xVel", xVel);
+            SignalLogger.writeDouble("Align/yVel", yVel);
 
             return driveRobotCentric
             // TX = Front/Back

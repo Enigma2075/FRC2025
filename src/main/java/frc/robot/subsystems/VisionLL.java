@@ -56,14 +56,14 @@ public class VisionLL {
 
     private final Supplier<Rotation2d> rotationSupplier;
     private final DoubleArrayPublisher orientationPublisher;
-    private final IntegerPublisher targetIdPublisher;
+    private final IntegerPublisher priorityIdPublisher;
     private final DoubleSubscriber latencySubscriber;
     private final DoubleArraySubscriber megatag1Subscriber;
     private final DoubleArraySubscriber megatag2Subscriber;
     private final DoubleArraySubscriber targetPoseSubscriber;
     private final IntegerSubscriber targetIdSubscriber;
 
-    private final Supplier<Integer> targetIdSupplier;
+    private final Supplier<Integer> priorityIdSupplier;
 
     public VisionLL(String name, Supplier<Rotation2d> rotationSupplier, Supplier<Integer> targetIdSupplier) {
         this.name = name;
@@ -79,9 +79,9 @@ public class VisionLL {
         targetPoseSubscriber = table.getDoubleArrayTopic("targetpose_robotspace").subscribe(new double[] {});
         targetIdSubscriber = table.getIntegerTopic("tid").subscribe(0);
 
-        targetIdPublisher = table.getIntegerTopic("priorityid").publish();
+        priorityIdPublisher = table.getIntegerTopic("priorityid").publish();
 
-        this.targetIdSupplier = targetIdSupplier;
+        this.priorityIdSupplier = targetIdSupplier;
     }
 
     public void updateInputs(VisionIOInputs inputs) {
@@ -93,7 +93,10 @@ public class VisionLL {
             return;
         }
 
-        targetIdPublisher.accept(targetIdSupplier.get());
+        var priorityId = priorityIdSupplier.get();
+        if(priorityId != -1) {
+            priorityIdPublisher.accept(priorityIdSupplier.get());
+        }
 
         inputs.targetId = targetIdSubscriber.get();
         inputs.targetPose = parsePose(targetPoseSubscriber.get());

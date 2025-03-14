@@ -294,7 +294,7 @@ public class ElevatorStructure extends SubsystemIO {
     //private Command run
 
     public Command autoOuttakeCoralCommand() {
-        return new WaitUntilCommand(() -> isAtPosition()).andThen(runOnce(() -> {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.25)).andThen(runOnce(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
         )).andThen(Commands.waitSeconds(.25)).andThen(moveToPosition(false, Starting));
