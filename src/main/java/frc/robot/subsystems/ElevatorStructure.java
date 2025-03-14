@@ -443,9 +443,12 @@ public class ElevatorStructure extends SubsystemIO {
         SmartDashboard.putString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SmartDashboard.putString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
         SmartDashboard.putBoolean("ElevatorStructure/AlgaeIntakeEnd", m_AlgaeIntakeEndCommand == null);
+        SmartDashboard.putBoolean("ElevatorStructure/AtPosition", isAtPosition());
         
         SignalLogger.writeString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SignalLogger.writeString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
+        SignalLogger.writeBoolean("ElevatorStructure/AtPosition", isAtPosition());
+        
     }
 
 }

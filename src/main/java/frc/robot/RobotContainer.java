@@ -218,7 +218,12 @@ public class RobotContainer {
         
         // Handoff algae
         operator.leftTrigger()
-                .onTrue(intake.setStateCommand(States.HANDOFFALGAE).alongWith(elevatorStructure.handoffAlgaeCommand()));
+                .onTrue(
+                    elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
+                                .andThen(intake.setStateCommand(States.HANDOFFALGAE)
+                                        .andThen(elevatorStructure.pickupAlgaeCommand()))
+                                        .andThen(intake.setStateCommand(States.DEFAULT))
+                );
 
         // Intake Coral
         operator.rightTrigger()
