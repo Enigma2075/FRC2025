@@ -338,10 +338,10 @@ public class RobotContainer {
         return drivetrain.applyRequest(() -> {
             return driveRobotCentric
             // TX = Front/Back
-            .withVelocityX(-.25 * (MaxSpeed))
+            .withVelocityX(-.35 * (MaxSpeed))
             ;
         }
-        ).withTimeout(1.5);
+        ).withTimeout(1);
     }
 
     public Command driveToTarget() {
