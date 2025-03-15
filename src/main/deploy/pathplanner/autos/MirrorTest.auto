@@ -1,0 +1,79 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "start_mirror"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start-P12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P12-Source1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_forward"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P10"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P10-Source1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_forward"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P9"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
