@@ -123,6 +123,7 @@ public class RobotContainer {
         autoChooser = new SendableChooser<>();
 
         autoChooser.setDefaultOption("Test", drivetrain.getAutoPath("Test"));
+        autoChooser.addOption("MirrorTest", drivetrain.getAutoPath("MirrorTest"));
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
