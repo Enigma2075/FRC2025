@@ -346,7 +346,7 @@ public class ElevatorStructure extends SubsystemIO {
     private Command intakeAlgaeHighCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeHighFrontSequence, IntakeAlgaeHighRearSequence))
-            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
+            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , moveToStartingCommand(), () -> m_NextCommand != null))//m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
             .finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
@@ -376,7 +376,7 @@ public class ElevatorStructure extends SubsystemIO {
     private Command intakeAlgaeLowCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeLowFrontSequence, IntakeAlgaeLowRearSequence))
-            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
+            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}), moveToStartingCommand(), () -> m_NextCommand != null))//m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
             .finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
