@@ -32,7 +32,7 @@ public class Claw extends SubsystemIO {
     public enum CoralModes {
         STOP(0),
         HOLD(20),
-        INTAKE(40),
+        INTAKE(60),
         OUTTAKE(-40);
 
         public final double current;
@@ -232,7 +232,7 @@ public class Claw extends SubsystemIO {
                 if (m_PeriodicIO.longTimeoutAlgae) {
                     timeout = 1;
                 }
-                if (hasAlgae() && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenAlgae > .5) {
+                if (hasAlgae() && Timer.getFPGATimestamp() - m_PeriodicIO.firstSeenAlgae > 1) {
                     m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
                 } else if (!m_PeriodicIO.latchAlgaeMode
                         && Timer.getFPGATimestamp() - m_PeriodicIO.timeoutAlgae > timeout) {
