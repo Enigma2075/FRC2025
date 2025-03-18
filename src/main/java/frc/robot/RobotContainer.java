@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentricFacingAngle;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -109,9 +110,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         NamedCommands.registerCommand("outtake1", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())));
+        NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake3", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())));
+        NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
@@ -344,7 +345,11 @@ public class RobotContainer {
 
     private enum ReefSides { RIGHT, LEFT }
 
-    public Command driveToTarget(ReefSides side) {
+    //public double getReefAngle(int targetId) {
+//
+//    }
+
+    public Command driveToTarget(ReefSides side) {//, double angle) {
         // Offset Target = .15, -.21
         
 
@@ -378,6 +383,7 @@ public class RobotContainer {
             .withVelocityX(-xVel * (MaxSpeed/6.0))
             // TY = Left/Right
             .withVelocityY(yVel * (MaxSpeed/6.0))
+  //          .withTargetDirection(Rotation2d.fromDegrees(angle))
             ;
         }
         ).withTimeout(1.5);
