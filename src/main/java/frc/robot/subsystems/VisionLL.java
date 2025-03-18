@@ -62,6 +62,7 @@ public class VisionLL {
     private final DoubleArraySubscriber megatag2Subscriber;
     private final DoubleArraySubscriber targetPoseSubscriber;
     private final IntegerSubscriber targetIdSubscriber;
+    private final DoubleArrayPublisher fiducialIdFiltersSetPublisher;
 
     private final Supplier<Integer> priorityIdSupplier;
 
@@ -81,7 +82,13 @@ public class VisionLL {
 
         priorityIdPublisher = table.getIntegerTopic("priorityid").publish();
 
+        fiducialIdFiltersSetPublisher = table.getDoubleArrayTopic("fiducial_id_filters_set").publish();
+
         this.priorityIdSupplier = targetIdSupplier;
+    }
+
+    public void setAprilTagFilter(double[] aprilTagFilter){
+        fiducialIdFiltersSetPublisher.accept(aprilTagFilter);
     }
 
     public void updateInputs(VisionIOInputs inputs) {
