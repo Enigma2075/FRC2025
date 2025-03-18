@@ -75,7 +75,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
-    public final Candle Candle = CandleConst.Candle;
+    public final Candle Candle = new Candle();
 
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
 
