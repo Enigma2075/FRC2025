@@ -75,7 +75,7 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
-    public final Candle Candle = new Candle();
+    public final Candle candle = new Candle();
 
     public final Drivetrain drivetrain = DriveTrainConstants.createDrivetrain();
 
@@ -119,7 +119,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
 
 
-        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision, CandleConst.Candle);
+        ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision, candle);
 
         SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
 
