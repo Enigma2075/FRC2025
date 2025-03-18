@@ -258,6 +258,15 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this // Subsystem for requirements
             );
+
+            PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+                SignalLogger.writeDoubleArray("PathPlanner/CurrentPose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
+            });
+            
+            PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+                SignalLogger.writeDoubleArray("PathPlanner/TargetPose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
+            });
+            
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }

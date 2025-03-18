@@ -84,7 +84,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(17.5, 112, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 115, 18, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 120, 60, "Climb");
 
     private enum QueueModes {ALGAE, CORAL, NONE};
 
@@ -294,7 +294,7 @@ public class ElevatorStructure extends SubsystemIO {
     //private Command run
 
     public Command autoOuttakeCoralCommand() {
-        return new WaitUntilCommand(() -> isAtPosition()).andThen(runOnce(() -> {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.25)).andThen(runOnce(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
         )).andThen(Commands.waitSeconds(.25)).andThen(moveToPosition(false, Starting));
@@ -346,7 +346,7 @@ public class ElevatorStructure extends SubsystemIO {
     private Command intakeAlgaeHighCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeHighFrontSequence, IntakeAlgaeHighRearSequence))
-            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
+            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , moveToStartingCommand(), () -> m_NextCommand != null))//m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
             .finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
@@ -376,7 +376,7 @@ public class ElevatorStructure extends SubsystemIO {
     private Command intakeAlgaeLowCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeLowFrontSequence, IntakeAlgaeLowRearSequence))
-            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}) , m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
+            .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}), moveToStartingCommand(), () -> m_NextCommand != null))//m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
             .finallyDo(() -> m_Wrist.setOverrideVelocity(false));
     }
 
@@ -443,9 +443,12 @@ public class ElevatorStructure extends SubsystemIO {
         SmartDashboard.putString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SmartDashboard.putString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
         SmartDashboard.putBoolean("ElevatorStructure/AlgaeIntakeEnd", m_AlgaeIntakeEndCommand == null);
+        SmartDashboard.putBoolean("ElevatorStructure/AtPosition", isAtPosition());
         
         SignalLogger.writeString("ElevatorStructure/TargetState", m_PeriodicIO.targetPosition.Name);
         SignalLogger.writeString("ElevatorStructure/LastState", m_PeriodicIO.lastPosition.Name);
+        SignalLogger.writeBoolean("ElevatorStructure/AtPosition", isAtPosition());
+        
     }
 
 }

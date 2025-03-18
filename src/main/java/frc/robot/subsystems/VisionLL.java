@@ -56,14 +56,14 @@ public class VisionLL {
 
     private final Supplier<Rotation2d> rotationSupplier;
     private final DoubleArrayPublisher orientationPublisher;
-    private final IntegerPublisher targetIdPublisher;
+    private final IntegerPublisher priorityIdPublisher;
     private final DoubleSubscriber latencySubscriber;
     private final DoubleArraySubscriber megatag1Subscriber;
     private final DoubleArraySubscriber megatag2Subscriber;
     private final DoubleArraySubscriber targetPoseSubscriber;
     private final IntegerSubscriber targetIdSubscriber;
 
-    private final Supplier<Integer> targetIdSupplier;
+    private final Supplier<Integer> priorityIdSupplier;
 
     public VisionLL(String name, Supplier<Rotation2d> rotationSupplier, Supplier<Integer> targetIdSupplier) {
         this.name = name;
@@ -79,9 +79,9 @@ public class VisionLL {
         targetPoseSubscriber = table.getDoubleArrayTopic("targetpose_robotspace").subscribe(new double[] {});
         targetIdSubscriber = table.getIntegerTopic("tid").subscribe(0);
 
-        targetIdPublisher = table.getIntegerTopic("priorityid").publish();
+        priorityIdPublisher = table.getIntegerTopic("priorityid").publish();
 
-        this.targetIdSupplier = targetIdSupplier;
+        this.priorityIdSupplier = targetIdSupplier;
     }
 
     public void updateInputs(VisionIOInputs inputs) {
@@ -93,7 +93,10 @@ public class VisionLL {
             return;
         }
 
-        targetIdPublisher.accept(targetIdSupplier.get());
+        var priorityId = priorityIdSupplier.get();
+        if(priorityId != -1) {
+            priorityIdPublisher.accept(priorityIdSupplier.get());
+        }
 
         inputs.targetId = targetIdSubscriber.get();
         inputs.targetPose = parsePose(targetPoseSubscriber.get());
@@ -139,7 +142,7 @@ public class VisionLL {
         //                     PoseObservationType.MEGATAG_1));
         // }
         for (var rawSample : megatag2Subscriber.readQueue()) {
-            if (rawSample.value.length == 0)
+            if (rawSample.value.length == 0 || rawSample.value.length < 10)
                 continue;
             for (int i = 11; i < rawSample.value.length; i += 7) {
                 tagIds.add((int) rawSample.value[i]);
@@ -181,6 +184,10 @@ public class VisionLL {
 
     /** Parses the 3D pose from a Limelight botpose array. */
     private static Pose3d parsePose(double[] rawLLArray) {
+        if(rawLLArray.length < 6) {
+            return new Pose3d();
+        }
+
         return new Pose3d(
                 rawLLArray[0],
                 rawLLArray[1],

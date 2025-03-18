@@ -7,49 +7,25 @@
         {
           "type": "named",
           "data": {
-            "name": "start_position"
+            "name": "start_mirror"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start-P4"
+            "pathName": "Start-P12"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "outtake1"
+            "name": "outtake3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "P4-Source2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_forward"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source2-P6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "P6-Source2"
+            "pathName": "P12-Source1"
           }
         },
         {
@@ -61,13 +37,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Source2-P5"
+            "pathName": "Source1-P10"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "outtake2"
+            "name": "outtake4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P10-Source1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_forward"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P9"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         }
       ]

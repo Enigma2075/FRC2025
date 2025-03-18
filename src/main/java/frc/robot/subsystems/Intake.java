@@ -113,12 +113,12 @@ public class Intake extends SubsystemIO{
 
     public enum States { 
         GRABCAGE(95, 0),
-        FLOORINTAKE(53, 1),
-        OUTTAKE(110, -1),
+        FLOORINTAKE(53, .5),
+        OUTTAKE(113, -.5),
         CLIMBREADY(0, 0),
-        DEFAULT(110, 0),
+        DEFAULT(113, 0),
         DISABLE(0, 0),
-        HANDOFFALGAE(100, 0);
+        HANDOFFALGAE(90, 0);
 
         public final double degrees;
         public final double rollerOutput;

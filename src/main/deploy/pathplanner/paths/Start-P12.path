@@ -3,48 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.994901568101652,
-        "y": 2.814182381549915
+        "x": 7.2,
+        "y": 6.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6717548151628012,
-        "y": 1.9380502703585236
+        "x": 6.209499307919142,
+        "y": 6.232416457242403
       },
       "isLocked": false,
-      "linkedName": "P4"
+      "linkedName": "Start-Mirror"
     },
     {
       "anchor": {
-        "x": 1.28,
-        "y": 0.98
+        "x": 5.2774852314723795,
+        "y": 5.071025969135062
       },
       "prevControl": {
-        "x": 2.7671475464588884,
-        "y": 1.9843384758201796
+        "x": 5.524314012184102,
+        "y": 5.110719205490444
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source2"
+      "linkedName": "P11"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.1585062240663872,
-      "rotationDegrees": 119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.6311865234374997,
+      "name": "move_to_L4",
+      "waypointRelativePos": 0.900248138957817,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "intake"
+          "name": "move_to_L4"
         }
       }
     }
@@ -59,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.54881596426245
+    "rotation": -120.61860540890939
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.93554460807044
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
