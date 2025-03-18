@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.VisionLL.PoseObservation;
 import frc.robot.subsystems.VisionLL.PoseObservationType;
 import frc.robot.subsystems.VisionLL.VisionIOInputs;
 import frc.robot.util.LimelightHelpers;
@@ -108,6 +109,8 @@ public class Vision extends SubsystemIO {
 
   @Override
   public void readPeriodicInputs() {
+
+
     boolean sentTarget = false;
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
@@ -123,6 +126,12 @@ public class Vision extends SubsystemIO {
       SignalLogger.writeDouble(logName + "LatestObservation-ty", inputs[i].latestTargetObservation.ty().getRadians());
       SignalLogger.writeDouble(logName + "TargetId", inputs[i].targetId);
       
+      
+      for (int j = 0; j < inputs[i].poseObservations.length ; j++) {
+        var observation = inputs[i].poseObservations[j].pose();
+        SmartDashboard.putNumberArray(logName + "PoseObservation", new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
+        SignalLogger.writeDoubleArray(logName + "PoseObservation", new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
+      }
 
       if(inputs[i].targetId != -1 && !sentTarget) {
         //sentTarget = true;

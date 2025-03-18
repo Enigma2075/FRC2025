@@ -36,7 +36,12 @@
       "name": "move_to_L4",
       "waypointRelativePos": 0.75,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "move_to_L4"
+        }
+      }
     }
   ],
   "globalConstraints": {
