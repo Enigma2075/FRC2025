@@ -49,10 +49,8 @@ public class Vision extends SubsystemIO {
     this.io = new VisionLL[] {
         new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier, this::getPriorityId),
         new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier, this::getPriorityId),
-        // new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier,
-        // this::getPriorityId),
-        // new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier,
-        // this::getPriorityId)
+        new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
+        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
     };
 
     // Initialize inputs
@@ -134,7 +132,6 @@ public class Vision extends SubsystemIO {
       
       
       for (int j = 0; j < inputs[i].poseObservations.length ; j++) {
-
         var observation = inputs[i].poseObservations[j].pose();
         SmartDashboard.putNumberArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
         SignalLogger.writeDoubleArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
