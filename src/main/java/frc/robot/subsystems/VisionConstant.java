@@ -44,6 +44,6 @@ public class VisionConstant {
     public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
             .loadField(AprilTagFields.k2025ReefscapeWelded);
 
-    public static int[] blueReefTagIds = new int[] { 17, 18, 19, 20, 21, 22 };
-    public static int[] redReefTagIds = new int[] { 6, 7, 8, 9, 10, 11 };
+    public static double[] blueReefTagIds = new double[] { 17, 18, 19, 20, 21, 22 };
+    public static double[] redReefTagIds = new double[] { 6, 7, 8, 9, 10, 11 };
 }

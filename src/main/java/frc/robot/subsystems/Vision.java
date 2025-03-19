@@ -69,6 +69,12 @@ public class Vision extends SubsystemIO {
     }
   }
 
+  public void setAprilTagFilter(double[] aprilTagFilter){
+    for (int i = 0; i < io.length; i++) {
+      io[i].setAprilTagFilter(aprilTagFilter);
+    }
+  }
+
   public int getPriorityId() {
     return priorityId;
   }
@@ -150,7 +156,7 @@ public class Vision extends SubsystemIO {
 
     List<VisionIOInputs> reefInputs = new LinkedList<>();
     for (int i = 0; i < 2 && i < inputs.length; i++) {
-      int[] reefTags = VisionConstant.blueReefTagIds;
+      double[] reefTags = VisionConstant.blueReefTagIds;
       if(Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
         reefTags = VisionConstant.redReefTagIds;
       }

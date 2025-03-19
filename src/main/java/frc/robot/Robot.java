@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
         AllianceColor.ifPresent((allianceColor) -> {
           SmartDashboard.putString("Robot/Alliance", allianceColor.name());
           hasAlliance = true;
+          RobotContainer.updateAlliance(allianceColor);
         });
       }
     }

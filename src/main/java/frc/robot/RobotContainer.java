@@ -36,6 +36,7 @@ import frc.robot.subsystems.ElevatorStructure;
 import frc.robot.subsystems.IOManager;
 import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.VisionConstant;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Climb.State;
 import frc.robot.subsystems.Intake.States;
@@ -464,5 +465,16 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
+    }
+
+    public void updateAlliance(Alliance allianceColor) {
+        // TODO Auto-generated method stub
+        if (Robot.AllianceColor.get() == Alliance.Blue) {
+             vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
+        }   
+        else {
+            vision.setAprilTagFilter(VisionConstant.redReefTagIds);
+        }
+        
     }
 }
