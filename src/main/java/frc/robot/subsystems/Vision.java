@@ -138,9 +138,9 @@ public class Vision extends SubsystemIO {
       
       
       for (int j = 0; j < inputs[i].poseObservations.length ; j++) {
-        var observation = inputs[i].poseObservations[j].pose();
-        SmartDashboard.putNumberArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
-        SignalLogger.writeDoubleArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getAngle()});
+        var observation = inputs[i].poseObservations[j].pose().toPose2d();
+        SmartDashboard.putNumberArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getRadians()});
+        SignalLogger.writeDoubleArray(logName + "PoseObservation" + Integer.toString(j), new double [] {observation.getX(), observation.getY(), observation.getRotation().getRadians()});
       }
 
       if(inputs[i].targetId != -1 && !sentTarget) {
