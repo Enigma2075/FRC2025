@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ElevatorStructure;
@@ -25,6 +26,8 @@ public class Robot extends TimedRobot {
   private static boolean hasAlliance = false;
 
   public static RobotContainer RobotContainer;
+
+  private double disabledTimer = Double.MIN_VALUE;
 
   public Robot() {
     RobotContainer = new RobotContainer();
@@ -61,11 +64,19 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.ioManager.stop();
-    RobotContainer.logger.stop();
+
+    // set a timer so we know how long we have been disabled
+    disabledTimer = Timer.getFPGATimestamp();
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // stop the logger after 5 seconds of being disabled
+    if(Timer.getFPGATimestamp() - disabledTimer > 5) {
+      RobotContainer.logger.stop();
+      disabledTimer = Double.MIN_VALUE;
+    }
+  }
 
   @Override
   public void disabledExit() {}
