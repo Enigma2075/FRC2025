@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.ioManager.stop();
+    RobotContainer.logger.stop();
   }
 
   @Override
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    RobotContainer.logger.start();
     RobotContainer.elevatorStructure.applyAutoStartPosition();
     m_autonomousCommand = RobotContainer.getAutonomousCommand();
     hasAutoRun = true;
@@ -89,6 +91,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    RobotContainer.logger.start();
     if(!hasSetOdometry) {
       if(AllianceColor.isPresent() && AllianceColor.get() == Alliance.Red) {
         RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(180));
