@@ -468,7 +468,7 @@ public class RobotContainer {
     }
 
     public void updateAlliance(Alliance allianceColor) {
-        // TODO Auto-generated method stub
+        vision.setIMUMode(4);
         if (Robot.AllianceColor.get() == Alliance.Blue) {
              vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
         }   

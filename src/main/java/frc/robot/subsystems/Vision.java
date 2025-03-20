@@ -73,6 +73,12 @@ public class Vision extends SubsystemIO {
     }
   }
 
+  public void setIMUMode(int mode){
+    for (int i = 0; i < io.length; i++) {
+      io[i].setIMUMode(mode);
+    }
+  }
+
   public int getPriorityId() {
     return priorityId;
   }
@@ -258,11 +264,11 @@ public class Vision extends SubsystemIO {
         SmartDashboard.putNumberArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
         SignalLogger.writeDoubleArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
         
-        // Send vision observation
-        //consumer.accept(
-        //    observation.pose().toPose2d(),
-        //    observation.timestamp(),
-        //    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+        //Send vision observation
+        consumer.accept(
+           observation.pose().toPose2d(),
+           observation.timestamp(),
+           VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
 
       // Log camera datadata
