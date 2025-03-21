@@ -350,6 +350,30 @@ public class RobotContainer {
 //
 //    }
 
+    public boolean isAtPosition(ReefSides side) {
+        if(getError(side).getX() < .05 && getError(side).getY() < .05 && getError(side).getRotation().getDegrees() < 5){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public Pose2d getError(ReefSides side){
+        //left
+        var goalX = .38;
+        var goalY = .145;
+        if(side == ReefSides.RIGHT) {
+            goalX = .38;
+            goalY = -.145;    
+        }
+        
+        var xError = goalX - tx;
+        var yError = goalY - ty;
+
+        return new Pose2d(xError, yError, new Rotation2d(0));
+    }
+
     public Command driveToTarget(ReefSides side) {//, double angle) {
         // Offset Target = .15, -.21
         
@@ -358,21 +382,13 @@ public class RobotContainer {
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
             // LEFT
-            var goalX = .38;
-            var goalY = .145;
-            if(side == ReefSides.RIGHT) {
-                goalX = .38;
-                goalY = -.145;    
-            }
-            
-            var xError = goalX - tx;
-            var yError = goalY - ty;
+            var errorPose = getError(side);
 
-            xError *= 2.0;
-            yError *= 6.0;
+            var xOutput = errorPose.getX()* 2.0;
+            var yOutput = errorPose.getY()* 6.0;
 
-            double yVel = MathUtil.clamp(yError, -1, 1);
-            double xVel = MathUtil.clamp(xError, -1, 1);
+            double yVel = MathUtil.clamp(yOutput, -1, 1);
+            double xVel = MathUtil.clamp(xOutput, -1, 1);
             
             SmartDashboard.putNumber("Align/xVel", xVel);
             SmartDashboard.putNumber("Align/yVel", yVel);
