@@ -91,7 +91,7 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::updateTarget);
+            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::updateTargetPose);
 
     private int priorityId = 0;
 
@@ -351,7 +351,8 @@ public class RobotContainer {
 //    }
 
     public boolean isAtPosition(ReefSides side) {
-        if(getError(side).getX() < .05 && getError(side).getY() < .05 && getError(side).getRotation().getDegrees() < 5){
+        var errorPose = getError(side);
+        if(Math.abs(errorPose.getX()) < .05 && Math.abs(errorPose.getY()) < .05 && Math.abs(errorPose.getRotation().getDegrees()) < 5){
             return true;
         }
         else{
@@ -375,9 +376,6 @@ public class RobotContainer {
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
-        // Offset Target = .15, -.21
-        
-
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
@@ -403,7 +401,7 @@ public class RobotContainer {
   //          .withTargetDirection(Rotation2d.fromDegrees(angle))
             ;
         }
-        ).withTimeout(1.5);
+        ).until(() -> isAtPosition(side)).withTimeout(1.5);
     }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
@@ -469,8 +467,9 @@ public class RobotContainer {
         return output;
     }
 
-    public void updateTarget(double tx, double ty) {
+    public void updateTargetPose(double tx, double ty) {
         SmartDashboard.putNumberArray("Align/Target", new Double[] { tx, ty });
+        
         this.tx = tx;
         this.ty = ty;
     }
