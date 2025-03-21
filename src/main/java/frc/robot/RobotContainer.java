@@ -468,13 +468,14 @@ public class RobotContainer {
     }
 
     public void updateAlliance(Alliance allianceColor) {
-        vision.setIMUMode(4);
+        vision.setIMUMode(0);
         if (Robot.AllianceColor.get() == Alliance.Blue) {
-             vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
+            drivetrain.resetRotation(Rotation2d.fromDegrees(180));
+            vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
         }   
         else {
+            drivetrain.resetRotation(Rotation2d.fromDegrees(0));
             vision.setAprilTagFilter(VisionConstant.redReefTagIds);
         }
-        
     }
 }
