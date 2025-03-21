@@ -20,7 +20,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public boolean hasAutoRun = false;
-  public boolean hasSetOdometry = false;
   
   public static Optional<Alliance> AllianceColor = null;
   private static boolean hasAlliance = false;
@@ -87,7 +86,6 @@ public class Robot extends TimedRobot {
     RobotContainer.elevatorStructure.applyAutoStartPosition();
     m_autonomousCommand = RobotContainer.getAutonomousCommand();
     hasAutoRun = true;
-    hasSetOdometry = true;
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -103,16 +101,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     RobotContainer.logger.start();
-    if(!hasSetOdometry) {
-      if(AllianceColor.isPresent() && AllianceColor.get() == Alliance.Red) {
-        RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(180));
-        hasSetOdometry = true;
-      }
-      else {
-        RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(0));
-        hasSetOdometry = true;
-      }
-    }
 
     if (hasAutoRun == false) {
       //odometry to specific place
