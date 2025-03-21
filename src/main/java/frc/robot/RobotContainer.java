@@ -95,8 +95,7 @@ public class RobotContainer {
 
     private int priorityId = 0;
 
-    private double tx = 0;
-    private double ty = 0;
+    private Pose2d robotPoseInTargetSpace = new Pose2d();
 
     private SendableChooser<Command> autoChooser;
 
@@ -369,10 +368,10 @@ public class RobotContainer {
             goalY = -.145;    
         }
         
-        var xError = goalX - tx;
-        var yError = goalY - ty;
-
-        return new Pose2d(xError, yError, new Rotation2d(0));
+        var xError = goalX - robotPoseInTargetSpace.getX();
+        var yError = goalY - robotPoseInTargetSpace.getY();
+        
+        return new Pose2d(xError, yError, new Rotation2d(robotPoseInTargetSpace.getRotation().getRadians()));
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
@@ -467,11 +466,11 @@ public class RobotContainer {
         return output;
     }
 
-    public void updateTargetPose(double tx, double ty) {
-        SmartDashboard.putNumberArray("Align/Target", new Double[] { tx, ty });
-        
-        this.tx = tx;
-        this.ty = ty;
+    public void updateTargetPose(Pose2d robotPoseInTargetSpace) {
+        this.robotPoseInTargetSpace = robotPoseInTargetSpace;
+
+        SmartDashboard.putNumberArray("Align/Target", new Double[] { robotPoseInTargetSpace.getX(), robotPoseInTargetSpace.getY(), robotPoseInTargetSpace.getRotation().getDegrees() });
+        SignalLogger.writeDoubleArray("Align/Target", new double[] { robotPoseInTargetSpace.getX(), robotPoseInTargetSpace.getY(), robotPoseInTargetSpace.getRotation().getDegrees() });
     }
 
     public void updateReefPose(Pose2d pose) {

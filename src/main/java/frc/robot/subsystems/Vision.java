@@ -114,7 +114,7 @@ public class Vision extends SubsystemIO {
   @FunctionalInterface
   public static interface TargetConsumer {
     public void accept(
-        double tx, double ty);
+        Pose2d RobotPoseInTargetSpace);
   }
 
   @Override
@@ -183,14 +183,29 @@ public class Vision extends SubsystemIO {
       SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       
-      targetConsumer.accept(reefPose.getZ(), reefPose.getX());
+      var targetTags = VisionConstant.bluTagTargets;
+      if (Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
+        targetTags = VisionConstant.redTagTargets;
+      }
+
+      double degrees = Double.MIN_VALUE;
+      for (var tag : targetTags) {
+        if (tag.id() == reefInput.targetId) {
+          degrees = tag.degrees();
+          targetConsumer.accept(new Pose2d(reefPose.getZ(), reefPose.getX(), Rotation2d.fromDegrees(degrees)));
+          break;
+        }
+      }
+
+      if(degrees == Double.MIN_VALUE) {
+        targetConsumer.accept(new Pose2d());
+      }
       
       currentTargetId = (int)reefInput.targetId;
 
       targetPoseConsumer.accept(reefPose2d);
     }else {
       targetPoseConsumer.accept(new Pose2d());
-      targetConsumer.accept(0, 0);
     }
 
     // Initialize logging values
