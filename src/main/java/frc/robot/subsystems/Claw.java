@@ -55,10 +55,11 @@ public class Claw extends SubsystemIO {
 
         CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
 
-        coralSensorConfig.FovParams.FOVCenterX = -2;
-        coralSensorConfig.FovParams.FOVCenterY = 1;
-        coralSensorConfig.FovParams.FOVRangeX = 7;
-        coralSensorConfig.FovParams.FOVRangeY = 7;
+        coralSensorConfig.FovParams.FOVCenterX = 0;
+        coralSensorConfig.FovParams.FOVCenterY = 0;
+        coralSensorConfig.FovParams.FOVRangeX = 20;
+        coralSensorConfig.FovParams.FOVRangeY = 10;
+        coralSensorConfig.ProximityParams.ProximityThreshold = .11;
 
         m_CoralSensor.getConfigurator().apply(coralSensorConfig);
 
@@ -70,6 +71,7 @@ public class Claw extends SubsystemIO {
         algaeSensorConfig.FovParams.FOVCenterY = 1;
         algaeSensorConfig.FovParams.FOVRangeX = 8;
         algaeSensorConfig.FovParams.FOVRangeY = 8;
+        algaeSensorConfig.ProximityParams.ProximityThreshold = .2;
 
         m_AlgaeSensor.getConfigurator().apply(algaeSensorConfig);
 
@@ -79,7 +81,7 @@ public class Claw extends SubsystemIO {
 
         algaeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        algaeConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        algaeConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         m_Algae.getConfigurator().apply(algaeConfigs);
 
@@ -113,6 +115,7 @@ public class Claw extends SubsystemIO {
         public double firstSeenAlgae = Double.MIN_VALUE;
         public double lastSeenAlgae = Double.MIN_VALUE;
         public boolean hasAlgae = false;
+        public boolean seeAlgae = false;
         public boolean latchAlgaeMode = false;
         public double timeoutAlgae = Double.MIN_VALUE;
         public boolean longTimeoutAlgae = false;
@@ -185,6 +188,7 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void outputTelemetry() {
+        SmartDashboard.putBoolean("Claw/SeeAlgae", m_PeriodicIO.seeAlgae);
         SmartDashboard.putBoolean("Claw/HasAlgae", m_PeriodicIO.hasAlgae);
         SmartDashboard.putBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SmartDashboard.putString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
@@ -192,6 +196,7 @@ public class Claw extends SubsystemIO {
         SmartDashboard.putNumber("Claw/CoralTryAgain", m_PeriodicIO.tryAgainCoral);
         SmartDashboard.putNumber("Claw/AlgaeTryAgain", m_PeriodicIO.tryAgainAlgae);
 
+        SignalLogger.writeBoolean("Claw/SeeAlgae", m_PeriodicIO.seeAlgae);
         SignalLogger.writeBoolean("Claw/HasAlgae", m_PeriodicIO.hasAlgae);
         SignalLogger.writeBoolean("Claw/HasCoral", m_PeriodicIO.hasCoral);
         SignalLogger.writeString("Claw/AlgaeMode", m_PeriodicIO.algaeMode.name());
@@ -211,9 +216,11 @@ public class Claw extends SubsystemIO {
             m_PeriodicIO.firstSeenCoral = Double.MIN_VALUE;
             m_PeriodicIO.lastSeenCoral = Timer.getFPGATimestamp();
         }
-
+        
+        m_PeriodicIO.seeAlgae = m_AlgaeSensor.getIsDetected().getValue();
         m_PeriodicIO.hasAlgae = m_AlgaeSensor.getDistance().getValue()
-                .in(Centimeters) < ClawConstants.kAlgaeDistanceThreshold && m_AlgaeSensor.getIsDetected().getValue();
+                .in(Centimeters) < ClawConstants.kAlgaeDistanceThreshold && m_PeriodicIO.seeAlgae;
+                
         if (m_PeriodicIO.hasAlgae && m_PeriodicIO.firstSeenAlgae == Double.MIN_VALUE) {
             m_PeriodicIO.firstSeenAlgae = Timer.getFPGATimestamp();
             m_PeriodicIO.lastSeenAlgae = Double.MIN_VALUE;
@@ -225,6 +232,8 @@ public class Claw extends SubsystemIO {
 
     @Override
     public void writePeriodicOutputs() {
+
+        // Algae logic
         if (m_PeriodicIO.algaeMode != AlgaeModes.STOP || m_PeriodicIO.hasAlgae) {
             double timeout = .5;
 
@@ -265,15 +274,34 @@ public class Claw extends SubsystemIO {
                 m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
             }
 
+            if(m_PeriodicIO.algaeMode != AlgaeModes.OUTTAKE && m_PeriodicIO.seeAlgae) {
+                if(m_PeriodicIO.hasAlgae) {
+                    m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
+                } else {
+                    m_PeriodicIO.algaeMode = AlgaeModes.INTAKE;
+                }
+            }
+
             m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
         } else {
-            m_Algae.stopMotor();
+            if(m_PeriodicIO.seeAlgae) {
+                if(m_PeriodicIO.hasAlgae) {
+                    m_PeriodicIO.algaeMode = AlgaeModes.HOLD;
+                } else {
+                    m_PeriodicIO.algaeMode = AlgaeModes.INTAKE;
+                }
+                m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
+            }
+            else {
+                m_Algae.stopMotor();
+            }
         }
 
         if (m_PeriodicIO.latchAlgaeMode) {
             m_PeriodicIO.latchAlgaeMode = false;
         }
 
+        // Coral logic
         if (m_PeriodicIO.coralMode != CoralModes.STOP || m_PeriodicIO.hasCoral) {
             double timeout = .5;
 

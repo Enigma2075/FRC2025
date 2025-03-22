@@ -483,12 +483,12 @@ public class RobotContainer {
 
     public void updateAlliance(Alliance allianceColor) {
         vision.setIMUMode(0);
-        if (Robot.AllianceColor.get() == Alliance.Blue) {
-            drivetrain.resetRotation(Rotation2d.fromDegrees(180));
+        if (allianceColor == Alliance.Blue) {
+            drivetrain.resetRotation(Rotation2d.fromDegrees(0));
             vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
         }   
         else {
-            drivetrain.resetRotation(Rotation2d.fromDegrees(0));
+            drivetrain.resetRotation(Rotation2d.fromDegrees(180));
             vision.setAprilTagFilter(VisionConstant.redReefTagIds);
         }
     }

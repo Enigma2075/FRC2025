@@ -20,8 +20,8 @@ public class ClawConstants {
     public static final double kMotionMagicAcceleration = (kFalconRPS * .5)/1.772;
     public static final double kMotionMagicJerk = 0;
     
-    public static final double kCoralDistanceThreshold = 12;
-    public static final double kAlgaeDistanceThreshold = 6;
+    public static final double kCoralDistanceThreshold = 10;
+    public static final double kAlgaeDistanceThreshold = 12;
 
     }
 

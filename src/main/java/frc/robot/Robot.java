@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public boolean hasAutoRun = false;
-  
+
   public static Optional<Alliance> AllianceColor = null;
   private static boolean hasAlliance = false;
 
@@ -39,24 +39,23 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    if(!hasAlliance || DriverStation.isDisabled()) {
-      if (!hasAlliance || DriverStation.isDisabled()) {
-        AllianceColor = DriverStation.getAlliance();
-        AllianceColor.ifPresent((allianceColor) -> {
-          SmartDashboard.putString("Robot/Alliance", allianceColor.name());
-          hasAlliance = true;
-          RobotContainer.updateAlliance(allianceColor);
-        });
-      }
+    if (!hasAlliance || DriverStation.isDisabled()) {
+      AllianceColor = DriverStation.getAlliance();
+      AllianceColor.ifPresent((allianceColor) -> {
+        SmartDashboard.putString("Robot/Alliance", allianceColor.name());
+        hasAlliance = true;
+        RobotContainer.updateAlliance(allianceColor);
+      });
+
     }
 
     RobotContainer.ioManager.readPeriodicInputs();
     RobotContainer.ioManager.outputTelemetry();
 
     RobotState.outputTelemetry();
-    
-    CommandScheduler.getInstance().run(); 
-    
+
+    CommandScheduler.getInstance().run();
+
     RobotContainer.ioManager.writePeriodicOutputs();
   }
 
@@ -71,14 +70,15 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // stop the logger after 5 seconds of being disabled
-    if(Timer.getFPGATimestamp() - disabledTimer > 5) {
+    if (Timer.getFPGATimestamp() - disabledTimer > 5) {
       RobotContainer.logger.stop();
       disabledTimer = Double.MIN_VALUE;
     }
   }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+  }
 
   @Override
   public void autonomousInit() {
@@ -93,17 +93,19 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+  }
 
   @Override
   public void teleopInit() {
     RobotContainer.logger.start();
 
     if (hasAutoRun == false) {
-      //odometry to specific place
+      // odometry to specific place
     }
 
     if (m_autonomousCommand != null) {
@@ -112,10 +114,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+  }
 
   @Override
   public void testInit() {
@@ -123,11 +127,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }
