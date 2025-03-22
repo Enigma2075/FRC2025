@@ -114,7 +114,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake3_left", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake3_right", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake5", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5_left", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("move_to_algae", moveToAlgaeLowCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
