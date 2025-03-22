@@ -290,6 +290,7 @@ public class RobotContainer {
 
         driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT)));
         driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT)));
+        
         // Score Algage
         driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
 

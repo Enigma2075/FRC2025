@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
 
   public static RobotContainer RobotContainer;
 
-  private double disabledTimer = Double.MIN_VALUE;
+  private double disabledTimer = Double.MAX_VALUE;
 
   public Robot() {
     RobotContainer = new RobotContainer();
@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
     // stop the logger after 5 seconds of being disabled
     if (Timer.getFPGATimestamp() - disabledTimer > 5) {
       RobotContainer.logger.stop();
-      disabledTimer = Double.MIN_VALUE;
+      disabledTimer = Double.MAX_VALUE;
     }
   }
 
