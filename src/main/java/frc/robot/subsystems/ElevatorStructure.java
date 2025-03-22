@@ -79,9 +79,9 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Rear = new ElevatorStructurePosition(22, 66, 65, "L2Rear");
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
-    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 122, -54, "L4Front");
-    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(33, 112, -80, "L3Front");
-    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(17.5, 112, -80, "L2Front");
+    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 125, -54, "L4Front");
+    public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 110, -80, "L3Front");
+    public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 120, 60, "Climb");
