@@ -55,7 +55,7 @@ public class RobotContainer {
     private double CalculatedMaxAngularRate = MaxAngularRate;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+    private final RobotCentricFacingAngle driveRobotCentric = new SwerveRequest.RobotCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
@@ -68,6 +68,7 @@ public class RobotContainer {
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
 
     public final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -373,7 +374,7 @@ public class RobotContainer {
         var xError = goalX - robotPoseInTargetSpace.getX();
         var yError = goalY - robotPoseInTargetSpace.getY();
         
-        return new Pose2d(xError, yError, new Rotation2d(robotPoseInTargetSpace.getRotation().getRadians()));
+        return new Pose2d(xError, yError, robotPoseInTargetSpace.getRotation());
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
@@ -385,6 +386,8 @@ public class RobotContainer {
 
             var xOutput = errorPose.getX()* 2.0;
             var yOutput = errorPose.getY()* 6.0;
+
+            var angle = errorPose.getRotation().getDegrees();
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);
@@ -399,7 +402,7 @@ public class RobotContainer {
             .withVelocityX(-xVel * (MaxSpeed/6.0))
             // TY = Left/Right
             .withVelocityY(yVel * (MaxSpeed/6.0))
-  //          .withTargetDirection(Rotation2d.fromDegrees(angle))
+            .withTargetDirection(Rotation2d.fromDegrees(angle))
             ;
         }
         ).until(() -> isAtPosition(side)).withTimeout(1.5);
