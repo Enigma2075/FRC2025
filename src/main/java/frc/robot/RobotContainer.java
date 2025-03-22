@@ -56,7 +56,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final RobotCentricFacingAngle driveRobotCentric = new SwerveRequest.RobotCentricFacingAngle()
-            .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.001).withRotationalDeadband(MaxAngularRate * 0.001) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -105,6 +105,9 @@ public class RobotContainer {
         //drivetrain.setStateStdDevs(VecBuilder.fill(9999, 9999, 0));
         driveAtAngle.HeadingController.setP(10);
         driveAtAngle.MaxAbsRotationalRate = MaxAngularRate;
+
+        driveRobotCentric.HeadingController.setP(10);
+        driveRobotCentric.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
@@ -410,8 +413,7 @@ public class RobotContainer {
             .withVelocityX(-xVel * (MaxSpeed/6.0))
             // TY = Left/Right
             .withVelocityY(yVel * (MaxSpeed/6.0))
-            .withTargetDirection(Rotation2d.fromDegrees(angle))
-            ;
+            .withTargetDirection(Rotation2d.fromDegrees(angle));
         }
         ).until(() -> isAtPosition(side)).withTimeout(1.5);
     }
