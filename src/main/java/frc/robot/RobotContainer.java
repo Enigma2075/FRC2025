@@ -55,7 +55,7 @@ public class RobotContainer {
     private double CalculatedMaxAngularRate = MaxAngularRate;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+    private final RobotCentricFacingAngle driveRobotCentric = new SwerveRequest.RobotCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
@@ -109,12 +109,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake1", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake3", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake5", vision.setPriorityId(21, 10).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-
+        NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake2", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake3", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("move_to_algae", moveToAlgaeLowCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
+        NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
+        NamedCommands.registerCommand("outtake_algae", elevatorStructure.outtakeAlgaeCommand());
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -124,10 +127,9 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        autoChooser.setDefaultOption("Test", drivetrain.getAutoPath("Test"));
-        autoChooser.addOption("MirrorTest", drivetrain.getAutoPath("MirrorTest"));
-        autoChooser.addOption("MiddleTest", drivetrain.getAutoPath("MiddleTest"));
-        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
+        autoChooser.setDefaultOption("Right", drivetrain.getAutoPath("Right"));
+        autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
+        autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -332,6 +334,12 @@ public class RobotContainer {
     // return output;
     // }
 
+    public Command moveToAlgaeLowCommand(){
+        return elevatorStructure.moveToAlgaeLowCommand();
+    }
+
+
+
     public int getPriorityId() {
         return priorityId;
     }
@@ -374,7 +382,7 @@ public class RobotContainer {
         var xError = goalX - robotPoseInTargetSpace.getX();
         var yError = goalY - robotPoseInTargetSpace.getY();
         
-        return new Pose2d(xError, yError, new Rotation2d(robotPoseInTargetSpace.getRotation().getRadians()));
+        return new Pose2d(xError, yError, robotPoseInTargetSpace.getRotation());
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
@@ -386,6 +394,8 @@ public class RobotContainer {
 
             var xOutput = errorPose.getX()* 2.0;
             var yOutput = errorPose.getY()* 6.0;
+
+            var angle = errorPose.getRotation().getDegrees();
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);
@@ -400,7 +410,7 @@ public class RobotContainer {
             .withVelocityX(-xVel * (MaxSpeed/6.0))
             // TY = Left/Right
             .withVelocityY(yVel * (MaxSpeed/6.0))
-  //          .withTargetDirection(Rotation2d.fromDegrees(angle))
+            .withTargetDirection(Rotation2d.fromDegrees(angle))
             ;
         }
         ).until(() -> isAtPosition(side)).withTimeout(1.5);
