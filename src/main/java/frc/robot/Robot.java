@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-
+    RobotContainer.logger.stop();
   }
 
   @Override
