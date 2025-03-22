@@ -417,7 +417,7 @@ public class RobotContainer {
             .withVelocityY(yVel * (MaxSpeed/6.0))
             .withTargetDirection(Rotation2d.fromDegrees(angle));
         }
-        ).until(() -> isAtPosition(side)).withTimeout(1.5);
+        ).until(() -> isAtPosition(side)).withTimeout(1.0);
     }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
