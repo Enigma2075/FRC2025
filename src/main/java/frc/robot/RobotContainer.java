@@ -113,6 +113,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake3", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5", vision.setPriorityId(21, 10).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
 
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
@@ -125,6 +126,7 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Test", drivetrain.getAutoPath("Test"));
         autoChooser.addOption("MirrorTest", drivetrain.getAutoPath("MirrorTest"));
+        autoChooser.addOption("MiddleTest", drivetrain.getAutoPath("MiddleTest"));
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
