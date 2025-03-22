@@ -109,12 +109,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_forward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
-        NamedCommands.registerCommand("outtake1", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake2", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake3", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake4", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake5", vision.setPriorityId(21, 10).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-
+        NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake2", vision.setPriorityId(22, 9).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake3", vision.setPriorityId(17, 8).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -126,7 +126,7 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Right", drivetrain.getAutoPath("Right"));
         autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
-        //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
+        autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake1"
+            "name": "outtake2"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake2"
+            "name": "outtake3"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake2"
+            "name": "outtake3"
           }
         }
       ]
