@@ -202,6 +202,8 @@ public class Vision extends SubsystemIO {
       }
       
       currentTargetId = (int)reefInput.targetId;
+      SmartDashboard.putNumber("Vision/currentTargetID", currentTargetId);
+      SignalLogger.writeInteger("Vision/currentTargetID", currentTargetId);
 
       targetPoseConsumer.accept(reefPose2d);
     }else {

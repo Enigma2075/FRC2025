@@ -115,6 +115,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake5", vision.setPriorityId(19, 6).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).alongWith(driveToTarget(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("move_to_algae", moveToAlgaeLowCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
+        NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
+        NamedCommands.registerCommand("outtake_algae", elevatorStructure.outtakeAlgaeCommand());
 
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
@@ -329,6 +332,12 @@ public class RobotContainer {
 
     // return output;
     // }
+
+    public Command moveToAlgaeLowCommand(){
+        return elevatorStructure.moveToAlgaeLowCommand();
+    }
+
+
 
     public int getPriorityId() {
         return priorityId;
