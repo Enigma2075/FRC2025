@@ -69,7 +69,6 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-
     public final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController driver = new CommandXboxController(0);
@@ -125,9 +124,8 @@ public class RobotContainer {
 
         autoChooser = new SendableChooser<>();
 
-        autoChooser.setDefaultOption("Test", drivetrain.getAutoPath("Test"));
-        autoChooser.addOption("MirrorTest", drivetrain.getAutoPath("MirrorTest"));
-        autoChooser.addOption("MiddleTest", drivetrain.getAutoPath("MiddleTest"));
+        autoChooser.setDefaultOption("Right", drivetrain.getAutoPath("Right"));
+        autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
         //autoChooser.addOption("Test", drivetrain.getAutoPath("Test"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
