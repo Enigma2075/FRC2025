@@ -377,10 +377,10 @@ public class RobotContainer {
 
     public Pose2d getError(ReefSides side){
         //left
-        var goalX = .38;
+        var goalX = .41;
         var goalY = .145;
         if(side == ReefSides.RIGHT) {
-            goalX = .38;
+            goalX = .41;
             goalY = -.145;    
         }
         
