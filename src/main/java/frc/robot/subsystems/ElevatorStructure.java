@@ -64,10 +64,12 @@ public class ElevatorStructure extends SubsystemIO {
     
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontStart = new ElevatorStructurePosition(7.5, 82, 157, "IntakeAlgaeLowFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontTuck = new ElevatorStructurePosition(7.5, 91, 157, "IntakeAlgaeLowFront");
-    public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(7.5, 105, 143, "IntakeAlgaeLowFront");
+    public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(19, 120, 139, "IntakeAlgaeLowFront");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrab = new ElevatorStructurePosition(9, 132, 90, "IntakeAlgaeLowFrontGrab");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontEnd = new ElevatorStructurePosition(9, 90, 90, "IntakeAlgaeLowFrontEnd");
+    
     public static final ElevatorStructurePositionSequence AlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFront);
+    
     public static final ElevatorStructurePositionSequence IntakeAlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFrontGrab, IntakeAlgaeLowFrontEnd);
     
     public static final ElevatorStructurePosition IntakeAlgaeLowRear = new ElevatorStructurePosition(30, 110, 175, "IntakeAlgaeLowRear");
@@ -84,7 +86,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
     
-    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 120, 60, "Climb");
+    public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 122, 75, "Climb");
 
     private enum QueueModes {ALGAE, CORAL, NONE};
 
@@ -365,7 +367,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToAlgaeLowCommand() {
         Supplier<Command> movement = () -> { return runOnce(() -> {
-                m_Wrist.setOverrideVelocity(true);
+                //m_Wrist.setOverrideVelocity(true);
                 m_AlgaeIntakeEndCommand = () -> intakeAlgaeLowCommand().finallyDo(() -> m_AlgaeIntakeEndCommand = null);
             })
             .andThen(moveToPositionsSide(AlgaeLowFrontSequence, AlgaeLowRearSequence));};
@@ -379,11 +381,11 @@ public class ElevatorStructure extends SubsystemIO {
                 m_NextCommand = movement;
             }
         })
-        .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL))
-        .andThen(run(() -> {}))
-        .finallyDo(() -> {
-            m_Wrist.setOverrideVelocity(false);
-        });
+        .andThen(movement.get().unless(() -> m_QueueMode == QueueModes.CORAL));
+        //.andThen(run(() -> {}))
+        //.finallyDo(() -> {
+        //    m_Wrist.setOverrideVelocity(false);
+        //});
     }
 
     private Command intakeAlgaeLowCommand() {
