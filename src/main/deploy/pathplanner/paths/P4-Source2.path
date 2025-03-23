@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.994901568101652,
-        "y": 2.814182381549915
+        "x": 5.05,
+        "y": 2.75
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6717548151628012,
-        "y": 1.9380502703585236
+        "x": 3.7268532470611486,
+        "y": 1.8738678888086087
       },
       "isLocked": false,
       "linkedName": "P4"
@@ -50,10 +50,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 120.0,
-    "maxAngularAcceleration": 280.0,
+    "maxAngularAcceleration": 200.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

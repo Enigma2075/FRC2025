@@ -107,10 +107,10 @@ public class VisionLL {
             return;
         }
 
-        var priorityId = priorityIdSupplier.get();
-        if(priorityId != -1) {
-            priorityIdPublisher.accept(priorityIdSupplier.get());
-        }
+        //var priorityId = priorityIdSupplier.get();
+        //if(priorityId != -1) {
+        //    priorityIdPublisher.accept(priorityIdSupplier.get());
+        //}
 
         inputs.targetId = targetIdSubscriber.get();
         inputs.targetPose = parsePose(targetPoseSubscriber.get());

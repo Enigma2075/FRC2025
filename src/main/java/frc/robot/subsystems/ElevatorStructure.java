@@ -225,6 +225,19 @@ public class ElevatorStructure extends SubsystemIO {
         .andThen(run(() -> {}));
     }
 
+    public Command moveToL4Command(boolean slow) {
+        return moveToCoralLevel(() -> { 
+            Command cmd = moveToPosition(L4Front, L4Rear);
+            if(slow) {
+                cmd = runOnce(() -> m_Elevator.setOverrideVelocity(true)).andThen(cmd).finallyDo(() -> m_Elevator.setOverrideVelocity(false));
+            }
+            else {
+                cmd = runOnce(() -> m_Elevator.setOverrideVelocity(false)).andThen(cmd);
+            }
+            return cmd;
+        });
+    }
+
     public Command moveToL4Command() {
         return moveToCoralLevel(() -> { return moveToPosition(L4Front, L4Rear);});
     }
@@ -407,7 +420,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
    
     private static class PeriodicIO {
-        public ElevatorStructurePosition targetPosition = Starting;
+        public ElevatorStructurePosition targetPosition = AutoStart;
 
         public ElevatorStructurePosition lastPosition;
     }

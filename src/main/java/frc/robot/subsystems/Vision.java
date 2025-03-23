@@ -171,6 +171,9 @@ public class Vision extends SubsystemIO {
       }
     }
 
+    SmartDashboard.putNumber("Vision/ReefPoseCount", reefInputs.size());
+    SignalLogger.writeInteger("Vision/ReefPoseCount", reefInputs.size());
+
     if(reefInputs.size() > 0 && targetPoseConsumer != null) {
       if(reefInputs.size() > 1) {
         SmartDashboard.putNumber("Vision/ReefPoseCount", reefInputs.size());
@@ -183,7 +186,7 @@ public class Vision extends SubsystemIO {
       SmartDashboard.putNumberArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       
-      var targetTags = VisionConstant.bluTagTargets;
+      var targetTags = VisionConstant.blueTagTargets;
       if (Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
         targetTags = VisionConstant.redTagTargets;
       }

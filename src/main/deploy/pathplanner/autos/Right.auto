@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "start_position"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Start-P4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start-P4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag2"
+                }
+              }
+            ]
           }
         },
         {
@@ -31,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "drive_forward"
+            "name": "drive_backward"
           }
         },
         {
@@ -55,7 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "drive_forward"
+            "name": "drive_backward"
           }
         },
         {

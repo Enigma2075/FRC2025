@@ -32,8 +32,8 @@ public class VisionConstant {
 
         // Standard deviation baselines, for 1 meter distance and 1 tag
         // (Adjusted automatically based on distance and # of tags)
-        public static double linearStdDevBaseline = 1; // Meters
-        public static double angularStdDevBaseline = 0.06; // Radians
+        public static double linearStdDevBaseline = .02; // Meters
+        public static double angularStdDevBaseline = 10; // Radians
 
         // Standard deviation multipliers for each camera
         // (Adjust to trust some cameras more than others)
@@ -52,7 +52,7 @@ public class VisionConstant {
         public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
                         .loadField(AprilTagFields.k2025ReefscapeWelded);
 
-        public static TagTarget[] bluTagTargets = new TagTarget[] {
+        public static TagTarget[] blueTagTargets = new TagTarget[] {
                         new TagTarget(17, 60.0),
                         new TagTarget(18, 0.0),
                         new TagTarget(19, -60.0),
@@ -62,15 +62,15 @@ public class VisionConstant {
         };
 
         public static TagTarget[] redTagTargets = new TagTarget[] {
-                        new TagTarget(6, 120.0),
-                        new TagTarget(7, 180.0),
-                        new TagTarget(8, -120.0),
-                        new TagTarget(9, -60.0),
-                        new TagTarget(10, 0.0),
-                        new TagTarget(11, 60.0)
+                        new TagTarget(6, -60.0),
+                        new TagTarget(7, 0.0),
+                        new TagTarget(8, 60.0),
+                        new TagTarget(9, 120.0),
+                        new TagTarget(10, 180.0),
+                        new TagTarget(11, -1200.0)
         };
 
-        public static double[] blueReefTagIds = java.util.Arrays.stream(bluTagTargets)
+        public static double[] blueReefTagIds = java.util.Arrays.stream(blueTagTargets)
                         .mapToDouble(TagTarget::id)
                         .toArray();
 

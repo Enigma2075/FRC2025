@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -43,7 +44,7 @@ public class Elevator extends SubsystemIO{
     //private final MotionMagicVoltage m_PivotRequest = new MotionMagicVoltage(0);
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
-    private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
+    private final DynamicMotionMagicVoltage m_PositionRequest = new DynamicMotionMagicVoltage(0, ElevatorConst.kMotionMagicCruiseVelocity, ElevatorConst.kMotionMagicAcceleration, ElevatorConst.kMotionMagicJerk).withSlot(0);
     
     private final VoltageOut m_SysIdRequest = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine = new SysIdRoutine(
@@ -124,6 +125,7 @@ public class Elevator extends SubsystemIO{
 
         double lastPosition = Double.MIN_VALUE;
 
+        boolean overrideVelocity = false;
 
         public double targetHeight = ElevatorConst.kInitialHeight;
         public double currentHeight = 0;
@@ -205,6 +207,10 @@ public class Elevator extends SubsystemIO{
         });
     }
 
+    public void setOverrideVelocity(boolean override) {
+        m_PeriodicIO.overrideVelocity = override;
+    }
+
 
     @Override
     public void stop() {
@@ -238,7 +244,12 @@ public class Elevator extends SubsystemIO{
                 m_Front.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
-                m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)));
+                if(m_PeriodicIO.overrideVelocity) {
+                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration * .5));
+                }
+                else {
+                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)));
+                }
                 break;
             case SYSID:
 
