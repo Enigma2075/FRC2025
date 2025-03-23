@@ -305,7 +305,7 @@ public class RobotContainer {
                 .onFalse(intake.setStateCommand(States.DEFAULT));
         
         // Intake Algae based on position
-        driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
+        // driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
 
         driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT)));
         driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT)));
