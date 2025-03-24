@@ -426,7 +426,7 @@ public class RobotContainer {
     public boolean closeToTarget(ReefSides side) {
         var error = getError(side);
         //var distance = Math.sqrt((error.getX()*error.getX())  + (error.getY()*error.getY()));
-        return Math.abs(error.getX()) < .5;
+        return Math.abs(error.getX()) < .25;
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
