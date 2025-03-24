@@ -11,9 +11,39 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "outtake1"
+            "pathName": "P1-Source1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P10"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P10-Source1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P9"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P9-Source1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source1-P8"
           }
         }
       ]
