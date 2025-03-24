@@ -113,7 +113,7 @@ public class Intake extends SubsystemIO{
 
     public enum States { 
         GRABCAGE(95, 0),
-        FLOORINTAKE(53, .5),
+        FLOORINTAKE(53, .7),
         OUTTAKE(113, -.5),
         CLIMBREADY(0, 0),
         DEFAULT(113, 0),
@@ -214,6 +214,10 @@ public class Intake extends SubsystemIO{
 
     @Override
     public void writePeriodicOutputs() {
+        if(m_PeriodicIO.targetPivotPosition == States.FLOORINTAKE && m_PeriodicIO.currentDistance < 40) {
+            setState(States.DEFAULT);
+        }
+
         switch (m_PeriodicIO.controlMode) {
             case OUTPUT:   
                 m_pivot.setControl(m_PivotOutputRequest.withOutput(m_PeriodicIO.targetPivotOutput));

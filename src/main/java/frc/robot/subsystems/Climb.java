@@ -109,7 +109,7 @@ public class Climb extends SubsystemIO{
 
     public enum State { 
         START(0),
-        GRABCAGE(30), 
+        GRABCAGE(60), 
         ENDCLIMB(115);
         
         public final double distance;

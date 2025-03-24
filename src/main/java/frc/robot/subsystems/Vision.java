@@ -285,10 +285,10 @@ public class Vision extends SubsystemIO {
         SignalLogger.writeDoubleArray("Vision/Dev", new double [] {linearStdDev, angularStdDev});
         
         //Send vision observation
-        consumer.accept(
-           observation.pose().toPose2d(),
-           observation.timestamp(),
-           VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+        // consumer.accept(
+        //    observation.pose().toPose2d(),
+        //    observation.timestamp(),
+        //    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
 
       // Log camera datadata

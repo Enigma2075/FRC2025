@@ -101,6 +101,9 @@ public class RobotContainer {
 
     public IOManager ioManager;
 
+    public boolean waitForPosition = false;
+    public ReefSides currentReefSide = ReefSides.LEFT;
+
     public RobotContainer() {
         //drivetrain.setStateStdDevs(VecBuilder.fill(9999, 9999, 0));
         driveAtAngle.HeadingController.setP(10);
@@ -245,11 +248,19 @@ public class RobotContainer {
         operator.leftTrigger()
                 .onTrue(
                     elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
-                                .andThen(intake.setStateCommand(States.HANDOFFALGAE)
-                                .andThen(Commands.waitSeconds(.25))
-                                        .andThen(elevatorStructure.pickupAlgaeCommand()))
-                                        .andThen(intake.setStateCommand(States.DEFAULT))
-                );
+                            .andThen(intake.setStateCommand(States.HANDOFFALGAE)
+                            .andThen(elevatorStructure.pickupAlgaeCommand()))
+                )
+                .onFalse(intake.setStateCommand(States.DEFAULT));
+
+        // right bumper - barge
+        operator.rightBumper().whileTrue(
+            new ConditionalCommand(elevatorStructure.moveToBargeCommand(),
+                    elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
+                            .andThen(intake.setStateCommand(States.HANDOFFALGAE)
+                            .andThen(elevatorStructure.pickupAlgaeCommand())),() -> claw.hasAlgae())
+                            )
+            .onFalse(intake.setStateCommand(States.DEFAULT));
 
         // Intake Coral
         operator.rightTrigger()
@@ -262,14 +273,6 @@ public class RobotContainer {
                             .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
                 }))).onFalse(elevatorStructure.moveToStartingCommand());
-
-        // right bumper - barge
-        operator.rightBumper().whileTrue(
-                new ConditionalCommand(elevatorStructure.moveToBargeCommand(),
-                        elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
-                                .andThen(intake.setStateCommand(States.HANDOFFALGAE)
-                                        .andThen(elevatorStructure.pickupAlgaeCommand())),
-                        () -> claw.hasAlgae()).andThen(intake.setStateCommand(States.DEFAULT)));
         
         // Store algae                
         operator.leftBumper().onTrue(intake.setStateCommand(States.HANDOFFALGAE)
@@ -305,17 +308,19 @@ public class RobotContainer {
                 .onFalse(intake.setStateCommand(States.DEFAULT));
         
         // Intake Algae based on position
-        // driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
+        driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
 
         driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT)));
         driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT)));
+        driver.povDown().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.CENTER)));
+        
         //driver.y().whileTrue(driveBackwardCommand());
         
         // Score Algage
         driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
 
         // Score Coral
-        driver.rightBumper().and(() -> elevatorStructure.isAtPosition()).whileTrue(elevatorStructure.outtakeCoralCommand());
+        driver.rightBumper().and(() -> elevatorStructure.isAtPosition() && (!waitForPosition || isAtPosition(currentReefSide))).whileTrue(elevatorStructure.outtakeCoralCommand());
 
         // Align based on current angle to reef
         driver.b().whileTrue(drivetrain.applyRequest(() -> {
@@ -374,7 +379,7 @@ public class RobotContainer {
         ).until(() -> claw.hasCoral()).withTimeout(1);
     }
 
-    private enum ReefSides { RIGHT, LEFT }
+    private enum ReefSides { RIGHT, LEFT, CENTER }
 
     //public double getReefAngle(int targetId) {
 //
@@ -392,23 +397,30 @@ public class RobotContainer {
 
     public Pose2d getError(ReefSides side){
         //left
-        var goalX = .40;
+        var goalX = .41;
         var goalY = .155;
         if(side == ReefSides.RIGHT) {
-            goalX = .40;
+            goalX = .41;
             goalY = -.14;    
+        }
+        else if(side == ReefSides.CENTER) {
+            goalX = .41;
+            goalY = .09;
         }
         
         var xError = goalX - robotPoseInTargetSpace.getX();
         var yError = goalY - robotPoseInTargetSpace.getY();
+        var rotError = robotPoseInTargetSpace.getRotation().getDegrees() - drivetrain.getState().Pose.getRotation().getDegrees();
 
+        SmartDashboard.putNumber("Align/rotError", rotError);
         SmartDashboard.putNumber("Align/xError", xError);
         SmartDashboard.putNumber("Align/yError", yError);
+        SignalLogger.writeDouble("Align/rotError", rotError);
         SignalLogger.writeDouble("Align/xError", xError);
         SignalLogger.writeDouble("Align/yError", yError);
 
         
-        return new Pose2d(xError, yError, robotPoseInTargetSpace.getRotation());
+        return new Pose2d(xError, yError, Rotation2d.fromDegrees(rotError));
     }
 
     public boolean closeToTarget(ReefSides side) {
@@ -423,30 +435,35 @@ public class RobotContainer {
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
+            currentReefSide = side;
+            waitForPosition = true;
+
             // LEFT
             var errorPose = getError(side);
 
             var xOutput = errorPose.getX()* 4.0;
             var yOutput = errorPose.getY()* 6.0;
 
-            var angle = errorPose.getRotation().getDegrees();
-
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);
             
+            var atPosition = isAtPosition(side);
+            SmartDashboard.putBoolean("Align/atPosition", atPosition);
             SmartDashboard.putNumber("Align/xVel", xVel);
             SmartDashboard.putNumber("Align/yVel", yVel);
+            SignalLogger.writeBoolean("Align/atPosition", atPosition);
             SignalLogger.writeDouble("Align/xVel", xVel);
             SignalLogger.writeDouble("Align/yVel", yVel);
+
 
             return driveRobotCentric
             // TX = Front/Back
             .withVelocityX(-xVel * (MaxSpeed/5.0))
             // TY = Left/Right
             .withVelocityY(yVel * (MaxSpeed/5.0))
-            .withTargetDirection(Rotation2d.fromDegrees(angle));
+            .withTargetDirection(robotPoseInTargetSpace.getRotation());
         }
-        );
+        ).finallyDo(() -> waitForPosition = false);
     }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
