@@ -61,7 +61,7 @@ public class RobotContainer {
     
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -150,6 +150,7 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Right", drivetrain.getAutoPath("Right"));
         autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
         autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
+        autoChooser.addOption("Straight", drivetrain.getAutoPath("Straight"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -430,7 +431,7 @@ public class RobotContainer {
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
-        return driveToTarget(side).until(() -> isAtPosition(side)).withTimeout(1.0);
+        return driveToTarget(side).withTimeout(1.0).until(() -> isAtPosition(side));
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
