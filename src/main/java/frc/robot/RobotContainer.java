@@ -61,7 +61,7 @@ public class RobotContainer {
     
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -114,7 +114,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_backward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
-        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command(true));
+        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
         
         NamedCommands.registerCommand("foundTag1", vision.setPriorityId(21, 10).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag2", vision.setPriorityId(22, 9).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
@@ -362,8 +362,6 @@ public class RobotContainer {
         return elevatorStructure.moveToAlgaeLowCommand();
     }
 
-
-
     public int getPriorityId() {
         return priorityId;
     }
@@ -373,7 +371,7 @@ public class RobotContainer {
             var rotation = Rotation2d.fromDegrees(55);
             return driveRobotCentric
             // TX = Front/Back
-            .withVelocityX(-.25 * (MaxSpeed))
+            .withVelocityX(-.15 * (MaxSpeed))
             .withTargetDirection(rotation)
             ;
         }

@@ -25,7 +25,7 @@ public class ArmConstants {
     public static final double kS = 0.3;
     public static final double kV = 5;
     public static final double kA = .8;
-    public static final double kP = 48;
+    public static final double kP = 60;
     public static final double kI = 0;
     public static final double kD = 0;
 

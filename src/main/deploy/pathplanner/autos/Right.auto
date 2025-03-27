@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "Start-P4"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag2"
-                }
               }
             ]
           }
