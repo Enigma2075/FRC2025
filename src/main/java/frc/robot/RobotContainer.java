@@ -114,25 +114,25 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_backward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
-        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command());
+        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command(true));
         
-        NamedCommands.registerCommand("foundTag1", vision.setPriorityId(21, 10).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag2", vision.setPriorityId(22, 9).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag3_left", vision.setPriorityId(17, 8).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag3_right", vision.setPriorityId(17, 8).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
-        NamedCommands.registerCommand("foundTag4", vision.setPriorityId(18, 7).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag5_left", vision.setPriorityId(19, 6).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag5_right", vision.setPriorityId(19, 6).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
-        NamedCommands.registerCommand("foundTag6", vision.setPriorityId(20, 11).alongWith(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag1", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag2", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag3_left", vision.setPriorityId(17, 8).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag3_right", vision.setPriorityId(17, 8).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
+        NamedCommands.registerCommand("foundTag4", vision.setPriorityId(18, 7).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag5_left", vision.setPriorityId(19, 6).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag5_right", vision.setPriorityId(19, 6).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
+        NamedCommands.registerCommand("foundTag6", vision.setPriorityId(20, 11).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         
-        NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake2", vision.setPriorityId(22, 9).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake3_left", vision.setPriorityId(17, 8).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake3_right", vision.setPriorityId(17, 8).alongWith(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake5_left", vision.setPriorityId(19, 6).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).alongWith(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
-        NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).alongWith(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake3_left", vision.setPriorityId(17, 8).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake3_right", vision.setPriorityId(17, 8).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake4", vision.setPriorityId(18, 7).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5_left", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
+        NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand())).andThen(Commands.waitSeconds(.25)));
         
         NamedCommands.registerCommand("move_to_algae", moveToAlgaeLowCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
@@ -384,6 +384,16 @@ public class RobotContainer {
 //
 //    }
 
+    public boolean isAtPositionAuto(ReefSides side) {
+        var errorPose = getError(side);
+        if(Math.abs(errorPose.getX()) < .12 && Math.abs(errorPose.getY()) < .12 && Math.abs(errorPose.getRotation().getDegrees()) < 12){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public boolean isAtPosition(ReefSides side) {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .03 && Math.abs(errorPose.getY()) < .03 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
@@ -429,7 +439,7 @@ public class RobotContainer {
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
-        return driveToTarget(side).withTimeout(1.0).until(() -> isAtPosition(side));
+        return driveToTarget(side).until(() -> isAtPositionAuto(side)).withTimeout(1.0);
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
@@ -551,14 +561,16 @@ public class RobotContainer {
         vision.setIMUMode(0);
         if (allianceColor == Alliance.Blue) {
             if(!hasSetOrientation) {
-                drivetrain.resetRotation(Rotation2d.fromDegrees(0));
+                //drivetrain.resetPose(new Pose2d(7.190, 2.120, Rotation2d.fromDegrees(180)));
+                //drivetrain.resetRotation(Rotation2d.fromDegrees(0));
                 hasSetOrientation = true;
             }
             vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
         }   
         else {
             if(!hasSetOrientation) {
-                drivetrain.resetRotation(Rotation2d.fromDegrees(180));
+                //drivetrain.resetPose(new Pose2d(10.36, 5.93, Rotation2d.fromDegrees(0)));
+                //drivetrain.resetRotation(Rotation2d.fromDegrees(180));
                 hasSetOrientation = true;
             }
             vision.setAprilTagFilter(VisionConstant.redReefTagIds);

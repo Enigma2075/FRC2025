@@ -9,6 +9,12 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "foundTag2"
+                }
+              },
+              {
                 "type": "path",
                 "data": {
                   "pathName": "Start-P4"

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.95,
-        "y": 2.7
+        "x": 3.9828750000000004,
+        "y": 2.8257499999999993
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.874046908842551,
-        "y": 1.7897165904173988
+        "x": 2.906921908842551,
+        "y": 1.915466590417398
       },
       "isLocked": false,
       "linkedName": "P5"
     },
     {
       "anchor": {
-        "x": 1.45,
-        "y": 0.9
+        "x": 1.4,
+        "y": 0.85
       },
       "prevControl": {
-        "x": 2.260619644216586,
-        "y": 1.7242050995697844
+        "x": 2.210619644216586,
+        "y": 1.6742050995697846
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.8,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.54881596426245
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": null,

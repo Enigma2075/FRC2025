@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1,
+        "x": 5.0,
         "y": 2.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7768532470611484,
-        "y": 1.9238678888086085
+        "x": 3.492909340643262,
+        "y": 1.9662399853460313
       },
       "isLocked": false,
       "linkedName": "P4"
     },
     {
       "anchor": {
-        "x": 1.45,
-        "y": 0.9
+        "x": 1.4,
+        "y": 0.85
       },
       "prevControl": {
-        "x": 2.9371475464588883,
-        "y": 1.9043384758201798
+        "x": 3.045891278190731,
+        "y": 1.6796539841699047
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,6 @@
     {
       "waypointRelativePos": 0.1585062240663872,
       "rotationDegrees": 119.99999999999999
-    },
-    {
-      "waypointRelativePos": 0.47716535433071416,
-      "rotationDegrees": 52.54900000000001
     }
   ],
   "constraintZones": [],
@@ -54,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.8,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
@@ -63,13 +59,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.54900000000001
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.93554460807044
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -6,6 +6,10 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.FlippingUtil;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,6 +77,17 @@ public class Robot extends TimedRobot {
       RobotContainer.logger.stop();
       disabledTimer = Double.MAX_VALUE;
     }
+
+    if(!hasAutoRun && hasAlliance) {
+      var autoCommand = (PathPlannerAuto) RobotContainer.getAutonomousCommand();
+      var pose = autoCommand.getStartingPose();
+      
+      if(AllianceColor.get() == Alliance.Red){
+        pose = FlippingUtil.flipFieldPose(pose);
+      }
+      
+      RobotContainer.drivetrain.resetPose(pose);
+    }
   }
 
   @Override
@@ -84,9 +99,9 @@ public class Robot extends TimedRobot {
     RobotContainer.logger.start();
     RobotContainer.elevatorStructure.applyAutoStartPosition();
     m_autonomousCommand = RobotContainer.getAutonomousCommand();
-    hasAutoRun = true;
 
     if (m_autonomousCommand != null) {
+      hasAutoRun = true;
       m_autonomousCommand.schedule();
     }
   }
@@ -105,7 +120,12 @@ public class Robot extends TimedRobot {
     RobotContainer.elevator.setOverrideVelocity(false);
 
     if (hasAutoRun == false) {
-      // odometry to specific place
+      if (AllianceColor.get() == Alliance.Blue) {
+        RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(0));
+      }
+      else {
+        RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(180));
+      }
     }
 
     if (m_autonomousCommand != null) {
