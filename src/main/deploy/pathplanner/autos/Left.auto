@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "start_mirror"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Start-P12"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag6"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start-P12"
+                }
+              }
+            ]
           }
         },
         {
@@ -31,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "drive_forward"
+            "name": "drive_backward"
           }
         },
         {
@@ -55,7 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "drive_forward"
+            "name": "drive_backward"
           }
         },
         {

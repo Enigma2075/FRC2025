@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4558780472292536,
-        "y": 5.490251412183613
+        "x": 3.6894886363636368,
+        "y": 5.106917613636363
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.847138489203211,
-        "y": 5.984308241398894
+        "x": 3.080749078337594,
+        "y": 5.600974442851644
       },
       "isLocked": false,
       "linkedName": "P9"
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 3.8,
+    "maxAcceleration": 4.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.00799999999999
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": null,
