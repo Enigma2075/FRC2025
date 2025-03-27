@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
       if(AllianceColor.get() == Alliance.Red){
         pose = FlippingUtil.flipFieldPose(pose);
       }
-      
+
       RobotContainer.drivetrain.resetPose(pose);
     }
   }
@@ -120,6 +120,7 @@ public class Robot extends TimedRobot {
     RobotContainer.elevator.setOverrideVelocity(false);
 
     if (hasAutoRun == false) {
+        hasAutoRun = true;
       if (AllianceColor.get() == Alliance.Blue) {
         RobotContainer.drivetrain.resetRotation(Rotation2d.fromDegrees(0));
       }

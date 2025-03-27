@@ -427,7 +427,12 @@ public class RobotContainer {
         
         var xError = goalX - robotPoseInTargetSpace.getX();
         var yError = goalY - robotPoseInTargetSpace.getY();
-        var rotError = robotPoseInTargetSpace.getRotation().getDegrees() - drivetrain.getState().Pose.getRotation().getDegrees();
+        var robotRot = drivetrain.getState().Pose.getRotation();
+        if(Robot.AllianceColor.get() == Alliance.Red) {
+            robotRot = robotRot.rotateBy(Rotation2d.k180deg);
+        }
+
+        var rotError = robotPoseInTargetSpace.getRotation().getDegrees() - robotRot.getDegrees();
 
         SmartDashboard.putNumber("Align/rotError", rotError);
         SmartDashboard.putNumber("Align/xError", xError);
@@ -461,7 +466,7 @@ public class RobotContainer {
             var errorPose = getError(side);
 
             var xOutput = errorPose.getX()* 4.0;
-            var yOutput = errorPose.getY()* 6.0;
+            var yOutput = errorPose.getY()* 4.0;
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);
