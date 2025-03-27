@@ -59,9 +59,14 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.001).withRotationalDeadband(MaxAngularRate * 0.001) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     
+    private final RobotCentric driveRobotCentric1 = new SwerveRequest.RobotCentric()
+            .withDeadband(MaxSpeed * 0.001).withRotationalDeadband(MaxAngularRate * 0.001) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
+
     private final SwerveRequest.FieldCentricFacingAngle driveAtAngle = new FieldCentricFacingAngle()
             .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.025) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -139,6 +144,8 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("outtake_algae", elevatorStructure.outtakeAlgaeCommand());
 
+        NamedCommands.registerCommand("rotationTest", rotationTestCommand());
+
         ioManager = new IOManager(climb, elevator, arm, wrist, claw, intake, elevatorStructure, vision);
 
         SmartDashboard.putBoolean("PracticeBot", RobotConstants.kPracticeBot);
@@ -151,6 +158,7 @@ public class RobotContainer {
         autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
         autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
         autoChooser.addOption("Straight", drivetrain.getAutoPath("Straight"));
+        autoChooser.addOption("RotationTest", drivetrain.getAutoPath("RotationTest"));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -475,6 +483,41 @@ public class RobotContainer {
             .withTargetDirection(robotPoseInTargetSpace.getRotation());
         }
         ).finallyDo(() -> waitForPosition = false);
+    }
+
+    double startWheelPosition;
+    double endWheelPosition;
+    double wheelRevolutions;
+    double radiansOfRotation;
+    double swerveTravel;
+    double wheelCircumference;
+    double wheelRadius;
+
+    Rotation2d startRotationPosition;
+    Rotation2d endRotationPosition;
+
+    public Command rotationTestCommand() {
+
+
+        return Commands.runOnce(() -> {
+            startWheelPosition = drivetrain.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
+            startRotationPosition = robotPoseInTargetSpace.getRotation();    
+        }, drivetrain)
+        .andThen(drivetrain.applyRequest(() -> {
+            return driveRobotCentric1
+                .withRotationalRate(2.0);
+        }
+        )).withTimeout(4).andThen(Commands.runOnce(()-> {
+            endWheelPosition = drivetrain.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
+            endRotationPosition = robotPoseInTargetSpace.getRotation();
+            wheelRevolutions = endWheelPosition - startWheelPosition;
+            radiansOfRotation = endRotationPosition.getRadians() - startRotationPosition.getRadians();
+            swerveTravel = radiansOfRotation * (10.875 * .0254) * Math.sqrt(2.0);
+            wheelCircumference = swerveTravel / wheelRevolutions;
+            wheelRadius = wheelCircumference / (2 * Math.PI);
+            
+            SmartDashboard.putNumber("SwerveDrive/WheelSize", wheelRadius);
+        }, drivetrain));
     }
 
     public Rotation2d getRotationForReef(Rotation2d currentRotation) {
