@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.746034955271818,
-        "y": 5.6507720389122005
+        "x": 3.9686931818181814,
+        "y": 5.246519886363636
       },
       "prevControl": {
-        "x": 3.235144829162181,
-        "y": 5.951636386280983
+        "x": 3.4578030557085446,
+        "y": 5.547384233732418
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "move_to_L4",
-      "waypointRelativePos": 0.8982630272952927,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 3.8,
+    "maxAcceleration": 4.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.008
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }

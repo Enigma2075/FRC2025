@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.209499307919142,
-        "y": 6.232416457242403
+        "x": 6.2825477919804635,
+        "y": 5.912182007897364
       },
       "isLocked": false,
       "linkedName": "Start-Mirror"
@@ -20,21 +20,26 @@
         "y": 5.071025969135062
       },
       "prevControl": {
-        "x": 5.524314012184102,
-        "y": 5.110719205490444
+        "x": 5.647126808572606,
+        "y": 5.511547646616447
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "P11"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "move_to_L4",
-      "waypointRelativePos": 0.900248138957817,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 3.8,
+    "maxAcceleration": 4.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
@@ -54,7 +59,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.61860540890939
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": null,
