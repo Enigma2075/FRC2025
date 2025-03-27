@@ -280,7 +280,7 @@ public class RobotContainer {
                 .alongWith(elevatorStructure.storeAlgaeCommand()).andThen(intake.setStateCommand(States.DEFAULT)));
 
         // Start climb
-        operator.back().onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb())
+        operator.back().and(operator.start()).onTrue(climb.setServo().alongWith(elevatorStructure.moveToClimb())
                 .alongWith(intake.setStateCommand(States.CLIMBREADY)));
 
         // Align to joystick position
