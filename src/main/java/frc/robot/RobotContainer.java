@@ -418,10 +418,10 @@ public class RobotContainer {
         //7 C - 
         //left
         var goalX = .43;
-        var goalY = .19;
+        var goalY = .17;
         if(side == ReefSides.RIGHT) {
             goalX = .43;
-            goalY = -.17;    
+            goalY = -.15;    
         }
         else if(side == ReefSides.CENTER) {
             goalX = .43;
