@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,7 +34,8 @@ public class Claw extends SubsystemIO {
         STOP(0),
         HOLD(20),
         INTAKE(60),
-        OUTTAKE(-40);
+        OUTTAKE(-40),
+        OUTTAKE_SLOW(-.08); 
 
         public final double current;
 
@@ -48,7 +50,8 @@ public class Claw extends SubsystemIO {
     private CANrange m_CoralSensor;
     private CANrange m_AlgaeSensor;
 
-    private final TorqueCurrentFOC m_OutputRequest = new TorqueCurrentFOC(0);
+    private final TorqueCurrentFOC m_CurrentRequest = new TorqueCurrentFOC(0);
+    private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
 
     public Claw() {
         m_CoralSensor = new CANrange(ClawConstants.kCoralSensorId, RobotConstants.kCanivoreBusName);
@@ -282,7 +285,7 @@ public class Claw extends SubsystemIO {
                 }
             }
 
-            m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
+            m_Algae.setControl(m_CurrentRequest.withOutput(m_PeriodicIO.algaeMode.current));
         } else {
             if(m_PeriodicIO.seeAlgae) {
                 if(m_PeriodicIO.hasAlgae) {
@@ -290,7 +293,7 @@ public class Claw extends SubsystemIO {
                 } else {
                     m_PeriodicIO.algaeMode = AlgaeModes.INTAKE;
                 }
-                m_Algae.setControl(m_OutputRequest.withOutput(m_PeriodicIO.algaeMode.current));
+                m_Algae.setControl(m_CurrentRequest.withOutput(m_PeriodicIO.algaeMode.current));
             }
             else {
                 m_Algae.stopMotor();
@@ -329,7 +332,7 @@ public class Claw extends SubsystemIO {
                 } else {
                     m_PeriodicIO.coralMode = CoralModes.STOP;
                 }
-            } else if (m_PeriodicIO.coralMode == CoralModes.OUTTAKE && !hasCoral() && !m_PeriodicIO.latchCoralMode) {
+            } else if ((m_PeriodicIO.coralMode == CoralModes.OUTTAKE || m_PeriodicIO.coralMode == CoralModes.OUTTAKE_SLOW) && !hasCoral() && !m_PeriodicIO.latchCoralMode) {
                 if (Timer.getFPGATimestamp() - m_PeriodicIO.timeoutCoral > timeout) {
                     m_PeriodicIO.coralMode = CoralModes.STOP;
                 }
@@ -337,7 +340,12 @@ public class Claw extends SubsystemIO {
                 m_PeriodicIO.coralMode = CoralModes.HOLD;
             }
 
-            m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralMode.current));
+            if(m_PeriodicIO.coralMode == CoralModes.OUTTAKE_SLOW) {
+                m_Coral.setControl(m_OutputRequest.withOutput(m_PeriodicIO.coralMode.current));
+            }
+            else{
+                m_Coral.setControl(m_CurrentRequest.withOutput(m_PeriodicIO.coralMode.current));
+            }
         } else {
             m_Coral.stopMotor();
         }

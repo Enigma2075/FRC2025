@@ -102,6 +102,12 @@
           "data": {
             "name": "outtake3_right"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P5-Source2"
+          }
         }
       ]
     }

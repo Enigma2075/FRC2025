@@ -76,6 +76,12 @@
           "data": {
             "name": "outtake5_right"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P9-Source1"
+          }
         }
       ]
     }

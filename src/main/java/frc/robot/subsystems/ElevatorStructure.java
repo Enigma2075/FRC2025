@@ -84,7 +84,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 118, -60, "L4Front");
     public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 110, -80, "L3Front");
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
-    public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(10, 115, -95, "L1Front");
+    public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(7.5, 125, -140, "L1Front");
     
     public static final ElevatorStructurePosition Climb = new ElevatorStructurePosition(7.5, 122, 75, "Climb");
 
@@ -313,20 +313,28 @@ public class ElevatorStructure extends SubsystemIO {
     //private Command run
 
     public Command autoOuttakeCoralCommand() {
-        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.25)).andThen(runOnce(() -> {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.2)).andThen(runOnce(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
-        )).andThen(Commands.waitSeconds(.25)).andThen(moveToPosition(false, Starting));
+        )).andThen(Commands.waitSeconds(.2)).andThen(moveToPosition(false, Starting));
     }
 
     public Command outtakeCoralCommand() {
         return run(() -> {
-            m_Claw.setCoralMode(CoralModes.OUTTAKE);
-            if(m_NextCommand != null) {
-                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(m_NextCommand.get()).finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+            var timeout = .25;
+            if(m_PeriodicIO.targetPosition == L1Front) {
+                m_Claw.setCoralMode(CoralModes.OUTTAKE_SLOW);
+                timeout = 1;
             }
             else {
-                CommandScheduler.getInstance().schedule(Commands.waitSeconds(.25).andThen(moveToPosition(false, Starting)));
+                m_Claw.setCoralMode(CoralModes.OUTTAKE);
+            }
+
+            if(m_NextCommand != null) {
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(timeout).andThen(m_NextCommand.get()).finallyDo(() -> {m_NextCommand = null; m_QueueMode = QueueModes.NONE;}));
+            }
+            else {
+                CommandScheduler.getInstance().schedule(Commands.waitSeconds(timeout).andThen(moveToPosition(false, Starting)));
             }
         });
     }
