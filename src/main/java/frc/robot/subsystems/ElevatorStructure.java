@@ -64,7 +64,7 @@ public class ElevatorStructure extends SubsystemIO {
     
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontStart = new ElevatorStructurePosition(7.5, 82, 157, "IntakeAlgaeLowFrontStart");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontTuck = new ElevatorStructurePosition(7.5, 91, 157, "IntakeAlgaeLowFront");
-    public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(19, 130, 139, "IntakeAlgaeLowFront");
+    public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(21, 134, 139, "IntakeAlgaeLowFront");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrab = new ElevatorStructurePosition(19, 90, 139, "IntakeAlgaeLowFrontGrab");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontEnd = new ElevatorStructurePosition(2, 85, 100, "IntakeAlgaeLowFrontEnd");
     
@@ -295,7 +295,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command outtakeAlgaeCommand() {
         return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE))
-            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()))
+            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()).andThen(Commands.waitSeconds(.25))) // wait for algae to be out
             .andThen(moveToStartingCommand());
     }
 

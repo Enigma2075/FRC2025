@@ -209,7 +209,13 @@ public class Intake extends SubsystemIO{
     public void readPeriodicInputs() {
         m_PeriodicIO.currentPivotAngle = convertPositionToAngle(m_pivot.getPosition().getValueAsDouble());
         m_PeriodicIO.currentRollerCurrent = m_roller.getSupplyCurrent().getValueAsDouble();
-        m_PeriodicIO.currentDistance = m_Sensor.getDistance().getValue().in(Centimeters);
+        var seeAlgae = m_Sensor.getIsDetected().getValue();
+        if(seeAlgae) {
+            m_PeriodicIO.currentDistance = m_Sensor.getDistance().getValue().in(Centimeters);
+        }
+        else {
+            m_PeriodicIO.currentDistance = Double.MAX_VALUE;
+        }
     }
 
     @Override

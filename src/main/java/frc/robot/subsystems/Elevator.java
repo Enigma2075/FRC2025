@@ -248,7 +248,7 @@ public class Elevator extends SubsystemIO{
                     m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration * .5));
                 }
                 else {
-                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)));
+                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration));
                 }
                 break;
             case SYSID:

@@ -32,12 +32,12 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     RobotContainer = new RobotContainer();
-    RobotContainer.logger.stop();
+    //RobotContainer.logger.stop();
   }
 
   @Override
   public void robotInit() {
-    RobotContainer.logger.stop();
+    //RobotContainer.logger.stop();
   }
 
   @Override
@@ -73,8 +73,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // stop the logger after 5 seconds of being disabled
-    if (Timer.getFPGATimestamp() - disabledTimer > 5) {
-      RobotContainer.logger.stop();
+    if (Timer.getFPGATimestamp() - disabledTimer > 10) {
+      //RobotContainer.logger.stop();
       disabledTimer = Double.MAX_VALUE;
     }
 
@@ -96,7 +96,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    RobotContainer.logger.start();
+    //RobotContainer.logger.stop();
+    //RobotContainer.logger.start();
     RobotContainer.elevatorStructure.applyAutoStartPosition();
     m_autonomousCommand = RobotContainer.getAutonomousCommand();
 
@@ -116,7 +117,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    RobotContainer.logger.start();
+    //RobotContainer.logger.start();
     RobotContainer.elevator.setOverrideVelocity(false);
 
     if (hasAutoRun == false) {

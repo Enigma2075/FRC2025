@@ -42,9 +42,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Source2-P6"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-P6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag3_left"
+                }
+              }
+            ]
           }
         },
         {
@@ -66,9 +79,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Source2-P5"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-P5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag3_right"
+                }
+              }
+            ]
           }
         },
         {
