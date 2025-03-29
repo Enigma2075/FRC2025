@@ -6,7 +6,7 @@ public class IntakeConstants {
     public static final int kSensorId = 1;
 
     public static final double kMaxRange = 30;
-    public static final double kMinRange = 5;
+    public static final double kMinRange = 8;
 
     public static final double kGearRatio1 = 7.0/1.0;
     public static final double kGearRatio2 = 3.0/1.0;

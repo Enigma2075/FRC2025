@@ -295,7 +295,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command outtakeAlgaeCommand() {
         return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE))
-            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()).andThen(Commands.waitSeconds(.25))) // wait for algae to be out
+            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()).andThen(Commands.waitSeconds(1))) // wait for algae to be out
             .andThen(moveToStartingCommand());
     }
 
