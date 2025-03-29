@@ -413,19 +413,22 @@ public class RobotContainer {
     }
 
     public Pose2d getError(ReefSides side){
+
+        // 7 R - .43, -.16
+        //7 C - 
         //left
-        var goalX = .41;
-        var goalY = .155;
+        var goalX = .43;
+        var goalY = .19;
         if(side == ReefSides.RIGHT) {
-            goalX = .41;
-            goalY = -.14;    
+            goalX = .43;
+            goalY = -.17;    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = .41;
-            goalY = .09;
+            goalX = .43;
+            goalY = .13;
         }
         
-        var xError = goalX - robotPoseInTargetSpace.getX();
+        var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());
         var yError = goalY - robotPoseInTargetSpace.getY();
         var robotRot = drivetrain.getState().Pose.getRotation();
         if(Robot.AllianceColor.get() == Alliance.Red) {
