@@ -42,8 +42,8 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition GrabAlgaeRotate = new ElevatorStructurePosition(12, 90, -83, "GrabAlgaeRotate");
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
 
-    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(67, 90, 40, "BargeBack");
-    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(67, 103, 120, "BargeFront");
+    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(65.5, 90, 40, "BargeBack");
+    public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15.5, 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
@@ -81,7 +81,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Rear = new ElevatorStructurePosition(22, 66, 65, "L2Rear");
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
-    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(67, 118, -60, "L4Front");
+    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(65.5, 118, -60, "L4Front");
     public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 110, -80, "L3Front");
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(7.5, 125, -140, "L1Front");
