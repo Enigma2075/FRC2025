@@ -43,6 +43,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
 
     public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(65.5, 90, 40, "BargeBack");
+    public static final ElevatorStructurePosition BargeRearEnd = new ElevatorStructurePosition(30, 85, 40, "BargeBackEnd");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15.5, 73, 137, "IntakeCoralRear");
@@ -260,6 +261,10 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Starting);
     }
 
+    public Command moveToEndBargeCommand() {
+        return moveToPositions(BargeRearEnd,Starting);
+    }
+
     public Command intakeCoralEndCommand() {
         return moveToPositions(IntakeCoralFrontEnd, Starting);
     }
@@ -295,8 +300,8 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command outtakeAlgaeCommand() {
         return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE))
-            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()).andThen(Commands.waitSeconds(1))) // wait for algae to be out
-            .andThen(moveToStartingCommand());
+            .andThen(Commands.waitUntil(() -> !m_Claw.hasAlgae()).andThen(Commands.waitSeconds(.25))) // wait for algae to be out
+            .andThen(moveToEndBargeCommand());
     }
 
     public Command intakeAlgaeCommand() {
@@ -327,7 +332,7 @@ public class ElevatorStructure extends SubsystemIO {
                 timeout = 1;
             }
             else {
-                m_Claw.setCoralMode(CoralModes.OUTTAKE);
+            m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
 
             if(m_NextCommand != null) {

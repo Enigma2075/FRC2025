@@ -329,7 +329,8 @@ public class RobotContainer {
         //driver.y().whileTrue(driveBackwardCommand());
         
         // Score Algage
-        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand());
+        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(elevatorStructure.moveToEndBargeCommand());
+
 
         // Score Coral
         driver.rightBumper().and(() -> elevatorStructure.isAtPosition() && (!waitForPosition || isAtPosition(currentReefSide))).whileTrue(elevatorStructure.outtakeCoralCommand());
