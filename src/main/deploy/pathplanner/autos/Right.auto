@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Start-P4"
+                  "pathName": "Start-P3"
                 }
               }
             ]
@@ -26,13 +26,13 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake2"
+            "name": "outtake2_right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "P4-Source2"
+            "pathName": "P3-Source2"
           }
         },
         {
