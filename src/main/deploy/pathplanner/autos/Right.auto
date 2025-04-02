@@ -5,19 +5,25 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "move_to_L4"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "foundTag2"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "Start-P3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag2_right"
                 }
               }
             ]
@@ -107,6 +113,12 @@
           "type": "path",
           "data": {
             "pathName": "P5-Source2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_backward"
           }
         }
       ]

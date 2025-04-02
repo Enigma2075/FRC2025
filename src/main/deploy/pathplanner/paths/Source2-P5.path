@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 0.85
+        "x": 1.467375,
+        "y": 0.8757499999999994
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.15311340190269,
-        "y": 1.5612675486384213
+        "x": 2.2204884019026903,
+        "y": 1.5870175486384208
       },
       "isLocked": false,
       "linkedName": "Source2"
@@ -28,7 +28,12 @@
       "linkedName": "P5"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 75.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -46,7 +51,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.25,
+    "maxAcceleration": 3.1,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,

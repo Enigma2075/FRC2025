@@ -193,7 +193,7 @@ public class Vision extends SubsystemIO {
 
       double degrees = Double.MIN_VALUE;
       for (var tag : targetTags) {
-        if (tag.id() == reefInput.targetId) {
+        if (tag.id() == reefInput.targetId && (tag.id() == priorityId || priorityId == -1)) {
           degrees = tag.degrees();
           targetConsumer.accept(new Pose2d(reefPose.getZ(), reefPose.getX(), Rotation2d.fromDegrees(degrees)));
           break;
