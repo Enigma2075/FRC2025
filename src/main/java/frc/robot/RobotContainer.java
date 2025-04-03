@@ -476,7 +476,7 @@ public class RobotContainer {
     public boolean closeToTarget(ReefSides side) {
         var error = getError(side);
         //var distance = Math.sqrt((error.getX()*error.getX())  + (error.getY()*error.getY()));
-        return Math.abs(error.getX()) < .15;
+        return Math.abs(error.getX()) < .10;
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
@@ -517,9 +517,9 @@ public class RobotContainer {
 
             return driveRobotCentric
             // TX = Front/Back
-            .withVelocityX(-xVel * (MaxSpeed/5.0))
+            .withVelocityX(-xVel * (MaxSpeed/4.0))
             // TY = Left/Right
-            .withVelocityY(yVel * (MaxSpeed/5.0))
+            .withVelocityY(yVel * (MaxSpeed/4.0))
             .withTargetDirection(robotPoseInTargetSpace.getRotation());
         }
         ).finallyDo(() -> waitForPosition = false);
