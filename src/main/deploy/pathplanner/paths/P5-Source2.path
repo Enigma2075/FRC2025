@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.79910729982815,
-        "y": 1.9554534715291734
+        "x": 3.10533981707035,
+        "y": 2.0212833891248634
       },
       "isLocked": false,
       "linkedName": "P5"
     },
     {
       "anchor": {
-        "x": 1.467375,
-        "y": 0.8757499999999994
+        "x": 1.6810801630434784,
+        "y": 0.7313943614130426
       },
       "prevControl": {
-        "x": 2.437047499901431,
-        "y": 1.6131616936226476
+        "x": 2.9134522768703386,
+        "y": 1.8227691920052287
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,24 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 75.0
+      "rotationDegrees": 65.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.47856806406029306,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 220.0,
+        "maxAngularAcceleration": 220.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -51,7 +65,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.1,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,

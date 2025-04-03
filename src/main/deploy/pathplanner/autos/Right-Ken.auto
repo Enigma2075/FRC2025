@@ -1,0 +1,118 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag2_left"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start-P4-Ken"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake2_left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P4-Source2-Ken"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_backward"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-P6-Ken"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag3_left"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake3_left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P6-Source2-Ken"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drive_backward"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-P5-Ken"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag3_right"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake3_right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P5-Source2-Ken"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
