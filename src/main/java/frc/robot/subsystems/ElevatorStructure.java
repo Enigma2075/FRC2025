@@ -332,7 +332,7 @@ public class ElevatorStructure extends SubsystemIO {
                 timeout = 1;
             }
             else {
-            m_Claw.setCoralMode(CoralModes.OUTTAKE);
+                m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
 
             if(m_NextCommand != null) {
