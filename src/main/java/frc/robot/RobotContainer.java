@@ -438,14 +438,14 @@ public class RobotContainer {
         //7 C - 
         //left
         var goalX = .44;
-        var goalY = .17;
+        var goalY = .19;
         if(side == ReefSides.RIGHT) {
             goalX = .44;
-            goalY = -.15;    
+            goalY = -.14;    
         }
         else if(side == ReefSides.CENTER) {
             goalX = .44;
-            goalY = .13;
+            goalY = .12;
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());

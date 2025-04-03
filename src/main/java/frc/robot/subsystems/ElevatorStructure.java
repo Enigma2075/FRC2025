@@ -238,7 +238,15 @@ public class ElevatorStructure extends SubsystemIO {
                 cmd = runOnce(() -> m_Elevator.setOverrideVelocity(false)).andThen(cmd);
             }
             return cmd;
+        })
+        .finallyDo(()-> {
+            m_CoralPositionPressed = false;
         });
+    }
+
+    public void clearPress(){
+        m_CoralPositionPressed = false;
+        m_AlgaePositionPressed = false;
     }
 
     public Command moveToL4Command() {

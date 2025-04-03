@@ -121,6 +121,7 @@ public class Robot extends TimedRobot {
     RobotContainer.elevator.setOverrideVelocity(false);
 
     RobotContainer.vision.clearPriorityId();
+    RobotContainer.elevatorStructure.clearPress();
 
     if (hasAutoRun == false) {
         hasAutoRun = true;
