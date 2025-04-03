@@ -164,6 +164,7 @@ public class RobotContainer {
         autoChooser.addOption("RotationTest", drivetrain.getAutoPath("RotationTest"));
         autoChooser.addOption("test1", drivetrain.getAutoPath("Test1"));
         autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
+        autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);

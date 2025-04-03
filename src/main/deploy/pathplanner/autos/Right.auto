@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "move_to_L4"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [

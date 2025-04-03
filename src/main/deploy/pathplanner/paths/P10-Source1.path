@@ -8,33 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2086091265376533,
-        "y": 5.786382974234923
+        "x": 3.1388658530171303,
+        "y": 5.968596038682597
       },
       "isLocked": false,
       "linkedName": "P10"
     },
     {
       "anchor": {
-        "x": 1.25,
-        "y": 7.05
+        "x": 1.6512737771739134,
+        "y": 7.282837975543478
       },
       "prevControl": {
-        "x": 1.9759869533828378,
-        "y": 6.561038998040429
+        "x": 1.9412157888383113,
+        "y": 7.0553187853173585
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Source1"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -50.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 220.0,
+        "maxAngularAcceleration": 220.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.49,
+      "waypointRelativePos": 0.3046357615894054,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -60,7 +79,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -60.976
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }
