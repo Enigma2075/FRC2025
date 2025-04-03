@@ -50,7 +50,8 @@ public class Vision extends SubsystemIO {
         new VisionLL(VisionConstant.kFrontRightLLName, rotationSupplier, this::getPriorityId),
         new VisionLL(VisionConstant.kFrontLeftLLName, rotationSupplier, this::getPriorityId),
         new VisionLL(VisionConstant.kBackRightLLName, rotationSupplier, this::getPriorityId),
-        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId)
+        new VisionLL(VisionConstant.kBackLeftLLName, rotationSupplier, this::getPriorityId),
+        new VisionLL(VisionConstant.kFrontMiddleLLName, rotationSupplier, this::getPriorityId)
     };
 
     // Initialize inputs
