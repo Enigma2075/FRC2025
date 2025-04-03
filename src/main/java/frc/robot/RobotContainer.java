@@ -425,7 +425,12 @@ public class RobotContainer {
     public boolean isAtPosition(ReefSides side) {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .03 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
-            return true;
+            var speeds = drivetrain.getState().Speeds;
+            if(speeds.vxMetersPerSecond < .2 && speeds.vyMetersPerSecond < .2 && speeds.omegaRadiansPerSecond < .1){
+                return true;
+            }
+            else 
+                return false;
         }
         else{
             return false;
@@ -475,7 +480,14 @@ public class RobotContainer {
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
-        return driveToTarget(side).until(() -> isAtPositionAuto(side)).withTimeout(1.0);
+        return driveToTarget(side).until(() -> isAtPositionAuto(side)).andThen(drivetrain.applyRequest(()->{
+            return driveRobotCentric
+            // TX = Front/Back
+            .withVelocityX(0)
+            // TY = Left/Right
+            .withVelocityY(0)
+            .withTargetDirection(robotPoseInTargetSpace.getRotation());
+        })).withTimeout(1.5);
     }
 
     public Command driveToTarget(ReefSides side) {//, double angle) {
