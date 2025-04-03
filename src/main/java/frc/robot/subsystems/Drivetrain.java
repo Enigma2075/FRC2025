@@ -202,6 +202,11 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         configurePathPlanner();
     }
 
+    public Command applyRequestOnce(Supplier<SwerveRequest> requestSupplier) {
+        return runOnce(() -> this.setControl(requestSupplier.get()));
+    }
+
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *

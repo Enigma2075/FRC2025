@@ -335,9 +335,9 @@ public class RobotContainer {
         // Intake Algae based on position
         driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
 
-        driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT))).onFalse(vision.clearPriorityId());
-        driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT))).onFalse(vision.clearPriorityId());
-        driver.povDown().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.CENTER))).onFalse(vision.clearPriorityId());
+        driver.y().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.LEFT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
+        driver.x().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.RIGHT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
+        driver.povDown().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.CENTER)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
         
         //driver.y().whileTrue(driveBackwardCommand());
         
@@ -480,7 +480,7 @@ public class RobotContainer {
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
-        return driveToTarget(side).until(() -> isAtPositionAuto(side)).andThen(drivetrain.applyRequest(()->{
+        return driveToTarget(side).until(() -> isAtPositionAuto(side)).andThen(drivetrain.applyRequestOnce(()->{
             return driveRobotCentric
             // TX = Front/Back
             .withVelocityX(0)
@@ -494,9 +494,14 @@ public class RobotContainer {
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
+            if(robotPoseInTargetSpace.getX() == 0 && robotPoseInTargetSpace.getY() == 0 && robotPoseInTargetSpace.getRotation().getDegrees() == 0) {
+                // If the robot pose is not initialized yet, don't try to align
+                return driveRobotCentric1.withVelocityX(0).withVelocityY(0).withRotationalRate(0);
+            }
+            
             currentReefSide = side;
             waitForPosition = true;
-
+            
             // LEFT
             var errorPose = getError(side);
 

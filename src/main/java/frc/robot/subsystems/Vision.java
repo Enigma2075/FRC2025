@@ -192,6 +192,9 @@ public class Vision extends SubsystemIO {
         targetTags = VisionConstant.redTagTargets;
       }
 
+      SmartDashboard.putNumber("Vision/priorityID", priorityId);
+      SignalLogger.writeInteger("Vision/priorityID", priorityId);
+
       double degrees = Double.MIN_VALUE;
       for (var tag : targetTags) {
         if (tag.id() == reefInput.targetId && (tag.id() == priorityId || priorityId == -1)) {
@@ -365,9 +368,14 @@ public class Vision extends SubsystemIO {
     });
   }
 
-  public Command clearPriorityId() {
+  public Command clearPriorityIdCommand() {
     return runOnce(() -> {
-      priorityId = -1;
+      clearPriorityId();
     });
+  }
+
+  public void clearPriorityId() {
+    
+      priorityId = -1;
   }
 }
