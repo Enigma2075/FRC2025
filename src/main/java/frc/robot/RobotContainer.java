@@ -424,7 +424,7 @@ public class RobotContainer {
 
     public boolean isAtPosition(ReefSides side) {
         var errorPose = getError(side);
-        if(Math.abs(errorPose.getX()) < .03 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
+        if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
             var speeds = drivetrain.getState().Speeds;
             if(speeds.vxMetersPerSecond < .2 && speeds.vyMetersPerSecond < .2 && speeds.omegaRadiansPerSecond < .1){
                 return true;
@@ -476,7 +476,7 @@ public class RobotContainer {
     public boolean closeToTarget(ReefSides side) {
         var error = getError(side);
         //var distance = Math.sqrt((error.getX()*error.getX())  + (error.getY()*error.getY()));
-        return Math.abs(error.getX()) < .25;
+        return Math.abs(error.getX()) < .15;
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
@@ -505,8 +505,8 @@ public class RobotContainer {
             // LEFT
             var errorPose = getError(side);
 
-            var xOutput = errorPose.getX()* 5.0;
-            var yOutput = errorPose.getY()* 5.0;
+            var xOutput = errorPose.getX()* 4.0;
+            var yOutput = errorPose.getY()* 4.0;
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);

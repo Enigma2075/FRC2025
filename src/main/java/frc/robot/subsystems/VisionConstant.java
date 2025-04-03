@@ -20,6 +20,8 @@ public class VisionConstant {
         public static final String kFrontLeftLLName = Utils.getValue("limelight-terry", "limelight-sabrina");
         public static final String kBackRightLLName = Utils.getValue("limelight-john", "limelight-sza");
         public static final String kBackLeftLLName = Utils.getValue("limelight-kevin", "limelight-nicki");
+        public static final String kFrontMiddleLLName = Utils.getValue("he", "limelight-justin");
+
 
         // Robot to camera transforms
         // (Not used by Limelight, configure in web UI instead)
@@ -41,7 +43,8 @@ public class VisionConstant {
                         1.0, // Camera 0
                         1.0, // Camera 1
                         1.0, // Camera 2
-                        1.0 // Camera 3
+                        1.0, // Camera 3
+                        1.0 // Camera 4
         };
 
         // Multipliers to apply for MegaTag 2 observations
