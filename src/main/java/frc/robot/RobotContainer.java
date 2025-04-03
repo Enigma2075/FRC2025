@@ -119,7 +119,8 @@ public class RobotContainer {
         driveRobotCentric.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
-        NamedCommands.registerCommand("drive_backward", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand()).until(() -> claw.hasCoral()).withTimeout(2));
+        NamedCommands.registerCommand("drive_backward_right", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(true)).until(() -> claw.hasCoral()).withTimeout(2));
+        NamedCommands.registerCommand("drive_backward_left", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(false)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command(true));
         
         NamedCommands.registerCommand("foundTag1", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
@@ -334,9 +335,9 @@ public class RobotContainer {
         // Intake Algae based on position
         driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
 
-        driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT)));
-        driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT)));
-        driver.povDown().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.CENTER)));
+        driver.y().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.LEFT))).onFalse(vision.clearPriorityId());
+        driver.x().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.RIGHT))).onFalse(vision.clearPriorityId());
+        driver.povDown().whileTrue(vision.setPriorityId().alongWith(driveToTarget(ReefSides.CENTER))).onFalse(vision.clearPriorityId());
         
         //driver.y().whileTrue(driveBackwardCommand());
         
@@ -390,9 +391,12 @@ public class RobotContainer {
         return priorityId;
     }
     
-    public Command driveBackwardCommand() {
+    public Command driveBackwardCommand(boolean right) {
         return drivetrain.applyRequest(() -> {
             var rotation = Rotation2d.fromDegrees(55);
+            if(!right){
+                rotation = Rotation2d.fromDegrees(-55);
+            }
             return driveRobotCentric
             // TX = Front/Back
             .withVelocityX(-.15 * (MaxSpeed))
@@ -433,14 +437,14 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = .43;
+        var goalX = .44;
         var goalY = .17;
         if(side == ReefSides.RIGHT) {
-            goalX = .43;
+            goalX = .44;
             goalY = -.15;    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = .43;
+            goalX = .44;
             goalY = .13;
         }
         
@@ -484,8 +488,8 @@ public class RobotContainer {
             // LEFT
             var errorPose = getError(side);
 
-            var xOutput = errorPose.getX()* 4.0;
-            var yOutput = errorPose.getY()* 4.0;
+            var xOutput = errorPose.getX()* 5.0;
+            var yOutput = errorPose.getY()* 5.0;
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
             double xVel = MathUtil.clamp(xOutput, -1, 1);

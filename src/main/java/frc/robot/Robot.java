@@ -120,6 +120,8 @@ public class Robot extends TimedRobot {
     //RobotContainer.logger.start();
     RobotContainer.elevator.setOverrideVelocity(false);
 
+    RobotContainer.vision.clearPriorityId();
+
     if (hasAutoRun == false) {
         hasAutoRun = true;
       if (AllianceColor.get() == Alliance.Blue) {

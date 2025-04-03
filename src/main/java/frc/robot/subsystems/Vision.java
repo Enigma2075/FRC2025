@@ -363,4 +363,10 @@ public class Vision extends SubsystemIO {
       priorityId = currentTargetId;
     });
   }
+
+  public Command clearPriorityId() {
+    return runOnce(() -> {
+      priorityId = -1;
+    });
+  }
 }
