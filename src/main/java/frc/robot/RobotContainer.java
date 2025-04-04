@@ -23,6 +23,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -395,8 +396,13 @@ public class RobotContainer {
 
     public boolean isAtPositionAuto(ReefSides side) {
         var errorPose = getError(side);
-        if(Math.abs(errorPose.getX()) < .08 && Math.abs(errorPose.getY()) < .08 && Math.abs(errorPose.getRotation().getDegrees()) < 6){
-            return true;
+        if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
+            var speeds = drivetrain.getState().Speeds;
+            if(speeds.vxMetersPerSecond < .1 && speeds.vyMetersPerSecond < .1 && speeds.omegaRadiansPerSecond < .1){
+                return true;
+            }
+            else 
+                return false;
         }
         else{
             return false;
@@ -407,7 +413,7 @@ public class RobotContainer {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
             var speeds = drivetrain.getState().Speeds;
-            if(speeds.vxMetersPerSecond < .2 && speeds.vyMetersPerSecond < .2 && speeds.omegaRadiansPerSecond < .1){
+            if(speeds.vxMetersPerSecond < .12 && speeds.vyMetersPerSecond < .12 && speeds.omegaRadiansPerSecond < .1){
                 return true;
             }
             else 
@@ -457,7 +463,7 @@ public class RobotContainer {
     public boolean closeToTarget(ReefSides side) {
         var error = getError(side);
         //var distance = Math.sqrt((error.getX()*error.getX())  + (error.getY()*error.getY()));
-        return Math.abs(error.getX()) < .10;
+        return Math.abs(error.getX()) < .20;
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
@@ -491,6 +497,7 @@ public class RobotContainer {
             SmartDashboard.putNumber("Align/currentAngle", currentAngle);
             SignalLogger.writeDouble("Align/currentAngle", currentAngle);
 
+            
             if(targetAngle == 0 && (currentAngle > 30 || currentAngle < -30)) {
                  vision.clearPriorityId();
                 return defaultDrive().get();    
@@ -519,9 +526,11 @@ public class RobotContainer {
             
             var atPosition = isAtPosition(side);
             SmartDashboard.putBoolean("Align/atPosition", atPosition);
+            SmartDashboard.putBoolean("Align/atPositionAuto", isAtPositionAuto(side));
             SmartDashboard.putNumber("Align/xVel", xVel);
             SmartDashboard.putNumber("Align/yVel", yVel);
             SignalLogger.writeBoolean("Align/atPosition", atPosition);
+            SignalLogger.writeBoolean("Align/atPositionAuto", isAtPositionAuto(side));
             SignalLogger.writeDouble("Align/xVel", xVel);
             SignalLogger.writeDouble("Align/yVel", yVel);
 
