@@ -499,7 +499,7 @@ public class RobotContainer {
                 vision.clearPriorityId();
                 return defaultDrive().get();    
             }
-            else if(Math.abs(targetAngle - currentAngle) > 30) {
+            else if(targetAngle != 0 && targetAngle != 180 && Math.abs(targetAngle - currentAngle) > 30) {
                 vision.clearPriorityId();
                 return defaultDrive().get();
             }
@@ -511,7 +511,7 @@ public class RobotContainer {
             // LEFT
             var errorPose = getError(side);
 
-            var xOutput = errorPose.getX()* 4.0;
+            var xOutput = errorPose.getX()* 5.0;
             var yOutput = errorPose.getY()* 4.0;
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
