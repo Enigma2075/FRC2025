@@ -398,7 +398,7 @@ public class RobotContainer {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
             var speeds = drivetrain.getState().Speeds;
-            if(speeds.vxMetersPerSecond < .1 && speeds.vyMetersPerSecond < .1 && speeds.omegaRadiansPerSecond < .1){
+            if(speeds.vxMetersPerSecond < .075 && speeds.vyMetersPerSecond < .075 && speeds.omegaRadiansPerSecond < .1){
                 return true;
             }
             else 
