@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
@@ -196,28 +198,7 @@ public class RobotContainer {
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-                // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> {
-                    if (RobotState.isClimbing) {
-                        return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
-                                                                                                   // negative Y
-                                                                                                   // (forward)
-                                .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X
-                                                                                        // (left)
-                                .withTargetDirection(Rotation2d.kCCW_90deg);
-                    }
-
-                    calculateMaxSpeed();
-
-                    return drive.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with negative Y
-                                                                                        // (forward)
-                            .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
-                            .withRotationalRate(-applyExpo(driver.getRightX()) * CalculatedMaxAngularRate); // Drive
-                                                                                                 // counterclockwise
-                                                                                                 // with negative X
-                                                                                                 // (left)
-                }));
+        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> {return defaultDrive().get();}));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -333,7 +314,7 @@ public class RobotContainer {
                 .onFalse(intake.setStateCommand(States.DEFAULT));
         
         // Intake Algae based on position
-        driver.a().onTrue(elevatorStructure.intakeAlgaeCommand());
+        driver.a().and(() -> claw.hasAlgae()).onTrue(elevatorStructure.intakeAlgaeCommand());
 
         driver.y().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.LEFT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
         driver.x().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.RIGHT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
@@ -342,7 +323,7 @@ public class RobotContainer {
         //driver.y().whileTrue(driveBackwardCommand());
         
         // Score Algage
-        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(elevatorStructure.moveToEndBargeCommand());
+        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(Commands.either(elevatorStructure.moveToEndBargeCommand(), Commands.none(), () -> elevator.getHeight() > 50));
 
 
         // Score Coral
@@ -496,9 +477,34 @@ public class RobotContainer {
         return drivetrain.applyRequest(() -> {
             if(robotPoseInTargetSpace.getX() == 0 && robotPoseInTargetSpace.getY() == 0 && robotPoseInTargetSpace.getRotation().getDegrees() == 0) {
                 // If the robot pose is not initialized yet, don't try to align
-                return driveRobotCentric1.withVelocityX(0).withVelocityY(0).withRotationalRate(0);
+                vision.clearPriorityId();
+                return defaultDrive().get();
             }
-            
+
+             var targetAngle = robotPoseInTargetSpace.getRotation().getDegrees();
+             var currentAngle = drivetrain.getState().Pose.getRotation().getDegrees();
+          
+            if(Robot.AllianceColor.get() == Alliance.Red) {
+                currentAngle = drivetrain.getState().Pose.getRotation().rotateBy(Rotation2d.k180deg).getDegrees();
+            }
+
+            SmartDashboard.putNumber("Align/currentAngle", currentAngle);
+            SignalLogger.writeDouble("Align/currentAngle", currentAngle);
+
+            if(targetAngle == 0 && (currentAngle > 30 || currentAngle < -30)) {
+                 vision.clearPriorityId();
+                return defaultDrive().get();    
+            }
+            else if(targetAngle == 180 && (currentAngle < 150 && currentAngle > -150)) {
+                vision.clearPriorityId();
+                return defaultDrive().get();    
+            }
+            else if(Math.abs(targetAngle - currentAngle) > 30) {
+                vision.clearPriorityId();
+                return defaultDrive().get();
+            }
+          
+          
             currentReefSide = side;
             waitForPosition = true;
             
@@ -663,5 +669,29 @@ public class RobotContainer {
             }
             vision.setAprilTagFilter(VisionConstant.redReefTagIds);
         }
+    }
+
+    public Supplier<SwerveRequest> defaultDrive() {
+                      // Drivetrain will execute this command periodically
+                      return () -> {
+                        if (RobotState.isClimbing) {
+                            return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
+                                                                                                       // negative Y
+                                                                                                       // (forward)
+                                    .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X
+                                                                                            // (left)
+                                    .withTargetDirection(Rotation2d.kCCW_90deg);
+                        }
+    
+                        calculateMaxSpeed();
+    
+                        return drive.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with negative Y
+                                                                                            // (forward)
+                                .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
+                                .withRotationalRate(-applyExpo(driver.getRightX()) * CalculatedMaxAngularRate); // Drive
+                                                                                                     // counterclockwise
+                                                                                                     // with negative X
+                                                                                                     // (left)
+                    };
     }
 }

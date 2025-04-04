@@ -70,7 +70,7 @@ public class VisionConstant {
                         new TagTarget(8, 60.0),
                         new TagTarget(9, 120.0),
                         new TagTarget(10, 180.0),
-                        new TagTarget(11, -1200.0)
+                        new TagTarget(11, -120.0)
         };
 
         public static double[] blueReefTagIds = java.util.Arrays.stream(blueTagTargets)
