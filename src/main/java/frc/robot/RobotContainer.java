@@ -518,7 +518,7 @@ public class RobotContainer {
             // LEFT
             var errorPose = getError(side);
 
-            var xOutput = errorPose.getX()* 5.0;
+            var xOutput = errorPose.getX()* 4.0;
             var yOutput = errorPose.getY()* 4.0;
 
             double yVel = MathUtil.clamp(yOutput, -1, 1);
@@ -537,9 +537,9 @@ public class RobotContainer {
 
             return driveRobotCentric
             // TX = Front/Back
-            .withVelocityX(-xVel * (MaxSpeed/4.0))
+            .withVelocityX(-xVel * (MaxSpeed/5.0))
             // TY = Left/Right
-            .withVelocityY(yVel * (MaxSpeed/4.0))
+            .withVelocityY(yVel * (MaxSpeed/5.0))
             .withTargetDirection(robotPoseInTargetSpace.getRotation());
         }
         ).finallyDo(() -> waitForPosition = false);
