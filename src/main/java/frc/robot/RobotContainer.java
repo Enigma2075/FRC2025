@@ -248,6 +248,7 @@ public class RobotContainer {
                 .onTrue(
                     elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
                             .andThen(intake.setStateCommand(States.HANDOFFALGAE)
+                            .andThen(Commands.waitSeconds(.1))
                             .andThen(elevatorStructure.pickupAlgaeCommand()))
                 )
                 .onFalse(intake.setStateCommand(States.DEFAULT));
@@ -324,7 +325,7 @@ public class RobotContainer {
         //driver.y().whileTrue(driveBackwardCommand());
         
         // Score Algage
-        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(Commands.either(elevatorStructure.moveToEndBargeCommand(), Commands.none(), () -> elevator.getHeight() > 50));
+        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(Commands.either(elevatorStructure.moveToEndBargeCommand(), elevatorStructure.moveToStartingCommand(), () -> elevator.getHeight() > 50));
 
 
         // Score Coral
@@ -398,7 +399,7 @@ public class RobotContainer {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
             var speeds = drivetrain.getState().Speeds;
-            if(speeds.vxMetersPerSecond < .075 && speeds.vyMetersPerSecond < .075 && speeds.omegaRadiansPerSecond < .1){
+            if(Math.abs(speeds.vxMetersPerSecond) < .075 && Math.abs(speeds.vyMetersPerSecond) < .075 && Math.abs(speeds.omegaRadiansPerSecond) < .1){
                 return true;
             }
             else 
@@ -413,7 +414,7 @@ public class RobotContainer {
         var errorPose = getError(side);
         if(Math.abs(errorPose.getX()) < .04 && Math.abs(errorPose.getY()) < .04 && Math.abs(errorPose.getRotation().getDegrees()) < 3){
             var speeds = drivetrain.getState().Speeds;
-            if(speeds.vxMetersPerSecond < .12 && speeds.vyMetersPerSecond < .12 && speeds.omegaRadiansPerSecond < .1){
+            if(Math.abs(speeds.vxMetersPerSecond) < .1 && Math.abs(speeds.vyMetersPerSecond) < .1 && Math.abs(speeds.omegaRadiansPerSecond) < .1){
                 return true;
             }
             else 
@@ -433,7 +434,7 @@ public class RobotContainer {
         var goalY = .19;
         if(side == ReefSides.RIGHT) {
             goalX = .44;
-            goalY = -.14;    
+            goalY = -.16;    
         }
         else if(side == ReefSides.CENTER) {
             goalX = .44;
