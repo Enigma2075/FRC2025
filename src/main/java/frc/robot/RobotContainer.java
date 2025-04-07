@@ -318,9 +318,9 @@ public class RobotContainer {
         // Intake Algae based on position
         driver.a().and(() -> claw.hasAlgae()).onTrue(elevatorStructure.intakeAlgaeCommand());
 
-        driver.y().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.LEFT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
-        driver.x().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.RIGHT)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
-        driver.povDown().whileTrue(vision.setPriorityId().andThen(driveToTarget(ReefSides.CENTER)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
+        driver.y().whileTrue(vision.setPriorityIdCommand().andThen(driveToTarget(ReefSides.LEFT, false)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
+        driver.x().whileTrue(vision.setPriorityIdCommand().andThen(driveToTarget(ReefSides.RIGHT, false)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
+        driver.povDown().whileTrue(vision.setPriorityIdCommand().andThen(driveToTarget(ReefSides.CENTER, false)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
         
         //driver.y().whileTrue(driveBackwardCommand());
         
@@ -430,14 +430,14 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = .44;
+        var goalX = .43;
         var goalY = .19;
         if(side == ReefSides.RIGHT) {
-            goalX = .44;
+            goalX = .43;
             goalY = -.16;    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = .44;
+            goalX = .43;
             goalY = .12;
         }
         
@@ -468,7 +468,7 @@ public class RobotContainer {
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {
-        return driveToTarget(side).until(() -> isAtPositionAuto(side)).andThen(drivetrain.applyRequestOnce(()->{
+        return driveToTarget(side, true).until(() -> isAtPositionAuto(side)).andThen(drivetrain.applyRequestOnce(()->{
             return driveRobotCentric
             // TX = Front/Back
             .withVelocityX(0)
@@ -478,13 +478,16 @@ public class RobotContainer {
         })).withTimeout(1.5);
     }
 
-    public Command driveToTarget(ReefSides side) {//, double angle) {
+    public Command driveToTarget(ReefSides side, boolean isAuto) {//, double angle) {
         // 82 X
         // 56.2 Y
         return drivetrain.applyRequest(() -> {
             if(robotPoseInTargetSpace.getX() == 0 && robotPoseInTargetSpace.getY() == 0 && robotPoseInTargetSpace.getRotation().getDegrees() == 0) {
                 // If the robot pose is not initialized yet, don't try to align
                 vision.clearPriorityId();
+                if(!isAuto){
+                    vision.setPriorityId();
+                }
                 return defaultDrive().get();
             }
 
@@ -500,18 +503,26 @@ public class RobotContainer {
 
             
             if(targetAngle == 0 && (currentAngle > 30 || currentAngle < -30)) {
-                 vision.clearPriorityId();
+                vision.clearPriorityId();
+                if(!isAuto){
+                    vision.setPriorityId();
+                }
                 return defaultDrive().get();    
             }
             else if(targetAngle == 180 && (currentAngle < 150 && currentAngle > -150)) {
                 vision.clearPriorityId();
+                if(!isAuto){
+                    vision.setPriorityId();
+                }
                 return defaultDrive().get();    
             }
             else if(targetAngle != 0 && targetAngle != 180 && Math.abs(targetAngle - currentAngle) > 30) {
                 vision.clearPriorityId();
+                if(!isAuto){
+                    vision.setPriorityId();
+                }
                 return defaultDrive().get();
             }
-          
           
             currentReefSide = side;
             waitForPosition = true;

@@ -37,7 +37,7 @@ public class ElevatorStructure extends SubsystemIO {
     
     public static final ElevatorStructurePosition StoreAlgae = new ElevatorStructurePosition(10, 105, -100, "StoreAlgae");
     
-    public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7.5, 93, -132, "GrabAlgae");
+    public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7.5, 94, -134, "GrabAlgae");
     public static final ElevatorStructurePosition GrabAlgaeHeight = new ElevatorStructurePosition(12, 90, 100, "GrabAlgaeHeight");
     public static final ElevatorStructurePosition GrabAlgaeRotate = new ElevatorStructurePosition(12, 90, -83, "GrabAlgaeRotate");
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
