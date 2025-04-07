@@ -20,7 +20,7 @@ public class VisionConstant {
         public static final String kFrontLeftLLName = Utils.getValue("limelight-terry", "limelight-sabrina");
         public static final String kBackRightLLName = Utils.getValue("limelight-john", "limelight-sza");
         public static final String kBackLeftLLName = Utils.getValue("limelight-kevin", "limelight-nicki");
-        public static final String kFrontMiddleLLName = Utils.getValue("he", "limelight-justin");
+        public static final String kFrontMiddleLLName = Utils.getValue("limelight-rihanna", "limelight-justin");
 
 
         // Robot to camera transforms
