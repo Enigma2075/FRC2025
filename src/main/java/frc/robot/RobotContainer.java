@@ -337,9 +337,9 @@ public class RobotContainer {
         // Align based on current angle to reef
         driver.b().whileTrue(drivetrain.applyRequest(() -> {
             calculateMaxSpeed();
-            var rotation = Rotation2d.k180deg;
+            var rotation = Rotation2d.kZero;
             if(getAllianceSide() == Alliance.Red) {
-                rotation = Rotation2d.kZero;
+                rotation = Rotation2d.k180deg;
             }
             
             return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
