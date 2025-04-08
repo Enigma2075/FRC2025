@@ -41,6 +41,7 @@ import frc.robot.subsystems.RobotConstants;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.VisionConstant;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.Utils;
 import frc.robot.subsystems.Climb.State;
 import frc.robot.subsystems.Intake.States;
 import frc.robot.subsystems.Arm;
@@ -430,15 +431,15 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = .43;
-        var goalY = .19;
+        var goalX = Utils.getValue(.41, .43);
+        var goalY = Utils.getValue(.14, .19);
         if(side == ReefSides.RIGHT) {
-            goalX = .43;
-            goalY = -.16;    
+            goalX = Utils.getValue(.41, .43);
+            goalY = Utils.getValue(-.13, -.16);    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = .43;
-            goalY = .12;
+            goalX = Utils.getValue(.41, .43);
+            goalY = Utils.getValue(.09, .12);
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());

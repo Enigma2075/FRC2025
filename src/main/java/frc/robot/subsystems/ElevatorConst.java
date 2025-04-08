@@ -20,7 +20,7 @@ public class ElevatorConst {
     public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;
     public static final double kRotationToInches = kSpoolCircumference / kGearRatio;
 
-    public static final double kErrorCorrectionRatio = (64.5 - Utils.getValue(59.93, 59.93)) / 64.5;
+    public static final double kErrorCorrectionRatio = (64.5 - Utils.getValue(57.5, 59.93)) / 64.5;
 
     public static final double kG = 0.41;
     public static final double kS = 0.094003;
