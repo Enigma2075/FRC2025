@@ -18,6 +18,7 @@ import frc.robot.subsystems.Claw.AlgaeModes;
 import frc.robot.subsystems.Claw.CoralModes;
 import frc.robot.subsystems.states.ElevatorStructurePosition;
 import frc.robot.subsystems.states.ElevatorStructurePositionSequence;
+import frc.robot.util.Utils;
 
 public class ElevatorStructure extends SubsystemIO {
     // Intake physical position 35 high, 5.5 away from wall.
@@ -46,7 +47,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition BargeRearEnd = new ElevatorStructurePosition(30, 85, 40, "BargeBackEnd");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
-    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(15.5, 73, 137, "IntakeCoralRear");
+    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(18, 15.5), 73, 137, "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
     public static final ElevatorStructurePosition IntakeCoralFrontEnd = new ElevatorStructurePosition(15, 90, 100, "IntakeCoralFrontEnd");
     
