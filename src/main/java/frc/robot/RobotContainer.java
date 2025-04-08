@@ -101,7 +101,7 @@ public class RobotContainer {
     public final ElevatorStructure elevatorStructure = new ElevatorStructure(elevator, arm, wrist, claw, (state) -> intake.setStateCommand(state));
     
     public final Vision vision = new Vision(drivetrain::addVisionMeasurement,
-            () -> drivetrain.getState().Pose.getRotation(), this::updateReefPose, this::updateTargetPose);
+            () -> drivetrain.getState().Pose.getRotation(), this::getAllianceSide, this::updateReefPose, this::updateTargetPose);
 
     private int priorityId = 0;
 
@@ -335,12 +335,15 @@ public class RobotContainer {
         // Align based on current angle to reef
         driver.b().whileTrue(drivetrain.applyRequest(() -> {
             calculateMaxSpeed();
-            Rotation2d targetRotation = getRotationForReef(drivetrain.getState().Pose.getRotation());
-
+            var rotation = Rotation2d.k180deg;
+            if(getAllianceSide() == Alliance.Red) {
+                rotation = Rotation2d.kZero;
+            }
+            
             return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
                                                                                        // negative Y (forward)
                     .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
-                    .withTargetDirection(targetRotation);
+                    .withTargetDirection(rotation);
         }));
     }
 
@@ -570,8 +573,6 @@ public class RobotContainer {
     Rotation2d endRotationPosition;
 
     public Command rotationTestCommand() {
-
-
         return Commands.runOnce(() -> {
             startWheelPosition = drivetrain.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
             startRotationPosition = robotPoseInTargetSpace.getRotation();    
@@ -675,21 +676,18 @@ public class RobotContainer {
 
     public void updateAlliance(Alliance allianceColor) {
         vision.setIMUMode(0);
-        if (allianceColor == Alliance.Blue) {
-            if(!hasSetOrientation) {
-                //drivetrain.resetPose(new Pose2d(7.190, 2.120, Rotation2d.fromDegrees(180)));
-                //drivetrain.resetRotation(Rotation2d.fromDegrees(0));
-                hasSetOrientation = true;
-            }
-            vision.setAprilTagFilter(VisionConstant.blueReefTagIds);
-        }   
+        if(!hasSetOrientation) {
+            hasSetOrientation = true;
+        }
+        vision.setAprilTagFilter(VisionConstant.allReefTagIds);
+    }
+
+    public Alliance getAllianceSide() {
+        if(drivetrain.getState().Pose.getX() > 8.79) {
+            return Alliance.Red;
+        }
         else {
-            if(!hasSetOrientation) {
-                //drivetrain.resetPose(new Pose2d(10.36, 5.93, Rotation2d.fromDegrees(0)));
-                //drivetrain.resetRotation(Rotation2d.fromDegrees(180));
-                hasSetOrientation = true;
-            }
-            vision.setAprilTagFilter(VisionConstant.redReefTagIds);
+            return Alliance.Blue;
         }
     }
 

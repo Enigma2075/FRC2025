@@ -15,6 +15,8 @@ public class ElevatorConst {
 
     public static final double kMaxHeight = 67;
 
+    public static final double kMaxHeightValue = Utils.getValue(57.5, 59.93);
+    
     public static final double kGearRatio = 3.5;
     public static final double kSpoolRadius = 1.484/2.0;
     public static final double kSpoolCircumference = 2 * Math.PI * kSpoolRadius;

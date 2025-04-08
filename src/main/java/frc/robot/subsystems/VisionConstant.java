@@ -55,29 +55,40 @@ public class VisionConstant {
         public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
                         .loadField(AprilTagFields.k2025ReefscapeWelded);
 
-        public static TagTarget[] blueTagTargets = new TagTarget[] {
-                        new TagTarget(17, 60.0),
-                        new TagTarget(18, 0.0),
-                        new TagTarget(19, -60.0),
-                        new TagTarget(20, -120.0),
-                        new TagTarget(21, 180.0),
-                        new TagTarget(22, 120.0)
+        public static TagTarget[] allTagTargets = new TagTarget[] {
+                // BLUE
+                new TagTarget(17, 60.0),
+                new TagTarget(18, 0.0),
+                new TagTarget(19, -60.0),
+                new TagTarget(20, -120.0),
+                new TagTarget(21, 180.0),
+                new TagTarget(22, 120.0),
+                // RED
+                new TagTarget(6, -60.0),
+                new TagTarget(7, 0.0),
+                new TagTarget(8, 60.0),
+                new TagTarget(9, 120.0),
+                new TagTarget(10, 180.0),
+                new TagTarget(11, -120.0)
         };
+                
+        public static TagTarget[] blueTagTargets = (TagTarget[])(java.util.Arrays.stream(allTagTargets)
+                .filter(t -> t.id() >= 17)
+                .toArray());
 
-        public static TagTarget[] redTagTargets = new TagTarget[] {
-                        new TagTarget(6, -60.0),
-                        new TagTarget(7, 0.0),
-                        new TagTarget(8, 60.0),
-                        new TagTarget(9, 120.0),
-                        new TagTarget(10, 180.0),
-                        new TagTarget(11, -120.0)
-        };
+        public static TagTarget[] redTagTargets = (TagTarget[])(java.util.Arrays.stream(allTagTargets)
+                .filter(t -> t.id() <= 11)
+                .toArray());
 
         public static double[] blueReefTagIds = java.util.Arrays.stream(blueTagTargets)
-                        .mapToDouble(TagTarget::id)
-                        .toArray();
+                .mapToDouble(TagTarget::id)
+                .toArray();
 
         public static double[] redReefTagIds = java.util.Arrays.stream(redTagTargets)
-                        .mapToDouble(TagTarget::id)
-                        .toArray();
+                .mapToDouble(TagTarget::id)
+                .toArray();
+
+        public static double[] allReefTagIds = java.util.Arrays.stream(allTagTargets)
+                .mapToDouble(TagTarget::id)
+                .toArray();
 }

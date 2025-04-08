@@ -29,6 +29,7 @@ import frc.robot.util.Utils;
 public class Vision extends SubsystemIO {
   private final VisionConsumer consumer;
   private final Supplier<Rotation2d> rotationSupplier;
+  private final Supplier<Alliance> allianceSupplier;
   private final TargetPoseConsumer targetPoseConsumer;
   private final TargetConsumer targetConsumer;
 
@@ -40,10 +41,11 @@ public class Vision extends SubsystemIO {
   private final VisionLL.VisionIOInputs[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, TargetPoseConsumer targetPoseConsumer,
+  public Vision(VisionConsumer consumer, Supplier<Rotation2d> rotationSupplier, Supplier<Alliance> allianceSupplier, TargetPoseConsumer targetPoseConsumer,
       TargetConsumer targetConsumer) {
     this.consumer = consumer;
     this.rotationSupplier = rotationSupplier;
+    this.allianceSupplier = allianceSupplier;
     this.targetPoseConsumer = targetPoseConsumer;
     this.targetConsumer = targetConsumer;
     this.io = new VisionLL[] {
@@ -161,7 +163,7 @@ public class Vision extends SubsystemIO {
     List<VisionIOInputs> reefInputs = new LinkedList<>();
     for (int i = 0; i < 2 && i < inputs.length; i++) {
       double[] reefTags = VisionConstant.blueReefTagIds;
-      if(Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
+      if(allianceSupplier.get() == Alliance.Red) {
         reefTags = VisionConstant.redReefTagIds;
       }
     
@@ -188,7 +190,7 @@ public class Vision extends SubsystemIO {
       SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       
       var targetTags = VisionConstant.blueTagTargets;
-      if (Robot.AllianceColor.isPresent() && Robot.AllianceColor.get() == Alliance.Red) {
+      if (allianceSupplier.get() == Alliance.Red) {
         targetTags = VisionConstant.redTagTargets;
       }
 
