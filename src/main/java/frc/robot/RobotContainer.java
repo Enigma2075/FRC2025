@@ -128,6 +128,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command(true));
         
         NamedCommands.registerCommand("foundTag1", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
+        NamedCommands.registerCommand("foundTag1_center", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.CENTER))));
         NamedCommands.registerCommand("foundTag2_left", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag2_right", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
         NamedCommands.registerCommand("foundTag3_left", vision.setPriorityId(17, 8).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
@@ -170,6 +171,7 @@ public class RobotContainer {
         autoChooser.addOption("test1", drivetrain.getAutoPath("Test1"));
         autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
         autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
+        autoChooser.addOption("Ken", drivetrain.getAutoPath("Center"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -316,7 +318,7 @@ public class RobotContainer {
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
         
-        // Intake Algae based on position
+        // Intake Algae based on position reef
         driver.a().and(() -> claw.hasAlgae()).onTrue(elevatorStructure.intakeAlgaeCommand());
 
         driver.y().whileTrue(vision.setPriorityIdCommand().andThen(driveToTarget(ReefSides.LEFT, false)).finallyDo(() -> vision.clearPriorityId())).onFalse(vision.clearPriorityIdCommand());
