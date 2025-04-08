@@ -114,6 +114,31 @@
           "data": {
             "name": "drive_backward_right"
           }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source2-P4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag2_left"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake2_left"
+          }
         }
       ]
     }
