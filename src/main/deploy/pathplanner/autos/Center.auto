@@ -5,47 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag1"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterStart-P2"
-                }
-              }
-            ]
+            "pathName": "CenterStart-P2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "outtake1"
+            "name": "outtake1_left"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag1_center"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "move_to_algae"
-                }
-              }
-            ]
+            "name": "intakeAlgae1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae1-Barge1"
           }
         }
       ]

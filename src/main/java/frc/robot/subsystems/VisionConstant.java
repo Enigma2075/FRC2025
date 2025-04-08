@@ -72,13 +72,13 @@ public class VisionConstant {
                 new TagTarget(11, -120.0)
         };
                 
-        public static TagTarget[] blueTagTargets = (TagTarget[])(java.util.Arrays.stream(allTagTargets)
+        public static TagTarget[] blueTagTargets = java.util.Arrays.stream(allTagTargets)
                 .filter(t -> t.id() >= 17)
-                .toArray());
+                .toArray(TagTarget[]::new);
 
-        public static TagTarget[] redTagTargets = (TagTarget[])(java.util.Arrays.stream(allTagTargets)
+        public static TagTarget[] redTagTargets = java.util.Arrays.stream(allTagTargets)
                 .filter(t -> t.id() <= 11)
-                .toArray());
+                .toArray(TagTarget[]::new);
 
         public static double[] blueReefTagIds = java.util.Arrays.stream(blueTagTargets)
                 .mapToDouble(TagTarget::id)
