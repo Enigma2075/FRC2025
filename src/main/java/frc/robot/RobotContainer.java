@@ -138,7 +138,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("foundTag5_right", vision.setPriorityId(19, 6).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
         NamedCommands.registerCommand("foundTag6", vision.setPriorityId(20, 11).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         
-        NamedCommands.registerCommand("outtake1_left", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("outtake1_left", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralToAlgaeLowCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_left", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_right", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake3_left", vision.setPriorityId(17, 8).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
@@ -148,10 +148,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         
-        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.moveToAlgaeLowCommand()).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
 
         NamedCommands.registerCommand("move_to_low_algae", moveToAlgaeLowCommand());
-        NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
+        NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand());
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
         
         NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.outtakeAlgaeCommand()));
