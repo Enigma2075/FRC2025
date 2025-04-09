@@ -457,7 +457,7 @@ public class RobotContainer {
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());
         var yError = goalY - robotPoseInTargetSpace.getY();
         var robotRot = drivetrain.getState().Pose.getRotation();
-        if(Robot.AllianceColor.get() == Alliance.Red) {
+        if(getAllianceSide() == Alliance.Red) {
             robotRot = robotRot.rotateBy(Rotation2d.k180deg);
         }
 
@@ -507,7 +507,7 @@ public class RobotContainer {
              var targetAngle = robotPoseInTargetSpace.getRotation().getDegrees();
              var currentAngle = drivetrain.getState().Pose.getRotation().getDegrees();
           
-            if(Robot.AllianceColor.get() == Alliance.Red) {
+            if(getAllianceSide() == Alliance.Red) {
                 currentAngle = drivetrain.getState().Pose.getRotation().rotateBy(Rotation2d.k180deg).getDegrees();
             }
 
