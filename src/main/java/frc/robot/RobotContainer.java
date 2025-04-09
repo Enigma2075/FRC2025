@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -337,7 +338,8 @@ public class RobotContainer {
         //driver.y().whileTrue(driveBackwardCommand());
         
         // Score Algage
-        driver.rightTrigger().onTrue(elevatorStructure.outtakeAlgaeCommand()).onFalse(Commands.either(elevatorStructure.moveToEndBargeCommand(), elevatorStructure.moveToStartingCommand(), () -> elevator.getHeight() > 50));
+        driver.rightTrigger().onTrue(Commands.either(elevatorStructure.scoreBargeCommand(), elevatorStructure.outtakeAlgaeCommand(), () -> elevator.getHeight() > 50))
+            .onFalse(Commands.either(elevatorStructure.moveToEndBargeCommand(), elevatorStructure.moveToStartingCommand(), () -> elevator.getHeight() > 50));
 
 
         // Score Coral
@@ -350,8 +352,20 @@ public class RobotContainer {
             if(getAllianceSide() == Alliance.Red) {
                 rotation = Rotation2d.k180deg;
             }
+
+            var xVel = -applyExpo(driver.getLeftY()) * CalculatedMaxSpeed;
+            if(elevator.getHeight() > ElevatorStructure.BargeRear.ElevatorHeight - 10 && arm.seeBarge()) {
+                var xOutput = (arm.bargeError() / 100.0) * 4.0;
+                var tmpXVel = MathUtil.clamp(xOutput, -1, 1);
             
-            return driveAtAngle.withVelocityX(-applyExpo(driver.getLeftY()) * CalculatedMaxSpeed) // Drive forward with
+                xVel = tmpXVel * (MaxSpeed / 5.0);
+                if(arm.isAtBarge()) {
+                    CommandScheduler.getInstance().schedule(elevatorStructure.scoreBargeCommand());
+                }
+            }
+
+            
+            return driveAtAngle.withVelocityX(xVel) // Drive forward with
                                                                                        // negative Y (forward)
                     .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                     .withTargetDirection(rotation);
@@ -576,29 +590,29 @@ public class RobotContainer {
         ).finallyDo(() -> waitForPosition = false);
     }
 
-    public Command driveToBarge(){
-        return drivetrain.applyRequestOnce(()->{
-            boolean atBarge = arm.isAtBarge();
-            if(atBarge){
-                return driveRobotCentric
-                // TX = Front/Back
-                .withVelocityX(0)
-                // TY = Left/Right
-                .withVelocityY(0)
-                .withTargetDirection(robotPoseInTargetSpace.getRotation());
-            }
-            else{
-                //temporary values. 
-                return driveRobotCentric
-                // TX = Front/Back
-                .withVelocityX(0)
-                // TY = Left/Right
-                .withVelocityY(0)
-                .withTargetDirection(robotPoseInTargetSpace.getRotation());
-            }
+    // public Command driveToBarge(){
+    //     return drivetrain.applyRequestOnce(()->{
+    //         boolean atBarge = arm.isAtBarge();
+    //         if(atBarge){
+    //             return driveRobotCentric
+    //             // TX = Front/Back
+    //             .withVelocityX(0)
+    //             // TY = Left/Right
+    //             .withVelocityY(0)
+    //             .withTargetDirection(robotPoseInTargetSpace.getRotation());
+    //         }
+    //         else{
+    //             //temporary values. 
+    //             return driveRobotCentric
+    //             // TX = Front/Back
+    //             .withVelocityX(0)
+    //             // TY = Left/Right
+    //             .withVelocityY(0)
+    //             .withTargetDirection(robotPoseInTargetSpace.getRotation());
+    //         }
             
-        });
-    }
+    //     });
+    // }
 
     double startWheelPosition;
     double endWheelPosition;

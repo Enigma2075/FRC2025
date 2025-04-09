@@ -43,7 +43,8 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition GrabAlgaeRotate = new ElevatorStructurePosition(12, 90, -83, "GrabAlgaeRotate");
     public static final ElevatorStructurePosition GrabAlgaeRotateBoth = new ElevatorStructurePosition(12, 116, -83, "GrabAlgaeRotateBoth");
 
-    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 90, 40, "BargeBack");
+    public static final ElevatorStructurePosition BargeRear = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 90, 80, "BargeBack");
+    public static final ElevatorStructurePosition BargeRearScore = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 90, 40, "BargeBackScore");
     public static final ElevatorStructurePosition BargeRearEnd = new ElevatorStructurePosition(30, 85, 40, "BargeBackEnd");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
@@ -305,6 +306,10 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPositions(() -> {
             //m_Wrist.setOverrideVelocity(true); 
             m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, PickupAlgae, PickupAlgaeEnd);
+    }
+
+    public Command scoreBargeCommand() {
+        return moveToPosition(false, BargeRearScore).andThen(outtakeAlgaeCommand());
     }
 
     public Command outtakeAlgaeCommand() {

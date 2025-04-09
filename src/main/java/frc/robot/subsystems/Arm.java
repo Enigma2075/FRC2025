@@ -129,9 +129,9 @@ public class Arm extends SubsystemIO{
 
         bargeSensorConfig.FovParams.FOVCenterX = 0;
         bargeSensorConfig.FovParams.FOVCenterY = 0;
-        bargeSensorConfig.FovParams.FOVRangeX = 0;
-        bargeSensorConfig.FovParams.FOVRangeY = 0;
-        bargeSensorConfig.ProximityParams.ProximityThreshold = 0;
+        bargeSensorConfig.FovParams.FOVRangeX = 7;
+        bargeSensorConfig.FovParams.FOVRangeY = 7;
+        bargeSensorConfig.ProximityParams.ProximityThreshold = 1.5;
 
         m_BargeSensor.getConfigurator().apply(bargeSensorConfig);
     }
@@ -143,7 +143,10 @@ public class Arm extends SubsystemIO{
         public double CurrentAngle = 0;
         public double targetAngle = 0;
 
-        public double targetOutput = 0; ;
+        public double targetOutput = 0; 
+
+        public double distanceToBarge = 0;
+        public boolean seeBarge = false;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -175,8 +178,16 @@ public class Arm extends SubsystemIO{
         return Math.abs(error) < 5;
     }
 
+    public boolean seeBarge() {
+        return m_PeriodicIO.seeBarge;
+    }
+
+    public double bargeError() {
+        return m_PeriodicIO.distanceToBarge - 70;
+    }
+
     public boolean isAtBarge(){
-        return m_BargeSensor.getDistance().getValue().in(Centimeters) <10; //physical measurement = 
+        return seeBarge() && bargeError() <= 0; //physical measurement = 
     }
 
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
@@ -222,6 +233,8 @@ public class Arm extends SubsystemIO{
     @Override
     public void readPeriodicInputs(){
         m_PeriodicIO.CurrentAngle = convertPositionToAngle(m_Motor.getPosition().getValueAsDouble());
+        m_PeriodicIO.distanceToBarge = m_BargeSensor.getDistance().getValue().in(Centimeters);
+        m_PeriodicIO.seeBarge = m_BargeSensor.getIsDetected().getValue();
     }
 
     @Override
