@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.894672611377856,
-        "y": 3.148819495307074
+        "x": 5.302161853931567,
+        "y": 1.7625297828956876
       },
       "isLocked": false,
       "linkedName": "A2"
     },
     {
       "anchor": {
-        "x": 7.62345098310544,
+        "x": 7.6,
         "y": 4.716638065668329
       },
       "prevControl": {
-        "x": 7.019977141111456,
-        "y": 4.319255705444829
+        "x": 7.080227655606694,
+        "y": 4.1969212607447846
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,22 +30,22 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3469586824115953,
+      "waypointRelativePos": 0.35375350149054263,
       "rotationDegrees": 119.99999999999999
     },
     {
-      "waypointRelativePos": 0.6356355365953951,
+      "waypointRelativePos": 0.57787796823602,
       "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5237994526707849,
+      "minWaypointRelativePos": 0.55,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 2.75,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
         "nominalVoltage": 12.0,
@@ -57,7 +57,7 @@
   "eventMarkers": [
     {
       "name": "move_to_barge",
-      "waypointRelativePos": 0.3234451648800873,
+      "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

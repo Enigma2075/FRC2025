@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.40514102568262045,
+      "minWaypointRelativePos": 0.35939223584146596,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
@@ -47,13 +47,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "move_to_L4",
+      "name": "move_to_low_algae",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "move_to_L4"
+          "name": "move_to_low_algae"
         }
       }
     }

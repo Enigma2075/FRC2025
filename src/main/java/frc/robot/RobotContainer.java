@@ -139,6 +139,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("foundTag6", vision.setPriorityId(20, 11).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         
         NamedCommands.registerCommand("outtake1_left", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralToAlgaeLowCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_left", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_right", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake3_left", vision.setPriorityId(17, 8).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
@@ -177,6 +178,7 @@ public class RobotContainer {
         autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
         autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
         autoChooser.addOption("Center", drivetrain.getAutoPath("Center"));
+        autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
