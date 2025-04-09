@@ -28,5 +28,5 @@ public class WristConstants {
     public static final double kMotionMagicAcceleration = (kMotionMagicCruiseVelocity)/.1;
     public static final double kMotionMagicJerk = 0;
 
-    public static final double kMagnetOffset = RobotConstants.kPracticeBot ? 0.385009765625 : 0.21533203125;
+    public static final double kMagnetOffset = RobotConstants.kPracticeBot ? 0.385009765625 : -0.55322265625;
 }

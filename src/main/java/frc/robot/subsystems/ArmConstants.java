@@ -37,6 +37,6 @@ public class ArmConstants {
     public static final double kMotionMagicAcceleration = (kMaxRPS * .5)/.8;
     public static final double kMotionMagicJerk = 0;
 
-    public static final double kMagnetOffset = RobotConstants.kPracticeBot ? -0.39111328125 : -0.11279296875;
+    public static final double kMagnetOffset = RobotConstants.kPracticeBot ? -0.39111328125 : 0.458251953125;
 
 }
