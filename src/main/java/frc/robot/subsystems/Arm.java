@@ -123,17 +123,17 @@ public class Arm extends SubsystemIO{
 
         m_Motor.setControl(m_OutputRequest.withOutput(0));
 
-        // m_BargeSensor = new CANrange(ArmConstants.kBargeSensorId, RobotConstants.kCanivoreBusName);
+        m_BargeSensor = new CANrange(ArmConstants.kBargeSensorId, RobotConstants.kCanivoreBusName);
 
-        // CANrangeConfiguration bargeSensorConfig = new CANrangeConfiguration();
+        CANrangeConfiguration bargeSensorConfig = new CANrangeConfiguration();
 
-        // bargeSensorConfig.FovParams.FOVCenterX = 0;
-        // bargeSensorConfig.FovParams.FOVCenterY = 0;
-        // bargeSensorConfig.FovParams.FOVRangeX = 0;
-        // bargeSensorConfig.FovParams.FOVRangeY = 0;
-        // bargeSensorConfig.ProximityParams.ProximityThreshold = 0;
+        bargeSensorConfig.FovParams.FOVCenterX = 0;
+        bargeSensorConfig.FovParams.FOVCenterY = 0;
+        bargeSensorConfig.FovParams.FOVRangeX = 0;
+        bargeSensorConfig.FovParams.FOVRangeY = 0;
+        bargeSensorConfig.ProximityParams.ProximityThreshold = 0;
 
-        // m_BargeSensor.getConfigurator().apply(bargeSensorConfig);
+        m_BargeSensor.getConfigurator().apply(bargeSensorConfig);
     }
 
     public static class PeriodicIO {
@@ -176,7 +176,7 @@ public class Arm extends SubsystemIO{
     }
 
     public boolean isAtBarge(){
-        return m_BargeSensor.getDistance().getValue().in(Centimeters) <10 ;
+        return m_BargeSensor.getDistance().getValue().in(Centimeters) <10; //physical measurement = 
     }
 
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
