@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
@@ -142,7 +143,7 @@ public class Arm extends SubsystemIO{
         public double CurrentAngle = 0;
         public double targetAngle = 0;
 
-        public double targetOutput = 0; 
+        public double targetOutput = 0; ;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -172,6 +173,10 @@ public class Arm extends SubsystemIO{
     public boolean isAtPosition(double degrees) {
         double error = Math.toDegrees(m_PeriodicIO.CurrentAngle) - degrees;
         return Math.abs(error) < 5;
+    }
+
+    public boolean isAtBarge(){
+        return m_BargeSensor.getDistance().getValue().in(Centimeters) <10 ;
     }
 
     public Command sysIdQuasiStatic(SysIdRoutine.Direction direction) {
