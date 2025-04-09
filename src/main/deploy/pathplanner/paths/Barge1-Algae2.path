@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.13,
-        "y": 2.89
+        "x": 5.125,
+        "y": 2.9
       },
       "prevControl": {
-        "x": 5.881754096628726,
-        "y": 3.163616114660535
+        "x": 5.876754096628726,
+        "y": 3.173616114660535
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,19 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "move_to_high_algae",
+      "waypointRelativePos": 0.6977667493796696,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "move_to_high_algae"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.25,

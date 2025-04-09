@@ -39,6 +39,12 @@
           "data": {
             "pathName": "Barge1-Algae2"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae2"
+          }
         }
       ]
     }
