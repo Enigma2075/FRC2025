@@ -12,6 +12,7 @@ import frc.robot.util.Utils;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -22,6 +23,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -43,6 +45,7 @@ public class Arm extends SubsystemIO{
 
     private TalonFX m_Motor;
     private CANcoder m_Encoder;
+    private CANrange m_BargeSensor;
 
     private final DutyCycleOut m_OutputRequest = new DutyCycleOut(0);
     private final MotionMagicVoltage m_PositionRequest = new MotionMagicVoltage(0).withSlot(0);
@@ -118,6 +121,18 @@ public class Arm extends SubsystemIO{
         m_Motor.getConfigurator().apply(motorConfig);
 
         m_Motor.setControl(m_OutputRequest.withOutput(0));
+
+        m_BargeSensor = new CANrange(ArmConstants.kBargeSensorId, RobotConstants.kCanivoreBusName);
+
+        CANrangeConfiguration bargeSensorConfig = new CANrangeConfiguration();
+
+        bargeSensorConfig.FovParams.FOVCenterX = 0;
+        bargeSensorConfig.FovParams.FOVCenterY = 0;
+        bargeSensorConfig.FovParams.FOVRangeX = 0;
+        bargeSensorConfig.FovParams.FOVRangeY = 0;
+        bargeSensorConfig.ProximityParams.ProximityThreshold = 0;
+
+        m_BargeSensor.getConfigurator().apply(bargeSensorConfig);
     }
 
     public static class PeriodicIO {

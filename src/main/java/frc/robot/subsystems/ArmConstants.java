@@ -11,6 +11,8 @@ public class ArmConstants {
 
     public static final int kEncoderId = 5;
 
+    public static final int kBargeSensorId = 4;
+
     public static final double kArmLength = 0;
 
     public static final double kGearRatio1 = 56.0/12.0;
