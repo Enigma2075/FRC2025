@@ -336,7 +336,14 @@ public class ElevatorStructure extends SubsystemIO {
             }
         )).andThen(Commands.waitSeconds(.2)).andThen(moveToPosition(false, Starting));
     }
-
+    
+    public Command autoOuttakeCoralToAlgaeLowCommand() {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.2)).andThen(runOnce(() -> {
+            m_Claw.setCoralMode(CoralModes.OUTTAKE);
+            }
+        )).andThen(Commands.waitSeconds(.2)).andThen(moveToPosition(false, Starting));
+    }
+    
     public Command outtakeCoralCommand() {
         return run(() -> {
             var timeout = .25;
