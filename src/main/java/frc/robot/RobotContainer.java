@@ -450,14 +450,14 @@ public class RobotContainer {
         //7 C - 
         //left
         var goalX = Utils.getValue(.41, .43);
-        var goalY = Utils.getValue(.14, .19);
+        var goalY = Utils.getValue(.14, .18);
         if(side == ReefSides.RIGHT) {
-            goalX = Utils.getValue(.41, .43);
-            goalY = Utils.getValue(-.13, -.16);    
+            goalX = Utils.getValue(.41, .42);
+            goalY = Utils.getValue(-.13, -.15);    
         }
         else if(side == ReefSides.CENTER) {
             goalX = Utils.getValue(.41, .43);
-            goalY = Utils.getValue(.09, .12);
+            goalY = Utils.getValue(.09, .10);
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());
