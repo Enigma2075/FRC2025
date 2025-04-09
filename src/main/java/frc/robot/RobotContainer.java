@@ -508,7 +508,7 @@ public class RobotContainer {
              var targetAngle = robotPoseInTargetSpace.getRotation().getDegrees();
              var currentAngle = drivetrain.getState().Pose.getRotation().getDegrees();
           
-            if(Robot.AllianceColor.get() == Alliance.Red) {
+            if(getAllianceSide() == Alliance.Red) {
                 currentAngle = drivetrain.getState().Pose.getRotation().rotateBy(Rotation2d.k180deg).getDegrees();
             }
 
