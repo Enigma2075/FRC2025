@@ -325,7 +325,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command autoIntakeAlgaeCommand() {
-        return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE));
+        return runOnce(() -> m_Claw.setAlgaeMode(AlgaeModes.INTAKE)).andThen(Commands.waitSeconds(.1));
     }
 
     //private Command run

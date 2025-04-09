@@ -150,6 +150,7 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("intakeAlgae3", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
 
         NamedCommands.registerCommand("move_to_low_algae", moveToAlgaeLowCommand());
         NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand());

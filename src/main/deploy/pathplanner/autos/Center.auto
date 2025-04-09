@@ -45,6 +45,42 @@
           "data": {
             "name": "intakeAlgae2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae2-Barge1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake_algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge1-Algae3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae3-Barge1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake_algae"
+          }
         }
       ]
     }

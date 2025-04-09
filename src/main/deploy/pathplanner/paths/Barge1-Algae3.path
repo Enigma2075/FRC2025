@@ -8,40 +8,35 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.037164445504818,
-        "y": 4.195769912250769
+        "x": 6.670900697799497,
+        "y": 4.862140725986141
       },
       "isLocked": false,
       "linkedName": "Barge1"
     },
     {
       "anchor": {
-        "x": 5.125,
-        "y": 2.9
+        "x": 5.13495213261357,
+        "y": 5.193780229356553
       },
       "prevControl": {
-        "x": 5.876754096628726,
-        "y": 3.173616114660535
+        "x": 5.494594701131184,
+        "y": 5.127812403926144
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "A2"
+      "linkedName": "A3"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.65,
-      "rotationDegrees": 119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.4992555831265564,
+      "minWaypointRelativePos": 0.5653469554609637,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
-        "maxAcceleration": 2.75,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
         "nominalVoltage": 12.0,
@@ -53,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "move_to_high_algae",
-      "waypointRelativePos": 0.4109217241356937,
+      "waypointRelativePos": 0.3457325273177947,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -73,12 +68,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0
   },
   "useDefaultConstraints": true
