@@ -27,6 +27,18 @@
           "data": {
             "pathName": "Algae1-Barge1"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake_algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge1-Algae2"
+          }
         }
       ]
     }

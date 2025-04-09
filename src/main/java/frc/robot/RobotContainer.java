@@ -154,7 +154,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand().andThen(elevatorStructure.intakeAlgaeCommand()));
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
         
-        NamedCommands.registerCommand("outtake_algae", elevatorStructure.outtakeAlgaeCommand());
+        NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.outtakeAlgaeCommand()));
 
         NamedCommands.registerCommand("rotationTest", rotationTestCommand());
 

@@ -3,36 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.15,
-        "y": 3.86
+        "x": 7.65,
+        "y": 4.71
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.65,
-        "y": 3.86
+        "x": 7.037164445504818,
+        "y": 4.195769912250769
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Barge1"
     },
     {
       "anchor": {
-        "x": 5.78,
-        "y": 3.86
+        "x": 5.13,
+        "y": 2.89
       },
       "prevControl": {
-        "x": 6.28,
-        "y": 3.86
+        "x": 5.881754096628726,
+        "y": 3.163616114660535
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "P2"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.65,
+      "rotationDegrees": 119.99999999999999
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5002481389578174,
+      "minWaypointRelativePos": 0.4992555831265564,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
@@ -45,19 +50,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "move_to_L4",
-      "waypointRelativePos": 0.1,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "move_to_L4"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.25,
@@ -68,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 119.99999999999999
   },
   "reversed": false,
   "folder": null,
