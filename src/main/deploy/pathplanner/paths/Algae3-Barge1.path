@@ -16,19 +16,24 @@
     },
     {
       "anchor": {
-        "x": 7.65,
-        "y": 4.71
+        "x": 7.62345098310544,
+        "y": 4.716638065668329
       },
       "prevControl": {
-        "x": 6.4820367202344835,
-        "y": 4.970038666564134
+        "x": 6.455487703339923,
+        "y": 4.976676732232463
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Barge1"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5167014674136514,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
