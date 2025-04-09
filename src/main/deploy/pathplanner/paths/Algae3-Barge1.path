@@ -8,19 +8,19 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.570348242300528,
-        "y": 5.916354567916305
+        "x": 5.398665570859555,
+        "y": 5.880882144504124
       },
       "isLocked": false,
       "linkedName": "A3"
     },
     {
       "anchor": {
-        "x": 7.6,
+        "x": 7.75,
         "y": 4.716638065668329
       },
       "prevControl": {
-        "x": 6.570972479361075,
+        "x": 6.720972479361075,
         "y": 5.125076406973379
       },
       "nextControl": null,
@@ -28,24 +28,15 @@
       "linkedName": "Barge1"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.279071044921875,
-      "rotationDegrees": -119.99999999999999
-    },
-    {
-      "waypointRelativePos": 0.6283749229029606,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5291782518557927,
+      "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
-        "maxAcceleration": 2.75,
+        "maxAcceleration": 1.25,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
         "nominalVoltage": 12.0,

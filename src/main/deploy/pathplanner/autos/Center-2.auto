@@ -13,13 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeAlgae1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "move_to_L4"
+            "name": "intakeAlgaetoL4"
           }
         },
         {
