@@ -190,8 +190,17 @@ public class Vision extends SubsystemIO {
       SignalLogger.writeDoubleArray("Vision/ReefPose", new double [] {reefPose2d.getX(), reefPose2d.getY(), reefPose2d.getRotation().getRadians()});
       
       var targetTags = VisionConstant.blueTagTargets;
+      var rotateAngle = false;
       if (allianceSupplier.get() == Alliance.Red) {
+        if(Robot.AllianceColor.get() != Alliance.Red) {
+          rotateAngle = true;
+        }
         targetTags = VisionConstant.redTagTargets;
+      }
+      else {
+        if(Robot.AllianceColor.get() != Alliance.Blue) {
+          rotateAngle = true;
+        }
       }
 
       SmartDashboard.putNumber("Vision/priorityID", priorityId);
@@ -201,6 +210,9 @@ public class Vision extends SubsystemIO {
       for (var tag : targetTags) {
         if (tag.id() == reefInput.targetId && (tag.id() == priorityId || priorityId == -1)) {
           degrees = tag.degrees();
+          if(rotateAngle) {
+            degrees = Rotation2d.fromDegrees(degrees).rotateBy(Rotation2d.k180deg).getDegrees();
+          }
           targetConsumer.accept(new Pose2d(reefPose.getZ(), reefPose.getX(), Rotation2d.fromDegrees(degrees)));
           break;
         }
