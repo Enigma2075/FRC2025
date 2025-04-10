@@ -126,7 +126,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
         NamedCommands.registerCommand("drive_backward_right", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(true)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("drive_backward_left", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(false)).until(() -> claw.hasCoral()).withTimeout(2));
-        NamedCommands.registerCommand("move_to_L4", elevatorStructure.moveToL4Command(true));
+        NamedCommands.registerCommand("move_to_L4", elevatorStructure.autoMoveToL4Command());
+        NamedCommands.registerCommand("move_to_L4_Algae", Commands.waitUntil(() -> claw.hasAlgae()).withTimeout(1).andThen(elevatorStructure.intakeAlgaeLowCommand().until(() ->elevatorStructure.isAtPosition())).andThen(elevatorStructure.autoMoveToL4AlgaeCommand()));
         
         NamedCommands.registerCommand("foundTag1_left", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag1_center", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.CENTER))));
@@ -160,7 +161,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand());
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
         
-        NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.outtakeAlgaeCommand()));
+        NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.scoreBargeCommand()));
 
         NamedCommands.registerCommand("rotationTest", rotationTestCommand());
 
@@ -363,7 +364,7 @@ public class RobotContainer {
                     CommandScheduler.getInstance().schedule(elevatorStructure.scoreBargeCommand());
                 }
 
-                if(getAllianceSide() == Alliance.Blue) {
+                if(getAllianceSide() != Robot.AllianceColor.get()) {
                     xVel = -xVel;
                 }
             }

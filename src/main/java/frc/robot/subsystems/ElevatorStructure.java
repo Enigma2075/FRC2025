@@ -237,6 +237,13 @@ public class ElevatorStructure extends SubsystemIO {
         });
     }
 
+    public Command autoMoveToL4AlgaeCommand() {
+        return runOnce(() -> m_Elevator.setOverrideVelocity(true)).andThen(moveToPositions(L4Front)).finallyDo(() -> m_Elevator.setOverrideVelocity(false))
+        .finallyDo(()-> {
+            m_CoralPositionPressed = false;
+        });
+    }
+
     public Command moveToL4Command(boolean slow) {
         return moveToCoralLevel(() -> { 
             Command cmd = moveToPosition(L4Front, L4Rear);
@@ -437,7 +444,7 @@ public class ElevatorStructure extends SubsystemIO {
         //});
     }
 
-    private Command intakeAlgaeLowCommand() {
+    public Command intakeAlgaeLowCommand() {
         return runOnce(() -> m_Wrist.setOverrideVelocity(true))
             .andThen(moveToPositionsSide(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true);}, IntakeAlgaeLowFrontSequence, IntakeAlgaeLowRearSequence))
             .andThen(new ConditionalCommand( runOnce(() -> {CommandScheduler.getInstance().schedule(m_NextCommand.get().finallyDo(() -> {m_NextCommand = null;}));}), moveToStartingCommand(), () -> m_NextCommand != null))//m_moveIntake.apply(Intake.States.HANDOFFALGAE).alongWith(storeAlgaeCommand()).finallyDo((() -> CommandScheduler.getInstance().schedule(m_moveIntake.apply(Intake.States.DEFAULT)))) , () -> m_NextCommand != null))
