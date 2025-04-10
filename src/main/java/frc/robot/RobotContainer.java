@@ -468,13 +468,13 @@ public class RobotContainer {
         //7 C - 
         //left
         var goalX = Utils.getValue(.41, .43);
-        var goalY = Utils.getValue(.14, .18);
+        var goalY = Utils.getValue(.16, .18);
         if(side == ReefSides.RIGHT) {
             goalX = Utils.getValue(.41, .42);
-            goalY = Utils.getValue(-.13, -.15);    
+            goalY = Utils.getValue(-.11, -.15);    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = Utils.getValue(.41, .43);
+            goalX = Utils.getValue(.39, .43);
             goalY = Utils.getValue(.09, .10);
         }
         
