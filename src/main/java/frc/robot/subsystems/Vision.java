@@ -211,7 +211,7 @@ public class Vision extends SubsystemIO {
         if (tag.id() == reefInput.targetId && (tag.id() == priorityId || priorityId == -1)) {
           degrees = tag.degrees();
           if(rotateAngle) {
-            //degrees = Rotation2d.fromDegrees(degrees).rotateBy(Rotation2d.k180deg).getDegrees();
+            degrees = Rotation2d.fromDegrees(degrees).rotateBy(Rotation2d.k180deg).getDegrees();
           }
           targetConsumer.accept(new Pose2d(reefPose.getZ(), reefPose.getX(), Rotation2d.fromDegrees(degrees)));
           break;

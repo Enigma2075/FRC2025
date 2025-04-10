@@ -348,9 +348,9 @@ public class RobotContainer {
         // Align based on current angle to reef
         driver.b().whileTrue(drivetrain.applyRequest(() -> {
             calculateMaxSpeed();
-            var rotation = Rotation2d.kZero;
-            if(getAllianceSide() == Alliance.Red) {
-                rotation = Rotation2d.k180deg;
+            var rotation = Rotation2d.k180deg;
+            if(getAllianceSide() != Robot.AllianceColor.get()) {
+                rotation = Rotation2d.kZero;
             }
 
             var xVel = -applyExpo(driver.getLeftY()) * CalculatedMaxSpeed;
@@ -362,9 +362,12 @@ public class RobotContainer {
                 if(arm.isAtBarge()) {
                     CommandScheduler.getInstance().schedule(elevatorStructure.scoreBargeCommand());
                 }
+
+                if(getAllianceSide() == Alliance.Blue) {
+                    xVel = -xVel;
+                }
             }
 
-            
             return driveAtAngle.withVelocityX(xVel) // Drive forward with
                                                                                        // negative Y (forward)
                     .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
@@ -527,7 +530,7 @@ public class RobotContainer {
              var targetAngle = robotPoseInTargetSpace.getRotation().getDegrees();
              var currentAngle = drivetrain.getState().Pose.getRotation().getDegrees();
           
-            if(getAllianceSide() == Alliance.Red) {
+            if(Robot.AllianceColor.get() == Alliance.Red) {
                 currentAngle = drivetrain.getState().Pose.getRotation().rotateBy(Rotation2d.k180deg).getDegrees();
             }
 
