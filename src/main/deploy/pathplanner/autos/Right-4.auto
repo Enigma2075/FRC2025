@@ -13,32 +13,14 @@
                 "data": {
                   "pathName": "Start-P3"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag2_right"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake2_right"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "P3-Source2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
           }
         },
         {
@@ -50,32 +32,14 @@
                 "data": {
                   "pathName": "Source2-P6"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag3_left"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake3_left"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "P6-Source2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
           }
         },
         {
@@ -87,32 +51,14 @@
                 "data": {
                   "pathName": "Source2-P5"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag3_right"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake3_right"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "P5-Source2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
           }
         },
         {
@@ -124,20 +70,8 @@
                 "data": {
                   "pathName": "Source2-P4"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag2_left"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake2_left"
           }
         }
       ]

@@ -134,7 +134,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("foundTag1_left", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag1_center", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.CENTER))));
         NamedCommands.registerCommand("foundTag2_left", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
-        NamedCommands.registerCommand("foundTag2_right", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
+        NamedCommands.registerCommand("foundTag2_right", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT)))); 
         NamedCommands.registerCommand("foundTag3_left", vision.setPriorityId(17, 8).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag3_right", vision.setPriorityId(17, 8).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
         NamedCommands.registerCommand("foundTag4", vision.setPriorityId(18, 7).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
@@ -152,7 +152,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake5_left", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
-        
+
         NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("intakeAlgae3", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
@@ -186,6 +186,7 @@ public class RobotContainer {
         autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
         autoChooser.addOption("Center", drivetrain.getAutoPath("Center"));
         autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
+        autoChooser.addOption("Right-4", drivetrain.getAutoPath("Right-4"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);

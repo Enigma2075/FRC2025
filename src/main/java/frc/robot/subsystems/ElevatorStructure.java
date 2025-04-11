@@ -85,6 +85,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
     public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 118, -60, "L4Front");
+    public static final ElevatorStructurePosition autoL4Front = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 120, -60, "L4Front");
     public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 110, -80, "L3Front");
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
     public static final ElevatorStructurePosition L1Front = new ElevatorStructurePosition(7.5, 125, -140, "L1Front");
@@ -231,7 +232,7 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command autoMoveToL4Command() {
-        return runOnce(() -> m_Elevator.setOverrideVelocity(true)).andThen(moveToPosition(false, L4Front)).finallyDo(() -> m_Elevator.setOverrideVelocity(false))
+        return runOnce(() -> m_Elevator.setOverrideVelocity(true)).andThen(moveToPosition(false, autoL4Front)).finallyDo(() -> m_Elevator.setOverrideVelocity(false))
         .finallyDo(()-> {
             m_CoralPositionPressed = false;
         });
