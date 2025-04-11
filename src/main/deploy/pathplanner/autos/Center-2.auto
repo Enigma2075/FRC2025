@@ -13,13 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "move_to_L4"
+            "name": "move_to_L4_Algae"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "outtake1"
+            "name": "outtake_coral"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeAlgae2"
+            "name": "intakeAlgaeA"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeAlgae3"
+            "name": "intakeAlgaeA"
           }
         },
         {

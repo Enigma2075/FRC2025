@@ -129,6 +129,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.autoMoveToL4Command());
         NamedCommands.registerCommand("move_to_L4_Algae", Commands.waitUntil(() -> claw.hasAlgae()).withTimeout(1).andThen(elevatorStructure.intakeAlgaeLowCommand().until(() ->elevatorStructure.isAtPosition())).andThen(elevatorStructure.autoMoveToL4AlgaeCommand()));
         
+        NamedCommands.registerCommand("intakeAlgaeA", Commands.waitUntil(() -> claw.hasAlgae()).withTimeout(1).andThen(elevatorStructure.intakeAlgaeHighCommand().until(() ->elevatorStructure.isAtPosition())));
+        
         NamedCommands.registerCommand("foundTag1_left", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         NamedCommands.registerCommand("foundTag1_center", vision.setPriorityId(21, 10).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.CENTER))));
         NamedCommands.registerCommand("foundTag2_left", vision.setPriorityId(22, 9).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
@@ -161,7 +163,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("move_to_high_algae", moveToAlgaeHighCommand());
         NamedCommands.registerCommand("move_to_barge", elevatorStructure.moveToBargeCommand());
         
-        NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.scoreBargeCommand()));
+        NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.autoScoreBargeCommand()));
+        NamedCommands.registerCommand("outtake_coral", elevatorStructure.autoOuttakeL4Command());
 
         NamedCommands.registerCommand("rotationTest", rotationTestCommand());
 
