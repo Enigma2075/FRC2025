@@ -64,7 +64,7 @@
     },
     {
       "name": "last_outtake_coral",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
