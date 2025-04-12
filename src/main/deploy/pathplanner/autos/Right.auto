@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Start-P3"
+                  "pathName": "Start-P3-State"
                 }
               },
               {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P3-Source2"
+            "pathName": "P3-Source2-State"
           }
         },
         {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Source2-P6"
+                  "pathName": "Source2-P6-State"
                 }
               },
               {
@@ -69,7 +69,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P6-Source2"
+            "pathName": "P6-Source2-State"
           }
         },
         {
@@ -85,7 +85,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Source2-P5"
+                  "pathName": "Source2-P5-State"
                 }
               },
               {
@@ -106,7 +106,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P5-Source2"
+            "pathName": "P5-Source2-State"
           }
         },
         {

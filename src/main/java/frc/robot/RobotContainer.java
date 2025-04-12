@@ -165,7 +165,7 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.autoScoreBargeCommand()));
         NamedCommands.registerCommand("outtake_coral", elevatorStructure.autoOuttakeL4Command());
-        NamedCommands.registerCommand("last_outtake_coral", elevatorStructure.autoOuttakeCoralCommand());
+        NamedCommands.registerCommand("last_outtake_coral", elevatorStructure.autoLastOuttakeCoralCommand());
 
 
         NamedCommands.registerCommand("rotationTest", rotationTestCommand());
