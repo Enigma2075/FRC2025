@@ -404,7 +404,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command storeAlgaeCommand() {
         return moveToPositions(StoreAlgaeSequence.getPositions())
             .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
-            .andThen(moveToPositions(StartingWithAlgae));
+            .andThen(moveToPositions(GrabAlgaeHeight, StartingWithAlgae));
     }
 
     public Command moveToAlgaeHighCommand() {
