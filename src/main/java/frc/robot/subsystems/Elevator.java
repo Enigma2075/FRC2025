@@ -245,7 +245,7 @@ public class Elevator extends SubsystemIO{
                 break;
             case POSITION:
                 if(m_PeriodicIO.overrideVelocity) {
-                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration * .5));
+                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration * .4));
                 }
                 else {
                     m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration));

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.700515913056063,
-        "y": 2.9970537033323508
+        "x": 3.6943963995049898,
+        "y": 2.9759200060676005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.092080961838976,
-        "y": 2.503250382341686
+        "x": 3.085961448287903,
+        "y": 2.4821166850769356
       },
       "isLocked": false,
       "linkedName": "P6"
@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.132955761798333,
-        "y": 1.2234370216577652
+        "y": 1.2234370216577655
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +46,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.25,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 220.0,
     "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
