@@ -49,6 +49,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
     public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(16.6, 15.5), Utils.getValue(70, 73), Utils.getValue(142, 137), "IntakeCoralRear");
+    public static final ElevatorStructurePosition autoIntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(16.6, 16), Utils.getValue(70, 73), Utils.getValue(142, 137), "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
     public static final ElevatorStructurePosition IntakeCoralFrontEnd = new ElevatorStructurePosition(15, 90, 100, "IntakeCoralFrontEnd");
     
@@ -305,6 +306,14 @@ public class ElevatorStructure extends SubsystemIO {
         });
     }
 
+    public Command autoIntakeCoralCommand() {
+        return run(() -> { 
+            m_Elevator.setOverrideVelocity(false);
+            m_Claw.setCoralMode(CoralModes.INTAKE);
+            applyPositionBySide(autoIntakeCoralRear, IntakeCoralFront); 
+        });
+    }
+
     public Command stopCoralCommmand(){
         return runOnce(()-> m_Claw.setCoralMode(CoralModes.STOP));
     }
@@ -361,10 +370,10 @@ public class ElevatorStructure extends SubsystemIO {
     //private Command run
 
     public Command autoOuttakeCoralCommand() {
-        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.2)).andThen(runOnce(() -> {
+        return runOnce(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
-        )).andThen(Commands.waitSeconds(.2)).andThen(moveToPosition(false, Starting));
+        ).andThen(moveToPosition(false, Starting));
     }
 
     public Command autoOuttakeL4Command() {

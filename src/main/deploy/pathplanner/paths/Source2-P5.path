@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5599934614624138,
-        "y": 0.7197670059694758
+        "x": 1.5314988233734377,
+        "y": 0.7049976285955734
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3131068633651033,
-        "y": 1.4310345546078962
+        "x": 1.8531737728780593,
+        "y": 0.9706824050448324
       },
       "isLocked": false,
       "linkedName": "Source2"
     },
     {
       "anchor": {
-        "x": 3.9853105818426404,
-        "y": 2.829387670348641
+        "x": 3.9699409555955447,
+        "y": 2.810714704413897
       },
       "prevControl": {
-        "x": 3.554301625276821,
-        "y": 2.3795429422923444
+        "x": 3.777191636033089,
+        "y": 2.6515050947535173
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7107412141818937,
+      "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 4.5,
-        "maxAcceleration": 2.25,
+        "maxVelocity": 3.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
         "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "move_to_L4",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -59,7 +59,7 @@
     },
     {
       "name": "outtake_coral",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.9,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

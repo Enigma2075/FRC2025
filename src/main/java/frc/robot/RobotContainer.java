@@ -123,7 +123,7 @@ public class RobotContainer {
         driveRobotCentric.HeadingController.setP(10);
         driveRobotCentric.MaxAbsRotationalRate = MaxAngularRate;
 
-        NamedCommands.registerCommand("intake", elevatorStructure.intakeCoralCommand());
+        NamedCommands.registerCommand("intake", elevatorStructure.autoIntakeCoralCommand());
         NamedCommands.registerCommand("drive_backward_right", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(true)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("drive_backward_left", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(false)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.autoMoveToL4Command());
@@ -165,6 +165,8 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("outtake_algae", Commands.waitUntil(() -> elevatorStructure.isAtPosition()).andThen(elevatorStructure.autoScoreBargeCommand()));
         NamedCommands.registerCommand("outtake_coral", elevatorStructure.autoOuttakeL4Command());
+        NamedCommands.registerCommand("last_outtake_coral", elevatorStructure.autoOuttakeCoralCommand());
+
 
         NamedCommands.registerCommand("rotationTest", rotationTestCommand());
 
@@ -187,6 +189,7 @@ public class RobotContainer {
         autoChooser.addOption("Center", drivetrain.getAutoPath("Center"));
         autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
         autoChooser.addOption("Right-4", drivetrain.getAutoPath("Right-4"));
+        autoChooser.addOption("2path", drivetrain.getAutoPath("2path"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);

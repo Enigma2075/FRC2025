@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.184590441918142,
-        "y": 2.9305236694983523
+        "x": 6.69170559061348,
+        "y": 2.9974465001790622
       },
       "isLocked": false,
       "linkedName": "Start"
     },
     {
       "anchor": {
-        "x": 5.2020044466803315,
-        "y": 2.962331632669205
+        "x": 5.294521959871914,
+        "y": 2.984276582536692
       },
       "prevControl": {
-        "x": 5.54382337948998,
-        "y": 3.0315115895860294
+        "x": 5.82678739206208,
+        "y": 3.348268506599114
       },
       "nextControl": {
-        "x": 4.896461583470594,
-        "y": 2.9004935070295583
+        "x": 5.088160877082586,
+        "y": 2.8431556999217644
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5599934614624138,
-        "y": 0.7197670059694758
+        "x": 1.5314988233734377,
+        "y": 0.7049976285955734
       },
       "prevControl": {
-        "x": 2.1475819340458613,
-        "y": 1.1769900399667232
+        "x": 2.108005632672991,
+        "y": 1.0858851432800294
       },
       "nextControl": null,
       "isLocked": false,
@@ -57,10 +57,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8,
-      "maxWaypointRelativePos": 1.2,
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 0.9981559021832187,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.5,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
@@ -70,10 +70,10 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.8,
+      "minWaypointRelativePos": 1.7,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 4.5,
+        "maxVelocity": 3.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
@@ -97,7 +97,7 @@
     },
     {
       "name": "outtake_coral",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.83,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -108,7 +108,7 @@
     },
     {
       "name": "intake",
-      "waypointRelativePos": 1.05,
+      "waypointRelativePos": 1.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
