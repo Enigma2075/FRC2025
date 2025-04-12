@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "Start-P12"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag6"
-                }
               }
             ]
           }
@@ -26,19 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake6"
+            "name": "outtake_coral"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "P12-Source1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_left"
           }
         },
         {
@@ -49,12 +37,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Source1-P10"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag5_left"
                 }
               }
             ]
@@ -73,12 +55,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_left"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -86,12 +62,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Source1-P9"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag5_right"
                 }
               }
             ]
@@ -107,12 +77,6 @@
           "type": "path",
           "data": {
             "pathName": "P9-Source1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_left"
           }
         }
       ]

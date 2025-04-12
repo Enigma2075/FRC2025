@@ -28,12 +28,7 @@
       "linkedName": "Source1"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -50.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -53,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.38308711156392933,
+      "waypointRelativePos": 0.10252101556011207,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

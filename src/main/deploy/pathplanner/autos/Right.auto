@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "Start-P3-State"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag2_right"
-                }
               }
             ]
           }
@@ -26,19 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "outtake2_right"
+            "name": "outtake_coral"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "P3-Source2-State"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
           }
         },
         {
@@ -49,12 +37,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Source2-P6-State"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag3_left"
                 }
               }
             ]
@@ -73,12 +55,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -86,12 +62,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Source2-P5-State"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "foundTag3_right"
                 }
               }
             ]
@@ -107,12 +77,6 @@
           "type": "path",
           "data": {
             "pathName": "P5-Source2-State"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "drive_backward_right"
           }
         }
       ]

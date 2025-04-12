@@ -125,6 +125,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("intake", elevatorStructure.autoIntakeCoralCommand());
         NamedCommands.registerCommand("drive_backward_right", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(true)).until(() -> claw.hasCoral()).withTimeout(2));
+        NamedCommands.registerCommand("wait_for_coral", Commands.waitUntil(() ->claw.hasCoral()).withTimeout(.5));
         NamedCommands.registerCommand("drive_backward_left", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(false)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("move_to_L4", elevatorStructure.autoMoveToL4Command());
         NamedCommands.registerCommand("move_to_L4_Algae", Commands.waitUntil(() -> claw.hasAlgae()).withTimeout(1).andThen(elevatorStructure.intakeAlgaeLowCommand().until(() ->elevatorStructure.isAtPosition())).andThen(elevatorStructure.autoMoveToL4AlgaeCommand()));
