@@ -33,6 +33,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 
@@ -244,7 +245,13 @@ public class Arm extends SubsystemIO{
                 m_Motor.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
-                if(Robot.RobotContainer.elevator.isAtPosition()) {
+                if(DriverStation.isAutonomousEnabled() && Robot.RobotContainer.elevator.isAtPositionAuto()) {
+                    double sign = m_PeriodicIO.targetAngle < Math.PI/2 ? -1 : -1;
+                    double targetAngle = m_PeriodicIO.targetAngle + ((sign * Utils.getValue(0, Math.toRadians(3.4))));
+    
+                    m_Motor.setControl(m_PositionRequest.withPosition(convertAngleToPosition(targetAngle)).withFeedForward(Math.cos(m_PeriodicIO.CurrentAngle) * ArmConstants.kG));    
+                }
+                else if(Robot.RobotContainer.elevator.isAtPosition()) {
                     double sign = m_PeriodicIO.targetAngle < Math.PI/2 ? -1 : -1;
                     double targetAngle = m_PeriodicIO.targetAngle + ((sign * Utils.getValue(0, Math.toRadians(3.4))));
     
