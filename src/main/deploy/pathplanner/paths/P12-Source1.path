@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.841676517824296,
-        "y": 5.964176222701472
+        "x": 4.343954491067433,
+        "y": 5.687220352695627
       },
       "isLocked": false,
       "linkedName": "P11"
@@ -20,8 +20,8 @@
         "y": 7.28956189411062
       },
       "prevControl": {
-        "x": 3.1938832066862455,
-        "y": 6.390343002730321
+        "x": 1.9088760927035504,
+        "y": 7.129386481790914
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,6 +32,10 @@
     {
       "waypointRelativePos": 0.210347752332485,
       "rotationDegrees": -119.99999999999999
+    },
+    {
+      "waypointRelativePos": 0.7022146124588817,
+      "rotationDegrees": -54.0
     }
   ],
   "constraintZones": [
@@ -41,7 +45,7 @@
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.5,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 2.5,
         "maxAngularVelocity": 220.0,
         "maxAngularAcceleration": 220.0,
         "nominalVoltage": 12.0,
