@@ -475,15 +475,15 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = Utils.getValue(.41, .43);
-        var goalY = Utils.getValue(.16, .18);
+        var goalX = Utils.getValue(.41, .45);
+        var goalY = Utils.getValue(.16, .19);
         if(side == ReefSides.RIGHT) {
-            goalX = Utils.getValue(.41, .42);
-            goalY = Utils.getValue(-.11, -.15);    
+            goalX = Utils.getValue(.41, .43);
+            goalY = Utils.getValue(-.11, -.13);    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = Utils.getValue(.39, .43);
-            goalY = Utils.getValue(.09, .10);
+            goalX = Utils.getValue(.39, .44);
+            goalY = Utils.getValue(.09, .11);
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());
