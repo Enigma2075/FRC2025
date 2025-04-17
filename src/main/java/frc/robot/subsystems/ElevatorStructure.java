@@ -31,6 +31,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public static final ElevatorStructurePosition AutoStart = new ElevatorStructurePosition(7.5, 85, -100, "AutoStart"); //7.5
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
+    public static final ElevatorStructurePosition IntakeCoralEnd = new ElevatorStructurePosition(16, 85, 137, "IntakeCoralEnd"); //7.5
     public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
 
     public static final ElevatorStructurePosition PickupAlgae = new ElevatorStructurePosition(14, 90, -110, "PickuptAlgae");
@@ -48,7 +49,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition BargeRearEnd = new ElevatorStructurePosition(30, 85, 40, "BargeBackEnd");
     public static final ElevatorStructurePosition BargeFront = new ElevatorStructurePosition(65.5, 103, 120, "BargeFront");
     
-    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(16.6, 16), Utils.getValue(67, 63), Utils.getValue(142, 137), "IntakeCoralRear");
+    public static final ElevatorStructurePosition IntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(16.6, 16), Utils.getValue(67, 65), Utils.getValue(142, 137), "IntakeCoralRear");
     public static final ElevatorStructurePosition autoIntakeCoralRear = new ElevatorStructurePosition(Utils.getValue(16.6, 16), Utils.getValue(70, 63), Utils.getValue(142, 137), "IntakeCoralRear");
     public static final ElevatorStructurePosition IntakeCoralFront = new ElevatorStructurePosition(14.5, 118, -153, "IntakeCoralFront");
     public static final ElevatorStructurePosition IntakeCoralFrontEnd = new ElevatorStructurePosition(15, 90, 100, "IntakeCoralFrontEnd");
@@ -287,6 +288,10 @@ public class ElevatorStructure extends SubsystemIO {
         return moveToPosition(Starting);
     }
 
+    public Command moveToIntakeEndCommand(){
+        return moveToPositions(IntakeCoralEnd,Starting);
+    }
+
     public Command moveToEndBargeCommand() {
         return moveToPositions(BargeRearEnd,Starting);
     }
@@ -302,7 +307,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command intakeCoralCommand() {
         return run(() -> { 
             m_Claw.setCoralMode(CoralModes.INTAKE);
-            applyPositionBySide(IntakeCoralRear, IntakeCoralFront); 
+            applyPositionBySide(IntakeCoralRear, IntakeCoralFront);
         });
     }
 

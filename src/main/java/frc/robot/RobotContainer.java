@@ -294,7 +294,7 @@ public class RobotContainer {
                                                                                                // negative Y (forward)
                             .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
-                }))).onFalse(elevatorStructure.moveToStartingCommand());
+                }))).onFalse(elevatorStructure.moveToIntakeEndCommand());
         
         // Store algae                
         operator.leftBumper().onTrue(intake.setStateCommand(States.HANDOFFALGAE)
