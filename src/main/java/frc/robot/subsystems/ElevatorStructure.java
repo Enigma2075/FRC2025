@@ -33,6 +33,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
     public static final ElevatorStructurePosition IntakeCoralEnd = new ElevatorStructurePosition(16, 85, 137, "IntakeCoralEnd"); //7.5
     public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
+    public static final ElevatorStructurePosition FloorIntake = new ElevatorStructurePosition(16, 85, 100, "StartingWithAlgae"); //7.5
 
     public static final ElevatorStructurePosition PickupAlgae = new ElevatorStructurePosition(14, 90, -110, "PickuptAlgae");
     public static final ElevatorStructurePosition PickupAlgaeEnd = new ElevatorStructurePosition(7.5, 90, 100, "PickuptAlgaeEnd");
@@ -287,6 +288,14 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToStartingCommand() {
         return moveToPosition(Starting);
+    }
+
+    public Command moveToFloorIntake() {
+        return moveToPosition(FloorIntake);
+    }
+
+    public Command moveToAlgaeStartingCommand() {
+        return moveToPosition(StartingWithAlgae);
     }
 
     public Command moveToIntakeEndCommand(){

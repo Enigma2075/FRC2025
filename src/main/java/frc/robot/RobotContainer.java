@@ -331,8 +331,8 @@ public class RobotContainer {
                 .onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
 
         // Floor Intake
-        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE))
-                .onFalse(intake.setStateCommand(States.DEFAULT));
+        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE).alongWith(elevatorStructure.moveToFloorIntake()))
+                .onFalse(intake.setStateCommand(States.DEFAULT).alongWith(elevatorStructure.moveToAlgaeStartingCommand()));
         // Floor Outtake
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
