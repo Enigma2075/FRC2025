@@ -382,6 +382,24 @@ public class RobotContainer {
                     .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                     .withTargetDirection(rotation);
         }));
+
+        driver.povUp().whileTrue(drivetrain.applyRequest(() -> {
+            calculateMaxSpeed();
+            var rotation = Rotation2d.kZero;
+            if(getAllianceSide() != Robot.AllianceColor.get()) {
+                rotation = Rotation2d.k180deg;
+            }
+
+            var xVel = -applyExpo(driver.getLeftY()) * CalculatedMaxSpeed;
+            
+
+            return driveAtAngle.withVelocityX(xVel) // Drive forward with
+                                                                                       // negative Y (forward)
+                    .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(rotation);
+        }));
+
+
     }
 
     // public Rotation2d getRotationForBarge(double currentAngle) {
