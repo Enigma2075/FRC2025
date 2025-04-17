@@ -38,6 +38,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition PickupAlgaeEnd = new ElevatorStructurePosition(7.5, 90, 100, "PickuptAlgaeEnd");
     
     public static final ElevatorStructurePosition StoreAlgae = new ElevatorStructurePosition(10, 105, -100, "StoreAlgae");
+    public static final ElevatorStructurePosition StoreAlgaeHeight = new ElevatorStructurePosition(16, 90, 100, "StoreAlgaeHeight");
     
     public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7.5, 94, -134, "GrabAlgae");
     public static final ElevatorStructurePosition GrabAlgaeHeight = new ElevatorStructurePosition(12, 90, 100, "GrabAlgaeHeight");
@@ -86,7 +87,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition L2Rear = new ElevatorStructurePosition(22, 66, 65, "L2Rear");
     public static final ElevatorStructurePosition L1Rear = new ElevatorStructurePosition(7.5, 66, 85, "L1Rear");
     
-    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 118, -60, "L4Front");
+    public static final ElevatorStructurePosition L4Front = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 120, -60, "L4Front");
     public static final ElevatorStructurePosition autoL4Front = new ElevatorStructurePosition(Utils.getValue(68.5, 65.5), 120, -60, "L4Front");
     public static final ElevatorStructurePosition L3Front = new ElevatorStructurePosition(35, 110, -80, "L3Front");
     public static final ElevatorStructurePosition L2Front = new ElevatorStructurePosition(18, 109, -80, "L2Front");
@@ -425,7 +426,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command storeAlgaeCommand() {
         return moveToPositions(StoreAlgaeSequence.getPositions())
             .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
-            .andThen(moveToPositions(GrabAlgaeHeight, StartingWithAlgae));
+            .andThen(moveToPositions(StoreAlgaeHeight, StartingWithAlgae));
     }
 
     public Command moveToAlgaeHighCommand() {
