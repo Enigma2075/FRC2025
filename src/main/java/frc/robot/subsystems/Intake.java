@@ -143,6 +143,10 @@ public class Intake extends SubsystemIO{
         public double currentRollerCurrent = 0;
 
         public double currentDistance = 0;
+
+        public boolean seeAlgae = false;
+
+        public boolean hasAlgae = false;
     }
 
     private final PeriodicIO m_PeriodicIO = new PeriodicIO();
@@ -205,17 +209,28 @@ public class Intake extends SubsystemIO{
         m_PeriodicIO.controlMode = ControlMode.POSITION;
     }
 
+    public boolean seeAlgae() {
+        return m_PeriodicIO.seeAlgae;
+    }
+
+    public boolean hasAlgae() {
+        return m_PeriodicIO.hasAlgae;
+    }
+
     @Override
     public void readPeriodicInputs() {
         m_PeriodicIO.currentPivotAngle = convertPositionToAngle(m_pivot.getPosition().getValueAsDouble());
         m_PeriodicIO.currentRollerCurrent = m_roller.getSupplyCurrent().getValueAsDouble();
-        var seeAlgae = m_Sensor.getIsDetected().getValue();
-        if(seeAlgae) {
+        var see = m_Sensor.getIsDetected().getValue();
+        if(see) {
             m_PeriodicIO.currentDistance = m_Sensor.getDistance().getValue().in(Centimeters);
+            m_PeriodicIO.seeAlgae = m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange; 
         }
         else {
             m_PeriodicIO.currentDistance = Double.MAX_VALUE;
         }
+
+        m_PeriodicIO.hasAlgae = m_PeriodicIO.currentDistance <= IntakeConstants.kMinRange;
     }
 
     @Override
@@ -244,7 +259,7 @@ public class Intake extends SubsystemIO{
                 break;
         }
 
-        if(m_PeriodicIO.targetRollerOutput == 0 && m_PeriodicIO.currentDistance < IntakeConstants.kMaxRange && m_PeriodicIO.currentDistance > IntakeConstants.kMinRange) {
+        if(m_PeriodicIO.targetRollerOutput == 0 && seeAlgae() && !hasAlgae()) {
             m_roller.setControl(m_RollerOutputRequest.withOutput(.1));
         }
         else {

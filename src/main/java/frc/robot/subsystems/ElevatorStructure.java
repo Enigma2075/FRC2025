@@ -32,7 +32,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition AutoStart = new ElevatorStructurePosition(7.5, 85, -100, "AutoStart"); //7.5
     public static final ElevatorStructurePosition Starting = new ElevatorStructurePosition(7.5, 85, 100, "Starting"); //7.5
     public static final ElevatorStructurePosition IntakeCoralEnd = new ElevatorStructurePosition(16, 85, 137, "IntakeCoralEnd"); //7.5
-    public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(12, 85, 100, "StartingWithAlgae"); //7.5
+    public static final ElevatorStructurePosition StartingWithAlgae = new ElevatorStructurePosition(10, 85, 100, "StartingWithAlgae"); //7.5
     public static final ElevatorStructurePosition FloorIntake = new ElevatorStructurePosition(16, 85, 100, "StartingWithAlgae"); //7.5
 
     public static final ElevatorStructurePosition PickupAlgae = new ElevatorStructurePosition(14, 90, -110, "PickuptAlgae");
@@ -118,6 +118,10 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command moveToPosition(ElevatorStructurePosition frontPosition, ElevatorStructurePosition rearPosition) {
         return moveToPosition(frontPosition, rearPosition, null);
+    }
+
+    public boolean requestingStartingPosition() {
+        return m_PeriodicIO.targetPosition == Starting;
     }
 
     private void applyPositionBySide(ElevatorStructurePosition front, ElevatorStructurePosition back) {

@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
 
 public class Elevator extends SubsystemIO{
     public enum ControlMode {
@@ -248,12 +249,18 @@ public class Elevator extends SubsystemIO{
                 m_Front.setControl(m_OutputRequest.withOutput(m_PeriodicIO.targetOutput));
                 break;
             case POSITION:
+                var acceleration = ElevatorConst.kMotionMagicAcceleration;
                 if(m_PeriodicIO.overrideVelocity) {
-                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration * .4));
+                    acceleration *= .4;
                 }
-                else {
-                    m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(m_PeriodicIO.targetHeight)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(ElevatorConst.kMotionMagicAcceleration));
+
+                var height = m_PeriodicIO.targetHeight;
+                if(Robot.RobotContainer.intake.seeAlgae() && Robot.RobotContainer.elevatorStructure.requestingStartingPosition()) {
+                    height = ElevatorStructure.StartingWithAlgae.ElevatorHeight;
                 }
+
+                m_Front.setControl(m_PositionRequest.withPosition(convertHeightToPosition(height)).withVelocity(ElevatorConst.kMotionMagicCruiseVelocity).withAcceleration(acceleration));
+                
                 break;
             case SYSID:
 
