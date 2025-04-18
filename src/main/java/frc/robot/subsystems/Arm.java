@@ -184,7 +184,7 @@ public class Arm extends SubsystemIO{
     }
 
     public double bargeError() {
-        return m_PeriodicIO.distanceToBarge - 70;
+        return m_PeriodicIO.distanceToBarge - 60;
     }
 
     public boolean isAtBarge(){
