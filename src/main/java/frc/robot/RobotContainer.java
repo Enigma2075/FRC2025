@@ -267,7 +267,7 @@ public class RobotContainer {
         
         // Handoff algae
         operator.leftTrigger()
-                .onTrue(
+                .whileTrue(
                     elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
                             .andThen(intake.setStateCommand(States.HANDOFFALGAE)
                             .andThen(Commands.waitSeconds(.1))
