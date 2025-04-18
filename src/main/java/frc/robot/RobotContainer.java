@@ -294,7 +294,7 @@ public class RobotContainer {
                                                                                                // negative Y (forward)
                             .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                             .withTargetDirection(targetRotation);
-                }))).onFalse(elevatorStructure.moveToStartingCommand());
+                }))).onFalse(elevatorStructure.moveToIntakeEndCommand());
         
         // Store algae                
         operator.leftBumper().onTrue(intake.setStateCommand(States.HANDOFFALGAE)
@@ -331,8 +331,8 @@ public class RobotContainer {
                 .onTrue(intake.setStateCommand(States.DISABLE).alongWith(climb.moveToPosition(State.ENDCLIMB)));
 
         // Floor Intake
-        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE))
-                .onFalse(intake.setStateCommand(States.DEFAULT));
+        driver.leftTrigger().onTrue(intake.setStateCommand(States.FLOORINTAKE).alongWith(elevatorStructure.moveToFloorIntake()))
+                .onFalse(intake.setStateCommand(States.DEFAULT).alongWith(elevatorStructure.moveToAlgaeStartingCommand()));
         // Floor Outtake
         driver.leftBumper().onTrue(intake.setStateCommand(States.OUTTAKE))
                 .onFalse(intake.setStateCommand(States.DEFAULT));
@@ -382,6 +382,24 @@ public class RobotContainer {
                     .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
                     .withTargetDirection(rotation);
         }));
+
+        driver.povUp().whileTrue(drivetrain.applyRequest(() -> {
+            calculateMaxSpeed();
+            var rotation = Rotation2d.kZero;
+            if(getAllianceSide() != Robot.AllianceColor.get()) {
+                rotation = Rotation2d.k180deg;
+            }
+
+            var xVel = -applyExpo(driver.getLeftY()) * CalculatedMaxSpeed;
+            
+
+            return driveAtAngle.withVelocityX(xVel) // Drive forward with
+                                                                                       // negative Y (forward)
+                    .withVelocityY(-applyExpo(driver.getLeftX()) * CalculatedMaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(rotation);
+        }));
+
+
     }
 
     // public Rotation2d getRotationForBarge(double currentAngle) {
@@ -475,15 +493,15 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = Utils.getValue(.41, .43);
-        var goalY = Utils.getValue(.16, .18);
+        var goalX = Utils.getValue(.41, .45);
+        var goalY = Utils.getValue(.16, .19);
         if(side == ReefSides.RIGHT) {
-            goalX = Utils.getValue(.41, .42);
-            goalY = Utils.getValue(-.11, -.15);    
+            goalX = Utils.getValue(.41, .43);
+            goalY = Utils.getValue(-.11, -.13);    
         }
         else if(side == ReefSides.CENTER) {
-            goalX = Utils.getValue(.39, .43);
-            goalY = Utils.getValue(.09, .10);
+            goalX = Utils.getValue(.39, .44);
+            goalY = Utils.getValue(.09, .11);
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());
