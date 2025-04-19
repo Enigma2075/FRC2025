@@ -39,7 +39,8 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition PickupAlgaeEnd = new ElevatorStructurePosition(7.5, 90, 100, "PickuptAlgaeEnd");
     
     public static final ElevatorStructurePosition StoreAlgae = new ElevatorStructurePosition(10, 105, -100, "StoreAlgae");
-    public static final ElevatorStructurePosition StoreAlgaeHeight = new ElevatorStructurePosition(16, 90, 100, "StoreAlgaeHeight");
+    public static final ElevatorStructurePosition StoreAlgaeHeight = new ElevatorStructurePosition(16, 90, -100, "StoreAlgaeHeight");
+    public static final ElevatorStructurePosition StoreAlgaeSpin = new ElevatorStructurePosition(16, 90, 100, "StoreAlgaeHeight");
     
     public static final ElevatorStructurePosition GrabAlgae = new ElevatorStructurePosition(7.5, 94, -134, "GrabAlgae");
     public static final ElevatorStructurePosition GrabAlgaeHeight = new ElevatorStructurePosition(12, 90, 100, "GrabAlgaeHeight");
@@ -343,8 +344,7 @@ public class ElevatorStructure extends SubsystemIO {
 
     public Command handoffAlgaeCommand() {
         return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae)
-        .andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }))
-        .withTimeout(1);
+        .andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }).withTimeout(1));
     }
 
     public Command pickupAlgaeCommand() {
@@ -441,7 +441,7 @@ public class ElevatorStructure extends SubsystemIO {
     public Command storeAlgaeCommand() {
         return moveToPositions(StoreAlgaeSequence.getPositions())
             .andThen(run(() -> m_Claw.setAlgaeMode(AlgaeModes.OUTTAKE)).until(() -> !m_Claw.hasAlgae()))
-            .andThen(moveToPositions(StoreAlgaeHeight, StartingWithAlgae));
+            .andThen(moveToPositions(StoreAlgaeHeight, StoreAlgaeSpin, StartingWithAlgae));
     }
 
     public Command moveToAlgaeHighCommand() {

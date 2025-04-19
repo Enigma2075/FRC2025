@@ -273,7 +273,7 @@ public class RobotContainer {
                             .andThen(Commands.waitSeconds(.1))
                             .andThen(elevatorStructure.pickupAlgaeCommand()))
                 )
-                .onFalse(intake.setStateCommand(States.DEFAULT));
+                .onFalse(Commands.waitSeconds(.04).andThen(intake.setStateCommand(States.DEFAULT)));
 
         // right bumper - barge
         operator.rightBumper().whileTrue(
@@ -282,7 +282,7 @@ public class RobotContainer {
                             .andThen(intake.setStateCommand(States.HANDOFFALGAE)
                             .andThen(elevatorStructure.pickupAlgaeCommand())),() -> claw.hasAlgae())
                             )
-            .onFalse(intake.setStateCommand(States.DEFAULT));
+            .onFalse(Commands.waitSeconds(.04).andThen(intake.setStateCommand(States.DEFAULT)));
 
         // Intake Coral
         operator.rightTrigger()
