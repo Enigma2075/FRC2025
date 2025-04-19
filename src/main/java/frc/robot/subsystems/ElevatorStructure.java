@@ -342,7 +342,9 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command handoffAlgaeCommand() {
-        return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae).withTimeout(1).andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }));
+        return moveToPositions(GrabAlgaeHeight, GrabAlgaeRotate, GrabAlgae)
+        .andThen(run(() -> { m_Claw.setAlgaeMode(AlgaeModes.INTAKE, true); }))
+        .withTimeout(1);
     }
 
     public Command pickupAlgaeCommand() {
