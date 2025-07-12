@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "CenterStart-P2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterStart-P2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag1_left"
+                }
+              }
+            ]
           }
         },
         {
@@ -74,12 +87,6 @@
           "type": "path",
           "data": {
             "pathName": "Algae3-Barge1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outtake_algae"
           }
         }
       ]

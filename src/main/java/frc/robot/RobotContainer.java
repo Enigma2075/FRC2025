@@ -143,7 +143,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("foundTag5_right", vision.setPriorityId(19, 6).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.RIGHT))));
         NamedCommands.registerCommand("foundTag6", vision.setPriorityId(20, 11).andThen(Commands.waitUntil(() -> closeToTarget(ReefSides.LEFT))));
         
-        NamedCommands.registerCommand("outtake1_left", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralToAlgaeLowCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("outtake1_left", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralToAlgaeLowCommand())));
         NamedCommands.registerCommand("outtake1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_left", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake2_right", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
@@ -154,7 +154,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
 
-        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.auto1MoveToAlgaeLowCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("intakeAlgae3", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
 
@@ -181,16 +181,16 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Right", drivetrain.getAutoPath("Right"));
         autoChooser.addOption("Left", drivetrain.getAutoPath("Left"));
-        autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
+        //autoChooser.addOption("Middle", drivetrain.getAutoPath("Middle"));
         autoChooser.addOption("Straight", drivetrain.getAutoPath("Straight"));
-        autoChooser.addOption("RotationTest", drivetrain.getAutoPath("RotationTest"));
-        autoChooser.addOption("test1", drivetrain.getAutoPath("Test1"));
-        autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
-        autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
+        //autoChooser.addOption("RotationTest", drivetrain.getAutoPath("RotationTest"));
+        //autoChooser.addOption("test1", drivetrain.getAutoPath("Test1"));
+        //autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
+        //autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
         autoChooser.addOption("Center", drivetrain.getAutoPath("Center"));
-        autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
-        autoChooser.addOption("Right-4", drivetrain.getAutoPath("Right-4"));
-        autoChooser.addOption("2path", drivetrain.getAutoPath("2path"));
+        //autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
+        //autoChooser.addOption("Right-4", drivetrain.getAutoPath("Right-4"));
+        //autoChooser.addOption("2path", drivetrain.getAutoPath("2path"));
 
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -280,6 +280,7 @@ public class RobotContainer {
             new ConditionalCommand(elevatorStructure.moveToBargeCommand(),
                     elevatorStructure.handoffAlgaeCommand().until(() -> claw.hasAlgae())
                             .andThen(intake.setStateCommand(States.HANDOFFALGAE)
+                            .andThen(Commands.waitSeconds(.1))
                             .andThen(elevatorStructure.pickupAlgaeCommand())),() -> claw.hasAlgae())
                             )
             .onFalse(Commands.waitSeconds(.04).andThen(intake.setStateCommand(States.DEFAULT)));
@@ -493,15 +494,37 @@ public class RobotContainer {
         // 7 R - .43, -.16
         //7 C - 
         //left
-        var goalX = Utils.getValue(.41, .45);
+        
+        
+        // BLUE
+        var goalX = Utils.getValue(.41, .44);
         var goalY = Utils.getValue(.16, .19);
-        if(side == ReefSides.RIGHT) {
+        
+        if(getAllianceSide() == Alliance.Red) {
+            // RED
             goalX = Utils.getValue(.41, .43);
+            goalY = Utils.getValue(.16, .21);
+        }
+
+        if(side == ReefSides.RIGHT) {
+            goalX = Utils.getValue(.41, .42);
             goalY = Utils.getValue(-.11, -.13);    
+
+            if(getAllianceSide() == Alliance.Red) {
+                // RED
+                goalX = Utils.getValue(.41, .43);
+                goalY = Utils.getValue(.16, -.14);
+            }    
         }
         else if(side == ReefSides.CENTER) {
             goalX = Utils.getValue(.39, .44);
-            goalY = Utils.getValue(.09, .11);
+            goalY = Utils.getValue(.09, .12);
+
+            if(getAllianceSide() == Alliance.Red) {
+                // RED
+                goalX = Utils.getValue(.41, .43);
+                goalY = Utils.getValue(.16, .12);
+            }    
         }
         
         var xError = goalX - Math.abs(robotPoseInTargetSpace.getX());

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.85,
-        "y": 4.716638065668329
+        "x": 7.034625000000001,
+        "y": 5.08775
       },
       "prevControl": {
-        "x": 6.820972479361075,
-        "y": 5.125076406973379
+        "x": 6.308250000000002,
+        "y": 5.238875
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Barge1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
