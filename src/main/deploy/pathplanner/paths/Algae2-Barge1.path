@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "move_to_barge",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.65,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

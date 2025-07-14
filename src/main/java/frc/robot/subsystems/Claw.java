@@ -175,6 +175,10 @@ public class Claw extends SubsystemIO {
         return m_PeriodicIO.hasAlgae;
     }
 
+    public boolean seeAlgae() {
+        return m_PeriodicIO.seeAlgae;
+    }
+
     public boolean hasCoral() {
         return m_PeriodicIO.hasCoral;
     }

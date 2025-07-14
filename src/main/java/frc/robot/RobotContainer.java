@@ -124,6 +124,7 @@ public class RobotContainer {
         driveRobotCentric.MaxAbsRotationalRate = MaxAngularRate;
 
         NamedCommands.registerCommand("intake", elevatorStructure.autoIntakeCoralCommand());
+        NamedCommands.registerCommand("starting_position", elevatorStructure.moveToStartingCommand());
         NamedCommands.registerCommand("drive_backward_right", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(true)).until(() -> claw.hasCoral()).withTimeout(2));
         NamedCommands.registerCommand("wait_for_coral", Commands.waitUntil(() ->claw.hasCoral()).withTimeout(.5));
         NamedCommands.registerCommand("drive_backward_left", elevatorStructure.intakeCoralCommand().alongWith(driveBackwardCommand(false)).until(() -> claw.hasCoral()).withTimeout(2));
@@ -154,9 +155,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("outtake5_right", vision.setPriorityId(19, 6).andThen(driveToTargetAuto(ReefSides.RIGHT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
         NamedCommands.registerCommand("outtake6", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.LEFT).andThen(elevatorStructure.autoOuttakeCoralCommand()).andThen(Commands.waitSeconds(.05))));
 
-        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.auto1MoveToAlgaeLowCommand()).andThen(Commands.waitSeconds(.05))));
-        NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
-        NamedCommands.registerCommand("intakeAlgae3", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))));
+        NamedCommands.registerCommand("intakeAlgae1", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).alongWith(elevatorStructure.auto1MoveToAlgaeLowCommand())));
+        NamedCommands.registerCommand("intakeAlgae2", vision.setPriorityId(22, 9).andThen(driveToTargetAuto(ReefSides.CENTER).alongWith(Commands.waitUntil(() -> claw.hasAlgae() || isAtPositionAuto(ReefSides.CENTER)).withTimeout(.5).andThen(elevatorStructure.autoIntakeAlgaeCommand()))));
+        NamedCommands.registerCommand("intakeAlgae3", vision.setPriorityId(20, 11).andThen(driveToTargetAuto(ReefSides.CENTER).alongWith(Commands.waitUntil(() -> claw.hasAlgae() || isAtPositionAuto(ReefSides.CENTER)).withTimeout(.5).andThen(elevatorStructure.autoIntakeAlgaeCommand()))));
+
+        NamedCommands.registerCommand("intakeAlgaeMore", elevatorStructure.intakeAlgaeLowCommand());
 
         NamedCommands.registerCommand("intakeAlgaetoL4", vision.setPriorityId(21, 10).andThen(driveToTargetAuto(ReefSides.CENTER).andThen(elevatorStructure.autoIntakeAlgaeCommand()).andThen(Commands.waitSeconds(.05))).andThen(elevatorStructure.moveToL4Command(false)));
 
@@ -188,6 +191,7 @@ public class RobotContainer {
         //autoChooser.addOption("test2", drivetrain.getAutoPath("Test2"));
         //autoChooser.addOption("Ken", drivetrain.getAutoPath("Right-Ken"));
         autoChooser.addOption("Center", drivetrain.getAutoPath("Center"));
+        autoChooser.addOption("Center-2IRI", drivetrain.getAutoPath("Center-2IRI"));
         //autoChooser.addOption("Center-2", drivetrain.getAutoPath("Center-2"));
         //autoChooser.addOption("Right-4", drivetrain.getAutoPath("Right-4"));
         //autoChooser.addOption("2path", drivetrain.getAutoPath("2path"));
@@ -497,7 +501,7 @@ public class RobotContainer {
         
         
         // BLUE
-        var goalX = Utils.getValue(.41, .44);
+        var goalX = Utils.getValue(.41, .42);
         var goalY = Utils.getValue(.16, .19);
         
         if(getAllianceSide() == Alliance.Red) {
@@ -550,7 +554,7 @@ public class RobotContainer {
     public boolean closeToTarget(ReefSides side) {
         var error = getError(side);
         //var distance = Math.sqrt((error.getX()*error.getX())  + (error.getY()*error.getY()));
-        return Math.abs(error.getX()) < .20;
+        return Math.abs(error.getX()) < .30;
     }
 
     public Command driveToTargetAuto(ReefSides side) {//, double angle) {

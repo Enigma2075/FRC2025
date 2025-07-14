@@ -75,6 +75,7 @@ public class ElevatorStructure extends SubsystemIO {
     public static final ElevatorStructurePosition IntakeAlgaeLowFront = new ElevatorStructurePosition(21, 134, 139, "IntakeAlgaeLowFront");
     public static final ElevatorStructurePosition AutoIntakeAlgaeLowFront = new ElevatorStructurePosition(21, 90, 139, "IntakeAlgaeLowFront");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrab = new ElevatorStructurePosition(19, 90, 139, "IntakeAlgaeLowFrontGrab");
+    public static final ElevatorStructurePosition IntakeAlgaeLowFrontGrabAuto = new ElevatorStructurePosition(19, 100, 139, "IntakeAlgaeLowFrontGrabAuto");
     public static final ElevatorStructurePosition IntakeAlgaeLowFrontEnd = new ElevatorStructurePosition(2, 85, 100, "IntakeAlgaeLowFrontEnd");
     
     public static final ElevatorStructurePositionSequence AlgaeLowFrontSequence = new ElevatorStructurePositionSequence(IntakeAlgaeLowFront);
@@ -414,10 +415,10 @@ public class ElevatorStructure extends SubsystemIO {
     }
     
     public Command autoOuttakeCoralToAlgaeLowCommand() {
-        return new WaitUntilCommand(() -> isAtPosition()).andThen(Commands.waitSeconds(.2)).andThen(runOnce(() -> {
+        return new WaitUntilCommand(() -> isAtPosition()).andThen(runOnce(() -> {
             m_Claw.setCoralMode(CoralModes.OUTTAKE);
             }
-        )).andThen(Commands.waitSeconds(.2)).andThen(autoMoveToAlgaeLowCommand());
+        )).andThen(Commands.waitSeconds(.2).until(() -> !m_Claw.hasCoral())).andThen(autoMoveToAlgaeLowCommand());
     }
     
     public Command outtakeCoralCommand() {
@@ -483,7 +484,11 @@ public class ElevatorStructure extends SubsystemIO {
     }
 
     public Command auto1MoveToAlgaeLowCommand() {
-       return moveToAlgaeLowCommand().onlyWhile(() -> !m_Claw.hasAlgae()).andThen(intakeAlgaeLowCommand());
+       return moveToPosition(true, IntakeAlgaeLowFront).onlyWhile(() -> !m_Claw.hasAlgae()).andThen(moveToAlgaeLowFrontGrab());
+    }
+
+    public Command moveToAlgaeLowFrontGrab() {
+        return moveToPosition(true, IntakeAlgaeLowFrontGrabAuto).withTimeout(2);
     }
 
 

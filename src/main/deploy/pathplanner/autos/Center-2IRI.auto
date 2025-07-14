@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterStart-P2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "foundTag1_left"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake1_left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae1-Barge1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake_algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge1-Algae2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae2-Barge1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake_algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge1-Park"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
