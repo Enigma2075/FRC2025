@@ -75,6 +75,7 @@ public class Claw extends SubsystemIO {
         algaeSensorConfig.FovParams.FOVRangeX = 8;
         algaeSensorConfig.FovParams.FOVRangeY = 8;
         algaeSensorConfig.ProximityParams.ProximityThreshold = .2;
+        algaeSensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 10000;
 
         m_AlgaeSensor.getConfigurator().apply(algaeSensorConfig);
 

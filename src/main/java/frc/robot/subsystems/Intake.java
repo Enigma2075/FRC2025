@@ -72,6 +72,8 @@ public class Intake extends SubsystemIO{
         sensorConfig.FovParams.FOVCenterY = 11;
         sensorConfig.FovParams.FOVRangeX = 7;
         sensorConfig.FovParams.FOVRangeY = 7;
+        sensorConfig.ProximityParams.ProximityThreshold = IntakeConstants.kMinRange;
+        sensorConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 10000;
 
         m_Sensor.getConfigurator().apply(sensorConfig);
 
